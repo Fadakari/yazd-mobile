@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    unoptimized: true,
     remotePatterns: [
       { protocol: 'https', hostname: 'artakalaa.com' },
       { protocol: 'https', hostname: 'api.artakalaa.ir' },
@@ -19,8 +20,11 @@ const nextConfig: NextConfig = {
       // --- موارد جدید اضافه شده ---
       { protocol: 'https', hostname: 'images.unsplash.com' }, // برای عکس‌های بلاگ
       { protocol: 'https', hostname: 'api.dicebear.com' },   // برای آواتار نویسنده‌ها
+      {
+        protocol: "https",
+        hostname: "api.abajstore.ir", 
+      },
     ],
-    unoptimized: false
   },
 };
 

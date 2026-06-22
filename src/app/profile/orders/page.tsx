@@ -6,8 +6,8 @@ import Orders from "./Orders";
 export default async function Page() {
   const data = await getUserOrders();
 
-  const shopOrders = Array.isArray(data.shop_orders) ? data.shop_orders : [];
-  const discountedOrders = Array.isArray(data.discounted_orders)
+  const shopOrders = Array.isArray(data?.shop_orders) ? data.shop_orders : [];
+  const discountedOrders = Array.isArray(data?.discounted_orders)
     ? data.discounted_orders
     : [];
   const mapOrders = (data: any[], type: "regular" | "discounted") =>

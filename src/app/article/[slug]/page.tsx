@@ -18,12 +18,16 @@ import { articleSchema, breadcrumbSchema } from "@/components/Schema";
 import { imageSchema } from "@/components/Schema/imageSchema";
 import Script from "next/script";
 
+export const revalidate = 3600;
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const data = await GetBlogBySlug((await params).slug);
+  const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
+  const data = await GetBlogBySlug(decodedSlug);
   if (!data) {
     return {
       title: "مقاله یافت نشد | یزد موبایل",
@@ -71,11 +75,20 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
   const data = await GetBlogBySlug(decodedSlug);
   const categories = await GetBlogCategoriesMenuStructure();
   const latestPosts = await GetLatestBlogPosts();
-  const filteredLatestPosts = latestPosts?.filter(
+
+  const safeCategories = Array.isArray(categories) 
+    ? categories 
+    : (categories?.data || categories?.results || []);
+    
+  const safeLatestPosts = Array.isArray(latestPosts) 
+    ? latestPosts 
+    : (latestPosts?.data || latestPosts?.results || []);
+
+  const filteredLatestPosts = safeLatestPosts.filter(
     (post: Article) => post.slug !== data.slug
   );
 
-  if (!data) return notFound();
+  
   const formatPersianDate = (jalaliDate: string) => {
     moment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
     return moment(jalaliDate, "jYYYY-jMM-jDD").format("jDD jMMMM jYYYY");
@@ -91,7 +104,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
           name: data.category.title,
           url: `${siteUrl}/products?category_id=${data.category.id}`,
         }
-      : { name: data.category },
+      : { name: "مقالات" },
     { name: data.title, url: `${siteUrl}/article/${data.slug}` },
   ];
 
@@ -123,13 +136,15 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
               <HiMiniCalendarDateRange className="size-5" />
               <span>{formatPersianDate(data.jalali_created)}</span>
             </p>
-            <Link
-              href={`/articles?category_id=${data.category.id}`}
-              className="flex items-center gap-1 text-sm md:text-base"
-            >
-              <FaFolderOpen className="size-5" />
-              <span>{data.category.title}</span>
-            </Link>
+            {data.category && (
+              <Link
+                href={`/articles?category_id=${data.category.id}`}
+                className="flex items-center gap-1 text-sm md:text-base"
+              >
+                <FaFolderOpen className="size-5" />
+                <span>{data.category.title}</span>
+              </Link>
+            )}
           </div>
           <p className="text-zinc-600 mb-3 mt-5 text-sm md:text-base">
             {data.introduction}
@@ -153,10 +168,11 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
               دسته بندی ها
             </h2>
             <ul className="font-pelak text-sm md:text-base">
-              {categories?.map((cat, key) => (
-                <li key={key} className="mb-2">
-                  <Link href={`/articles?category=${cat.slug}`}>
-                    {cat.title}
+              {safeCategories.map((cat: any, index: number) => (
+                <li key={cat.id || index} className="mb-2">
+                  <Link href={`/articles?category_id=${cat.id}`} className="flex items-center gap-1 text-sm md:text-base hover:text-primary-600 transition-colors">
+                    <FaFolderOpen className="size-5" />
+                    <span>{cat.title || cat.name}</span>
                   </Link>
                 </li>
               ))}

@@ -87,7 +87,9 @@ export default async function RootLayout({
 }>) {
   const result = await GetShopCategoriesTreeList();
   const user = (await GetUserDashboard()) || undefined;
-
+  
+  // استخراج امن آرایه دسته‌بندی‌ها
+  const safeCategories = Array.isArray(result) ? result : (result?.data || result?.results || []);
   return (
     <html lang="fa-IR" dir="rtl" className="scroll-smooth bg-[#f9f9f9]">
       <body
@@ -111,7 +113,7 @@ export default async function RootLayout({
           <AuthModalProvider>
             <CartProvider>
               {!user && <AuthModal />}
-              <CategoriesProvider categories={result?.data}>
+              <CategoriesProvider categories={safeCategories}>
                 {/* تغییر مهم: پاس دادن نوبار و فوتر به عنوان پراپ */}
                 <LayoutWrapper
                   navbar={<Navbar />}

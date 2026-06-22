@@ -76,7 +76,7 @@ export default async function ProductsPage({ searchParams }: any) {
   }
 
   const categoryRes = await getCategories();
-  const categories = categoryRes?.data || [];
+  const categories = Array.isArray(categoryRes) ? categoryRes : (categoryRes?.data || categoryRes?.results || []);
 
   const breadcrumbs = [
     { name: "خانه", url: `${process.env.NEXT_PUBLIC_SITE_URL}/` },
@@ -120,7 +120,7 @@ export async function generateMetadata({
 
   if (categoryId) {
     const categoryRes = await GetShopCategoriesTreeList();
-    const categories = categoryRes?.data || [];
+    const categories = Array.isArray(categoryRes) ? categoryRes : (categoryRes?.data || categoryRes?.results || []);
     const category = categories.find(
       (cat: CategoryNode) => cat.id === +categoryId
     );

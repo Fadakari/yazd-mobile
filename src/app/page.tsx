@@ -203,8 +203,13 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
       link: `/product/${p.slug}`,
     }));
 
-  // 4. دسته‌بندی‌ها (اصلاح شده)
-  const allCategories = categoriesTree?.data ? flattenCategories(categoriesTree.data, siteLogo) : [];
+
+  // اضافه کردن شرطِ پشتیبانی از ساختار results بک‌اند
+  const categoriesArray = Array.isArray(categoriesTree) 
+    ? categoriesTree 
+    : (categoriesTree?.data || categoriesTree?.results || []);
+    
+  const allCategories = flattenCategories(categoriesArray, siteLogo);
 
   // 5. شگفت انگیز — از محصولات جدید استخراج می‌شود (در صورت موجود بودن)
   const shegeftAngizData: ProductCardType[] = (firstProductSection?.products || []).map(mapApiProductToNewProduct).map(p => ({

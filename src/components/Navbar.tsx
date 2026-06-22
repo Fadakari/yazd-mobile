@@ -251,11 +251,6 @@ export default function Navbar() {
 
               <span className="w-[1px] h-8 bg-gray-100 mx-1"></span>
 
-              {/* دکمه علاقه مندی (اختیاری) */}
-              <Link href="/profile/favorites" className="w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 hover:text-red-500 hover:bg-red-50 transition-all">
-                <FiHeart className="size-6" />
-              </Link>
-
               {/* سبد خرید */}
               <div className="relative group">
                 <div className="relative z-10">

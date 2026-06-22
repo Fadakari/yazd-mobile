@@ -149,7 +149,7 @@ export default function FilterBox({
                 <span className="text-zinc-500">• دسته:</span>
                 <span className="text-zinc-800 font-medium">
                   {
-                    categories.find(
+                    categories?.find(
                       (c) => c.id.toString() === activeFilters.category_id
                     )?.name
                   }

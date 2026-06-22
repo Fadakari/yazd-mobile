@@ -169,7 +169,7 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
                                 {product.discountPercentage}٪
                                </div>
                                <del className="text-gray-400 text-xs">
-                                {product.oldPrice.toLocaleString()}
+                                {product.oldPrice.toLocaleString("fa-IR")}
                                </del>
                             </div>
                           ) : (
@@ -178,7 +178,7 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
                           
                           <div className="flex items-center justify-end gap-1 text-gray-800">
                             <span className="font-bold text-lg">
-                              {product.price.toLocaleString()}
+                              {product.price.toLocaleString("fa-IR")}
                             </span>
                             <span className="text-[10px] font-light">تومان</span>
                           </div>

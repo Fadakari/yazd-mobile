@@ -16,10 +16,10 @@ export default async function UserDashboard() {
 
   const ordersData = await getUserOrders();
 
-  const shopOrders = Array.isArray(ordersData.shop_orders)
+  const shopOrders = Array.isArray(ordersData?.shop_orders)
     ? ordersData.shop_orders
     : [];
-  const discountedOrders = Array.isArray(ordersData.discounted_orders)
+  const discountedOrders = Array.isArray(ordersData?.discounted_orders)
     ? ordersData.discounted_orders
     : [];
 

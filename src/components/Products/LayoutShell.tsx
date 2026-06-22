@@ -32,6 +32,8 @@ export default function LayoutShell({
   ): { id: number; name: string }[] | null => {
     if (!id) return null;
 
+    if (!nodes || !Array.isArray(nodes)) return null;
+
     for (const node of nodes) {
       const newPath = [...path, { id: Number(node.id), name: node.name }];
 
