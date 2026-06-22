@@ -1,6 +1,8 @@
 import Article from "@/types/blog"
 import api from "./api"
 import { BlogCategoryNode } from "@/types/categories";
+import { unstable_cache } from "next/cache";
+
 type BlogPostsResponse = {
     data: Article[];
     next_page: string | null;
@@ -26,15 +28,19 @@ export const GetBlogPosts = async (params?: BlogPostsParams, page?: string): Pro
         return undefined;
     }
 };
-export const GetLatestBlogPosts = async (): Promise<any | undefined> => {
-    try {
-        const result = await api.get<any>("/blog/posts/latest")
-        return result.data
-    } catch (error) {
-        console.error(error)
-        return undefined
-    }
-}
+export const GetLatestBlogPosts = unstable_cache(
+    async (): Promise<any | undefined> => {
+        try {
+            const result = await api.get<any>("/blog/posts/latest")
+            return result.data
+        } catch (error) {
+            console.error(error)
+            return undefined
+        }
+    },
+    ["latest-blog-posts"],
+    { revalidate: 300 } // ۵ دقیقه کش
+);
 export const GetBlogCategoriesMenuStructure = async (): Promise<BlogCategoryNode[] | undefined> => {
     try {
         const result = await api.get<BlogCategoryNode[]>("/blog/categories/menu_structure/")

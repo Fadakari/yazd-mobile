@@ -1,38 +1,57 @@
 import { cookies } from "next/headers"
 import api from "./api"
+import { unstable_cache } from "next/cache";
 
-export const homeAboutUsList = async () => {
-    try {
-        const result = await api.get("/home/about-us/")
-        return result
-    } catch (error) {
-        console.log(error)
-    }
-}
-export const homeContactInfoList = async () => {
-    try {
-        const result = await api.get("/home/contact-info/")
-        return result
-    } catch (error) {
-        console.log(error)
-    }
-}
-export const homeGalleryList = async () => {
-    try {
-        const result = await api.get("/home/gallery/")
-        return result.data
-    } catch (error) {
-        console.log(error)
-    }
-}
-export const homeSliderList = async () => {
-    try {
-        const result = await api.get("/home/sliders/")
-        return result.data
-    } catch (error) {
-        console.log(error)
-    }
-}
+export const homeAboutUsList = unstable_cache(
+    async () => {
+        try {
+            const result = await api.get("/home/about-us/")
+            return result
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    ["home-about-us-list"],
+    { revalidate: 3600 }
+);
+export const homeContactInfoList = unstable_cache(
+    async () => {
+        try {
+            const result = await api.get("/home/contact-info/")
+            return result
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    ["home-contact-info"],
+    { revalidate: 3600 }
+);
+export const homeGalleryList = unstable_cache(
+    async () => {
+        try {
+            const result = await api.get("/home/gallery/")
+            return result.data
+        } catch (error) {
+            console.log(error)
+            return null;
+        }
+    },
+    ["home-gallery-list"],
+    { revalidate: 3600 }
+);
+export const homeSliderList = unstable_cache(
+    async () => {
+        try {
+            const result = await api.get("/home/sliders/")
+            return result.data
+        } catch (error) {
+            console.log(error)
+            return null;
+        }
+    },
+    ["home-sliders-list"],
+    { revalidate: 600 } // کش شدن دیتای اسلایدر به مدت ۱۰ دقیقه
+);
 export async function GetDiscountedOrders() {
     "use server";
     const cookieStore = await cookies();

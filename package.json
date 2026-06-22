@@ -63,6 +63,7 @@
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/sanitize-html": "^2.16.0",
     "autoprefixer": "^10.4.21",
+    "baseline-browser-mapping": "^2.10.38",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "prettier": "^3.6.2",

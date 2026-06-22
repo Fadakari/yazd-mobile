@@ -1,17 +1,21 @@
 
 import api from "./api";
-
+import { unstable_cache } from "next/cache";
 // Products ----
 
-export async function GetShopCategoriesTreeList() {
+export const GetShopCategoriesTreeList = unstable_cache(
+  async () => {
     try {
-        const result = await api.get("/shop/categories/tree/")
-        return result
+      const res = await api.get('/shop/categories/tree/')
+      return res.data
     } catch (error) {
-        console.log(error);
-        return { data: [] };
+      console.error(error)
+      return null
     }
-}
+  },
+  ["shop-categories-tree"], // کلید اختصاصی کش
+  { revalidate: 600 } // مدت زمان کش به ثانیه (۱۰ دقیقه)
+);
 interface GetProductsParams {
     category_id?: number;
     min_price?: number;
@@ -191,7 +195,7 @@ export async function GetShopCartList(): Promise<{
     try {
         const res = await fetch(`/internal-api/shop/cart`, {
             method: "GET",
-            cache: "no-store",
+            
         });
 
         if (!res.ok) {

@@ -20,7 +20,7 @@ const getCategories = cache(async () => {
 const getSliderSections = cache(async () => {
   try {
     const res = await fetch("https://api.yazd-mobile.ir/home/sliders-index/", {
-      cache: "no-store",
+      
     });
     if (!res.ok) return [];
     return res.json();

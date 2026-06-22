@@ -35,7 +35,7 @@ async function getFooterData(): Promise<FooterSectionData[]> {
   try {
     // اتصال به آدرس دقیق بک‌اند شما
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/footer/`, {
-      cache: "no-store", // دریافت دیتای تازه در هر بار درخواست
+      
     });
     if (!res.ok) return [];
     return await res.json();

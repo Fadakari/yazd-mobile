@@ -11,7 +11,7 @@ import { GetShopCategoriesTreeList } from "@/services/shopActions"; // <--- ای
 import "@/styles/font.css";
 import "../styles/styles.css";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata: Metadata = {
   title: "یزد موبایل | صفحه اصلی",
 };
@@ -52,7 +52,7 @@ interface ApiSection {
 async function getHomeData(): Promise<ApiSection[]> {
   try {
     const res = await fetch("https://api.yazd-mobile.ir/home/sliders-index/", {
-      cache: "no-store", 
+      
     });
     if (!res.ok) throw new Error("Failed to fetch home data");
     return res.json();
@@ -66,7 +66,7 @@ async function getHomeData(): Promise<ApiSection[]> {
 async function getLatestArticles(): Promise<BlogPostItem[]> {
   try {
     const res = await fetch("https://api.yazd-mobile.ir/blog/posts/", { 
-        cache: "no-store",
+        
         next: { revalidate: 60 } 
     });
     

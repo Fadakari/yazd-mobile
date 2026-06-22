@@ -149,7 +149,7 @@ export default function LatestBlogSection({ posts, title = "مجله خبری ی
                       <div className="flex items-center gap-2">
                          <div className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white shadow-sm overflow-hidden relative">
                              {/* آواتار پلیس‌هولدر */}
-                            <Image src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${post.author}`} alt={post.author} fill />
+                            <Image src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${post.author}`} alt={post.author} fill unoptimized />
                          </div>
                          <div className="flex flex-col">
                             <span className="text-[10px] text-gray-400">نویسنده</span>
