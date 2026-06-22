@@ -51,7 +51,7 @@ function BlogCard({ item }: { item: Article }) {
           </div>
           <div className="flex flex-col items-center font-medium">
             <SiGoogleappsscript className="size-7" />
-            {item.category.title}
+            {item.category?.title || "بدون دسته‌بندی"}
           </div>
         </div>
         <hr className=" text-zinc-300 my-4" />

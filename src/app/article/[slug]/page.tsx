@@ -20,6 +20,13 @@ import Script from "next/script";
 
 export const revalidate = 3600;
 
+moment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
+
+const formatPersianDate = (jalaliDate?: string) => {
+  if (!jalaliDate) return "نامشخص";
+  return moment(jalaliDate, "jYYYY-jMM-jDD").format("jDD jMMMM jYYYY");
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -48,8 +55,8 @@ export async function generateMetadata({
       modifiedTime: data.updated_at,
       images: [
         {
-          url: data.thumbnail,
-          alt: data.title,
+          url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://yazd-mobile.ir'}/logo.png`,
+          alt: data.title || "مقاله",
           width: 1200,
           height: 630,
         },
@@ -73,6 +80,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   const data = await GetBlogBySlug(decodedSlug);
+  if (!data) return notFound();
   const categories = await GetBlogCategoriesMenuStructure();
   const latestPosts = await GetLatestBlogPosts();
 
@@ -87,12 +95,6 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
   const filteredLatestPosts = safeLatestPosts.filter(
     (post: Article) => post.slug !== data.slug
   );
-
-  
-  const formatPersianDate = (jalaliDate: string) => {
-    moment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
-    return moment(jalaliDate, "jYYYY-jMM-jDD").format("jDD jMMMM jYYYY");
-  };
 
   const siteUrl = process.env.NEXT_PUBLIC_BACK_END || "https://mpttools.co";
 
@@ -150,15 +152,16 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
             {data.introduction}
           </p>
           <Image
-            src={data.thumbnail}
-            alt={data.title}
+            src={data.thumbnail || "/logo.png"}
+            alt={data.title || "تصویر مقاله"}
             width={720}
             height={445}
             priority
+            unoptimized={true}
             className="object-cover w-full h-auto aspect-video rounded-lg"
           />
           <div className="article-content !text-black mt-7">
-            {parse(sanitizeHtml(data.content))}
+            {parse(sanitizeHtml(data.content || "<p></p>"))}
           </div>
         </div>
 
@@ -187,11 +190,12 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
                 {filteredLatestPosts?.map((post: Article) => (
                   <li key={post.id} className="flex items-start gap-4">
                     <Link href={`/article/${post.slug}`}>
-                      <img
-                        src={`https://api.yazd-mobile.ir${post.thumbnail}`}
-                        alt=""
+                      <Image
+                        src={post.thumbnail ? (post.thumbnail.startsWith('http') ? post.thumbnail : `https://api.abajstore.ir${post.thumbnail}`) : "/logo.png"}
+                        alt={post.title || "مطلب جدید"}
                         width={100}
                         height={100}
+                        unoptimized={true}
                         className="w-44 h-24 md:w-20 md:h-16 lg:w-32 lg:h-20 object-cover rounded-2xl"
                       />
                     </Link>

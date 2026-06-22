@@ -2,6 +2,7 @@ import Article from "@/types/blog"
 import api from "./api"
 import { BlogCategoryNode } from "@/types/categories";
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 
 type BlogPostsResponse = {
     data: Article[];
@@ -51,15 +52,15 @@ export const GetBlogCategoriesMenuStructure = async (): Promise<BlogCategoryNode
     }
 }
 
-export async function GetBlogBySlug(slug: string): Promise<any> {
+export const GetBlogBySlug = cache(async (slug: string): Promise<any> => {
     try {
         const result = await api.get(`/blog/posts/${slug}/`);
-        return result.data
+        return result.data;
     } catch (error) {
-        console.log(error)
-        return null
+        console.log(error);
+        return null;
     }
-}
+});
 interface Search {
     search?: string;
     sort?: string;
