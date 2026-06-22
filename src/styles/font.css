@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "Shabnam";
+  src: url("/fonts/PeydaWebFaNum-Medium.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Shabnam";
+  src: url("/fonts/PeydaWebFaNum-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Shabnam";
+  src: url("/fonts/PeydaWebFaNum-Black.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Shabnam";
+  src: url("/fonts/PeydaWebFaNum-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
