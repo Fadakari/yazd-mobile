@@ -3,6 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: 'standalone',
   trailingSlash: true,
+  experimental: {
+    // این گزینه از تلاش نکست برای لود کردنِ ماژول‌های پویا مثل postcss در حالتِ standalone جلوگیری می‌کند
+    optimizePackageImports: [], 
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

@@ -76,7 +76,7 @@ export async function generateMetadata({
       },
     };
   } catch (error: any) {
-    console.error("Metadata Error:", error);
+    console.error("Metadata Error:", error?.message);
     // اگر اینجا ارور بده، این تایتل رو نشون میده و سرور رو منفجر نمیکنه
     return { title: "خطای سرور (سئو) | یزد موبایل" };
   }
@@ -90,21 +90,21 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
     if (!data) return notFound();
     const categories = await GetBlogCategoriesMenuStructure();
     const latestPosts = await GetLatestBlogPosts();
-    
+
     const safeCategories = Array.isArray(categories) 
       ? categories 
       : (categories?.data || categories?.results || []);
-      
+
     const safeLatestPosts = Array.isArray(latestPosts) 
       ? latestPosts 
       : (latestPosts?.data || latestPosts?.results || []);
-    
+
     const filteredLatestPosts = safeLatestPosts.filter(
       (post: Article) => post.slug !== data.slug
     );
-  
+
     const siteUrl = process.env.NEXT_PUBLIC_BACK_END || "https://mpttools.co";
-  
+
     const breadcrumbs = [
       { name: "خانه", url: `${siteUrl}/` },
       { name: "محصولات", url: `${siteUrl}/products` },
@@ -116,7 +116,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
         : { name: "مقالات" },
       { name: data.title, url: `${siteUrl}/article/${data.slug}` },
     ];
-  
+
     const schema = [
       articleSchema(data),
       breadcrumbSchema(breadcrumbs),
@@ -133,7 +133,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
           }}
         />
         <ReadingProgressBar />
-        
+
         <div
           id="article-content"
           className="flex flex-col md:flex-row gap-8 p-5 font-pelak container max-w-full md:max-w-[1140px] customSm:max-w-[566px]"
@@ -171,14 +171,14 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
               {parse(sanitizeHtml(data.content || "<p></p>"))}
             </div>
           </div>
-            
+
           <aside className="w-full md:w-1/4 flex flex-col gap-5 sticky top-20">
             <div className="bg-white shadow md:shadow-2xl p-4 rounded-xl">
               <h2 className="text-2xl md:text-3xl py-4 font-pelak text-[#d55931] font-bold">
                 دسته بندی ها
               </h2>
               <ul className="font-pelak text-sm md:text-base">
-                {safeCategories.map((cat: any, index: number) => (
+                {safeCategories?.map((cat: any, index: number) => (
                   <li key={cat.id || index} className="mb-2">
                     <Link href={`/articles?category_id=${cat.id}`} className="flex items-center gap-1 text-sm md:text-base hover:text-primary-600 transition-colors">
                       <FaFolderOpen className="size-5" />
