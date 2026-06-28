@@ -1,7 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import "@/styles/font.css";
-import "../styles/styles.css";
 import {
   FaPhoneAlt,
   FaWhatsapp,

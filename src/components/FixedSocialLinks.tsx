@@ -1,6 +1,4 @@
 import { FaInstagram, FaWhatsapp } from "react-icons/fa";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 const FixedSocialLinks = () => {
   return (

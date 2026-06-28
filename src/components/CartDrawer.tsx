@@ -9,8 +9,6 @@ import {
   useDisclosure,
   Badge,
 } from "@heroui/react";
-import "@/styles/font.css";
-import "../styles/styles.css";
 import ProductButton from "./ProtectButton";
 import { FaBasketShopping } from "react-icons/fa6";
 import { HiXMark } from "react-icons/hi2";

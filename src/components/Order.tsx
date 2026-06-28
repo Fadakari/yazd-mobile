@@ -13,8 +13,6 @@ const statusLabels: Record<string, { fa: string; color: string }> = {
   shipped: { fa: "ارسال شده", color: "bg-[#dbeafe] text-[#1e40af]" },
   paid: { fa: "پرداخت شده", color: "bg-[#dcfce7] text-[#166534]" }, // اضافه شد
 };
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 export default function Order({ order }: { order: any }) {
   const pdfRef = useRef<HTMLDivElement>(null);

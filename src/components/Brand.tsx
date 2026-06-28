@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 interface BrandProps {
   item: {

@@ -1,7 +1,5 @@
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 export default function EmptyCart({ onClose }: any) {
   return (

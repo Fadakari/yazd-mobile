@@ -10,8 +10,6 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { HiXMark } from "react-icons/hi2";
-import "@/styles/font.css";
-import "../styles/styles.css";
 import {
   LoginFormValues,
   loginSchema,

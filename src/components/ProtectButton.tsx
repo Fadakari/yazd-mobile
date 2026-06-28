@@ -4,8 +4,6 @@ import { useAuthModal } from "@/context/AuthModalProvider";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import React from "react";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 type ProductButtonProps = {
   children: React.ReactNode;

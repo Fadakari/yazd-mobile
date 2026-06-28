@@ -14,7 +14,8 @@ export default function LayoutWrapper({ children, navbar, footer }: Props) {
   const pathname = usePathname();
 
   // صفحاتی که نوبار و فوتر نباید داشته باشند
-  const isHidden = pathname.startsWith("/marketer") || pathname.startsWith("/payment");
+  const isHidden =
+    pathname.startsWith("/marketer") || pathname.startsWith("/payment");
 
   if (isHidden) {
     return <>{children}</>;
