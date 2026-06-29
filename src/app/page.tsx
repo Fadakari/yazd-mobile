@@ -8,8 +8,6 @@ import ShegeftAngizSlider, { ProductCardType } from "@/components/ShegeftAngizSl
 import LatestBlogSection, { BlogPostItem } from "@/components/LatestBlogSection";
 import NewProductsSlider, { NewProductItem } from "@/components/NewProductsSlider";
 import { GetShopCategoriesTreeList } from "@/services/shopActions"; // <--- ایمپورت جدید
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 export const revalidate = 300;
 export const metadata: Metadata = {

@@ -14,8 +14,6 @@ import Image from "next/image";
 import { CiImageOff } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
 import { Modal, ModalContent, useDisclosure } from "@heroui/react";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 const initialData: {
   articles: BlogCategoryNode[];

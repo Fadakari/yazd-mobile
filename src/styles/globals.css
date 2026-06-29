@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tailwindcss-animated";
+@import "./font.css";
+@import "./styles.css";
 
 @plugin './hero.ts';
 @plugin './typography.ts';

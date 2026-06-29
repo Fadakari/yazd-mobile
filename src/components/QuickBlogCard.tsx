@@ -3,8 +3,6 @@
 import Article from "@/types/blog";
 import Image from "next/image";
 import Link from "next/link";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 function QuickBlogCard({ item }: { item: Article }) {
   return (

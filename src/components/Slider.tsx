@@ -5,8 +5,6 @@ import { ReactNode, useRef } from "react";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import { Autoplay } from "swiper/modules";
 import ErrorMessage from "./ErrorMessage";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 function ProductSlider({
   items,

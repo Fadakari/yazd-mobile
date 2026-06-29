@@ -6,8 +6,6 @@ import { CiImageOff } from "react-icons/ci";
 import { IoTimeOutline } from "react-icons/io5";
 import { TfiArrowTopLeft } from "react-icons/tfi";
 import { SiGoogleappsscript } from "react-icons/si";
-import "@/styles/font.css";
-import "../styles/styles.css";
 function BlogCard({ item }: { item: Article }) {
   return (
     <article

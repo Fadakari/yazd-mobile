@@ -7,8 +7,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/free-mode";
-import "@/styles/font.css";
-import "../styles/styles.css";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";

@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 function useReadingProgress() {
   const [completion, setCompletion] = useState(0);

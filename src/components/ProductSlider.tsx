@@ -4,8 +4,6 @@ import { ShoppingBasket } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import { useRef } from "react";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 const products = [
   {

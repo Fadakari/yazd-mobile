@@ -7,8 +7,6 @@ import "swiper/css/pagination";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 export interface OfferProduct {
   id: number;

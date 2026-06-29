@@ -2,8 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useCallback } from "react";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 function GalleryModal({ children }: { children: ReactNode }) {
   const router = useRouter();

@@ -1,7 +1,5 @@
 import React from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import "@/styles/font.css";
-import "../styles/styles.css";
 
 type ErrorMessageProps = {
   message?: string;
