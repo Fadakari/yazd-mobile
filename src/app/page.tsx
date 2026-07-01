@@ -49,10 +49,17 @@ interface ApiSection {
 
 async function getHomeData(): Promise<ApiSection[]> {
   try {
-    const res = await fetch("https://api.yazd-mobile.ir/home/sliders-index/", {
-      
-    });
+    const res = await fetch(
+      "https://api.abajstore.ir/home/sliders-index/",
+      {
+        next: {
+          revalidate: 300,
+        },
+      }
+    );
+
     if (!res.ok) throw new Error("Failed to fetch home data");
+
     return res.json();
   } catch (error) {
     console.error("Home Data Error:", error);
@@ -63,9 +70,11 @@ async function getHomeData(): Promise<ApiSection[]> {
 // در فایل page.tsx
 async function getLatestArticles(): Promise<BlogPostItem[]> {
   try {
-    const res = await fetch("https://api.yazd-mobile.ir/blog/posts/", { 
+    const res = await fetch("https://api.abajstore.ir/blog/posts/", { 
         
-        next: { revalidate: 60 } 
+        next: {
+          revalidate: 300
+        }
     });
     
     if (!res.ok) return [];
@@ -117,7 +126,7 @@ function flattenCategories(categories: any[], defaultIcon: string): CategoryItem
 async function getActiveLogo(): Promise<string> {
   try {
     // آدرس API را مطابق ناوبار تنظیم کردم
-    const res = await fetch("https://api.yazd-mobile.ir/home/active-logo/", { 
+    const res = await fetch("https://api.abajstore.ir/home/active-logo/", { 
       next: { revalidate: 3600 } // کش برای ۱ ساعت
     });
     

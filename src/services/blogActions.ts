@@ -30,27 +30,33 @@ export const GetBlogPosts = async (params?: BlogPostsParams, page?: string): Pro
     }
 };
 export const GetLatestBlogPosts = unstable_cache(
-    async (): Promise<any | undefined> => {
+    async () => {
         try {
-            const result = await api.get<any>("/blog/posts/latest")
-            return result.data
+            const result = await api.get("/blog/posts/latest");
+            return result.data;
         } catch (error) {
-            console.error(error)
-            return undefined
+            console.error(error);
+            return undefined;
         }
     },
     ["latest-blog-posts"],
-    { revalidate: 300 } // ۵ دقیقه کش
+    { revalidate: 600 }
 );
-export const GetBlogCategoriesMenuStructure = async (): Promise<BlogCategoryNode[] | undefined> => {
-    try {
-        const result = await api.get<BlogCategoryNode[]>("/blog/categories/menu_structure/")
-        return result.data
-    } catch (error) {
-        console.error(error)
-        return undefined
-    }
-}
+
+
+export const GetBlogCategoriesMenuStructure = unstable_cache(
+    async (): Promise<BlogCategoryNode[] | undefined> => {
+        try {
+            const result = await api.get<BlogCategoryNode[]>("/blog/categories/menu_structure/");
+            return result.data;
+        } catch (error) {
+            console.error(error);
+            return undefined;
+        }
+    },
+    ["blog-categories-menu"],
+    { revalidate: 3600 }
+);
 
 export const GetBlogBySlug = cache(async (slug: string): Promise<any> => {
     try {

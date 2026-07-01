@@ -69,8 +69,8 @@ const transform = (node: DOMNode) => {
   }
 };
 async function page() {
-  const result = await homeAboutUsList();
-  const aboutUs: aboutT[] = result?.data;
+  const data = await homeAboutUsList();
+  const aboutUs: aboutT[] = Array.isArray(data) ? data : [];
 
   return (
     <div className="space-y-10">
@@ -84,10 +84,10 @@ async function page() {
           <div className="bg-primary w-[7%] h-px" />
           <div className="h-px bg-zinc-400 w-full" />
         </div>
-        {aboutUs
+        {[...aboutUs]
           .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
           .map((about) => {
-            const sanitizedHtml = sanitizeHtml(about.description, {
+            const sanitizedHtml = sanitizeHtml(about.description ?? "", {
               allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
               allowedAttributes: {
                 ...sanitizeHtml.defaults.allowedAttributes,

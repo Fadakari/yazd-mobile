@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 };
 async function page() {
   const result = await homeContactInfoList();
-  const contactInfo: Contact[] = result?.data;
+  const contactInfo: Contact[] = await homeContactInfoList();
 
   return (
     <div className="space-y-10">

@@ -5,10 +5,11 @@ import { unstable_cache } from "next/cache";
 export const homeAboutUsList = unstable_cache(
     async () => {
         try {
-            const result = await api.get("/home/about-us/")
-            return result
+            const result = await api.get("/home/about-us/");
+            return result.data.results;
         } catch (error) {
-            console.log(error)
+            console.error(error);
+            return [];
         }
     },
     ["home-about-us-list"],
@@ -17,22 +18,23 @@ export const homeAboutUsList = unstable_cache(
 export const homeContactInfoList = unstable_cache(
     async () => {
         try {
-            const result = await api.get("/home/contact-info/")
-            return result
+            const result = await api.get("/home/contact-info/");
+            return result.data.results;
         } catch (error) {
-            console.log(error)
+            console.error(error);
+            return [];
         }
     },
-    ["home-contact-info"],
+    ["home-contact-info-list"],
     { revalidate: 3600 }
 );
 export const homeGalleryList = unstable_cache(
     async () => {
         try {
-            const result = await api.get("/home/gallery/")
-            return result.data
+            const result = await api.get("/home/gallery/");
+            return result.data;
         } catch (error) {
-            console.log(error)
+            console.error(error);
             return null;
         }
     },
@@ -42,15 +44,15 @@ export const homeGalleryList = unstable_cache(
 export const homeSliderList = unstable_cache(
     async () => {
         try {
-            const result = await api.get("/home/sliders/")
-            return result.data
+            const result = await api.get("/home/sliders/");
+            return result.data;
         } catch (error) {
-            console.log(error)
+            console.error(error);
             return null;
         }
     },
-    ["home-sliders-list"],
-    { revalidate: 600 } // کش شدن دیتای اسلایدر به مدت ۱۰ دقیقه
+    ["home-slider-list"],
+    { revalidate: 600 }
 );
 export async function GetDiscountedOrders() {
     "use server";
@@ -116,3 +118,4 @@ export async function GetDiscountedOrder(orderNumber: string) {
         return null;
     }
 }
+

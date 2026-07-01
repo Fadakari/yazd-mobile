@@ -14,6 +14,7 @@ import ConsoleLog from "@/components/ConsoleLog";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
+import { GetActiveLogo } from "@/services/siteActions";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://yazd-mobile.ir"),
@@ -85,8 +86,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const result = await GetShopCategoriesTreeList();
-  const user = (await GetUserDashboard()) || undefined;
+  const [logo, result, user] = await Promise.all([
+    GetActiveLogo(),
+    GetShopCategoriesTreeList(),
+    GetUserDashboard(),
+  ]);
   
   // استخراج امن آرایه دسته‌بندی‌ها
   const safeCategories = Array.isArray(result) ? result : (result?.data || result?.results || []);
@@ -116,7 +120,7 @@ export default async function RootLayout({
               <CategoriesProvider categories={safeCategories}>
                 {/* تغییر مهم: پاس دادن نوبار و فوتر به عنوان پراپ */}
                 <LayoutWrapper
-                  navbar={<Navbar />}
+                  navbar={<Navbar logo={logo} />}
                   footer={<Footer />}
                 >
                   <Providers>{children}</Providers>

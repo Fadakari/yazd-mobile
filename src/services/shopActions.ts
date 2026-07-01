@@ -2,19 +2,32 @@
 import api from "./api";
 import { unstable_cache } from "next/cache";
 // Products ----
-
-export const GetShopCategoriesTreeList = unstable_cache(
+export const GetDiscountedProducts = unstable_cache(
   async () => {
     try {
-      const res = await api.get('/shop/categories/tree/')
-      return res.data
+      const result = await api.get("/home/discounted-products/");
+      return result.data;
     } catch (error) {
-      console.error(error)
-      return null
+      console.error(error);
+      return [];
     }
   },
-  ["shop-categories-tree"], // کلید اختصاصی کش
-  { revalidate: 600 } // مدت زمان کش به ثانیه (۱۰ دقیقه)
+  ["discounted-products"],
+  { revalidate: 300 }
+);
+
+export const GetShopCategoriesTreeList = unstable_cache(
+    async () => {
+        try {
+            const result = await api.get("/shop/categories/tree/");
+            return result.data;
+        } catch (error) {
+            console.error(error);
+            return [];
+        }
+    },
+    ["shop-categories-tree"],
+    { revalidate: 3600 }
 );
 interface GetProductsParams {
     category_id?: number;
@@ -58,13 +71,13 @@ export async function GetProducts(
             };
         }
 
-        const [resNormal, resDiscounted] = await Promise.all([
+        const [resNormal, discountedList] = await Promise.all([
             api.get(`/shop/products?${query.toString()}`),
-            api.get(`/home/discounted-products/`)
+            GetDiscountedProducts(),
         ]);
+        
         const normalData = resNormal.data;
         const normalProducts = normalData.results || [];
-        const discountedList = resDiscounted.data || [];
 
         const discountedMap = new Map(
             discountedList.map((item: any) => [item.slug, item])
@@ -103,50 +116,54 @@ export async function GetProducts(
 
 
 
-export async function GetLatestProducts(): Promise<any> {
-    try {
-        const [resLatest, resDiscounted] = await Promise.all([
-            api.get(`/shop/latest-products`),
-            api.get(`/home/discounted-products/`)
-        ]);
+export const GetLatestProducts = unstable_cache(
+    async () => {
 
-        const latestData = resLatest.data;
-        const latestProducts = latestData.latest_products || [];
-        const discountedList = resDiscounted.data || [];
-        const discountedMap = new Map(
-            discountedList.map((item: any) => [item.slug, item])
-        );
+        try {
+            const [resLatest, discountedList] = await Promise.all([
+                api.get(`/shop/latest-products`),
+                GetDiscountedProducts(),
+            ]);
 
-        const merged = latestProducts.map((product: any) => {
-            const discount: any = discountedMap.get(product.slug);
-            if (discount) {
-                return {
-                    ...product,
-                    isDiscounted: true,
-                    discount_percentage: discount.discount_percentage,
-                    final_price: discount.final_price
-                };
-            }
-            return product;
-        });
-        return {
-            data: {
-                ...latestData,
-                results: merged
-            }
-        };
-    } catch (error) {
-        console.log(error);
-        return {
-            data: {
-                count: 0,
-                next: null,
-                previous: null,
-                results: []
-            }
-        };
-    }
-}
+            const latestData = resLatest.data;
+            const latestProducts = latestData.latest_products || [];
+            const discountedMap = new Map(
+                discountedList.map((item: any) => [item.slug, item])
+            );
+
+            const merged = latestProducts.map((product: any) => {
+                const discount: any = discountedMap.get(product.slug);
+                if (discount) {
+                    return {
+                        ...product,
+                        isDiscounted: true,
+                        discount_percentage: discount.discount_percentage,
+                        final_price: discount.final_price
+                    };
+                }
+                return product;
+            });
+            return {
+                data: {
+                    ...latestData,
+                    results: merged
+                }
+            };
+        } catch (error) {
+            console.log(error);
+            return {
+                data: {
+                    count: 0,
+                    next: null,
+                    previous: null,
+                    results: []
+                }
+            };
+        }
+    },
+  ["latest-products"],
+  { revalidate: 300 }
+);
 
 
 export async function GetProductBySlug(slug: string): Promise<any> {
@@ -175,15 +192,19 @@ export async function GetProductBySlug(slug: string): Promise<any> {
 }
 
 
-export async function GetFeaturedProducts(): Promise<any> {
+export const GetFeaturedProducts = unstable_cache(
+  async () => {
     try {
-        const result = await api.get(`/shop/featured-products`);
-        return result
+      const result = await api.get("/shop/featured-products");
+      return result.data;
     } catch (error) {
-        console.log(error)
-        return null
+      console.error(error);
+      return [];
     }
-}
+  },
+  ["featured-products"],
+  { revalidate: 300 }
+);
 
 // CART
 export async function GetShopCartList(): Promise<{
@@ -389,15 +410,19 @@ export async function marketing_create_order(data: any, store_name_english: stri
 }
 
 
-export async function GetShippingServices() {
+export const GetShippingServices = unstable_cache(
+  async () => {
     try {
-        const result = await api.get(`/shop/shipping-services `);
-        return result
+      const result = await api.get("/shop/shipping-services");
+      return result.data;
     } catch (error) {
-        console.log(error)
-        return null
+      console.error(error);
+      return [];
     }
-}
+  },
+  ["shipping-services"],
+  { revalidate: 86400 }
+);
 // Comments
 export async function GetComments(product_id: number) {
     const response = await api.get(`/shop/products/${product_id}/comments/`);

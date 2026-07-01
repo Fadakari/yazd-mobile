@@ -151,35 +151,23 @@ const SearchForm = () => {
   );
 };
 
-export default function Navbar() {
+export default function Navbar({
+    logo,
+}: {
+    logo: string;
+}) {
   const { user } = useUser();
   const { cart } = useCart();
   const categories = useCategories();
   const { onOpen: onAuthOpen }: any = useAuthModal();
 
-  const [siteLogo, setSiteLogo] = useState<string | any>(defaultLogo);
+  const siteLogo = logo || defaultLogo;
   const [isSticky, setIsSticky] = useState(false);
 
   const topLinks = [
     { href: "/contact-info", label: "تماس با ما" },
     { href: "/about-us", label: "درباره ما" },
   ];
-
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir"}/home/active-logo/`);
-        if (res.ok) {
-          const data = await res.json();
-          const active = Array.isArray(data) ? data[0] : data;
-          if (active?.image) setSiteLogo(active.image);
-        }
-      } catch (error) {
-        console.error("Logo fetch error:", error);
-      }
-    };
-    fetchLogo();
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -321,6 +309,8 @@ export default function Navbar() {
                   { name: "صفحه اصلی", href: "/" },
                   { name: "فروشگاه", href: "/products" },
                   { name: "وبلاگ آموزشی", href: "/articles" },
+                  { name: "درباره ما", href: "/about-us" },
+                  { name: "تماس با ما", href: "/contact-info" },
                   { name: "تخفیف‌های ویژه", href: "/offers", special: true },
                 ].map((item) => (
                   <Link

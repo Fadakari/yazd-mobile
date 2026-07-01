@@ -1,8 +1,6 @@
 import React from "react";
 import Image from "next/image";
 
-// لوگوی پیش‌فرض را ایمپورت کنید (یا آدرس استرینگ بدهید)
-import defaultLogo from "../../public/logo.png";
 
 export default function Loading() {
   return (
@@ -17,23 +15,10 @@ export default function Loading() {
           {/* حلقه میانی (اصلی) */}
           <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-[#ff5722] border-l-[#ff5722] animate-spin"></div>
           
-          {/* لوگوی مرکزی */}
-          <div className="relative w-16 h-16 animate-pulse">
-             <Image 
-                src={defaultLogo} 
-                alt="Loading..." 
-                fill 
-                className="object-contain" 
-                priority
-             />
-          </div>
         </div>
 
         {/* --- متن لودینگ --- */}
         <div className="flex flex-col items-center gap-1">
-            <h3 className="text-lg font-bold text-gray-800 tracking-tight">
-                یزد موبایل
-            </h3>
             <div className="flex items-center gap-1">
                 <span className="text-xs font-medium text-orange-500">در حال بارگذاری</span>
                 <span className="flex gap-0.5 pt-1">
