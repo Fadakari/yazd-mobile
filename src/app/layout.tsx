@@ -15,82 +15,85 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
 import { GetActiveLogo } from "@/services/siteActions";
+import { GetSiteSettings } from "@/services/siteActions";
+import { SiteProvider } from "@/context/SiteContext";
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://yazd-mobile.ir"),
-  title: "یزد موبایل | فروشگاه آنلاین با تضمین کیفیت",
-  description:
-    "یزد موبایل، فروشگاه تخصصی با بهترین قیمت و تضمین کیفیت. ارسال سریع، تخفیف‌های ویژه، و مقالات آموزشی تخصصی.",
-  keywords: [
-    "یزد موبایل",
+// ۲. این تابع را جایگزین بلاک metadata استاتیک قبلی کن:
+export async function generateMetadata(): Promise<Metadata> {
+  
+  const settings = await GetSiteSettings();
+  
+  // مقادیر فال‌بک مطمئن در صورتی که بک‌اند هنوز دیتایی نفرستاده باشد
+  const siteTitle = settings?.site_title || "سایت ما";
+  const siteDescription = `${siteTitle}، فروشگاه تخصصی با بهترین قیمت و تضمین کیفیت. ارسال سریع، تخفیف‌های ویژه، و مقالات آموزشی تخصصی.`;
+  const siteKeywords = [
+    `${siteTitle}`,
     "فروشگاه آنلاین",
     "خرید آنلاین",
     "قیمت مناسب",
     "تضمین کیفیت",
     "تخفیف ویژه",
-  ],
-  openGraph: {
-    title: "یزد موبایل",
-    description: "خرید آنلاین با تضمین کیفیت و ارسال سریع از یزد موبایل",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
-    siteName: "یزد موبایل",
-    images: [
-      {
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`,
-        width: 1200,
-        height: 630,
-        alt: "یزد موبایل",
-      },
-    ],
-    locale: "fa_IR",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "یزد موبایل",
-    description: "خرید آنلاین با تضمین کیفیت و ارسال سریع از یزد موبایل",
-    images: [`${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`],
-  },
-  icons: {
-    icon: [
-      { url: "/assets/icons/icon.png", type: "image/png", sizes: "16x16" },
-      { url: "/assets/icons/icon.png", type: "image/png", sizes: "32x32" },
-      { url: "/assets/icons/icon.png", type: "image/png", sizes: "96x96" },
-    ],
-    apple: [
-      {
-        url: "/assets/icons/apple-icon.png",
-        type: "image/png",
-        sizes: "180x180",
-      },
-      {
-        url: "/assets/icons/apple-icon.png",
-        type: "image/png",
-        sizes: "96x96",
-      },
-      {
-        url: "/assets/icons/apple-icon.png",
-        type: "image/png",
-        sizes: "32x32",
-      },
-      {
-        url: "/assets/icons/apple-icon.png",
-        type: "image/png",
-        sizes: "16x16",
-      },
-    ],
-  },
-};
+  ];
+
+  const faviconUrl = settings?.favicon;
+
+  return {
+    metadataBase: new URL("https://akhoondigroup.com.ir"),
+    title: {
+      // تایتل پیش‌فرض برای صفحه اصلی
+      default: `${siteTitle} | فروشگاه آنلاین با تضمین کیفیت`,
+      // تمپلت برای تمام صفحات فرعی (تایتل صفحه فرعی جایگزین %s می‌شود)
+      template: `%s | ${siteTitle}`
+    },
+    description: siteDescription,
+    keywords: siteKeywords,
+    openGraph: {
+      title: siteTitle,
+      description: `خرید آنلاین با تضمین کیفیت و ارسال سریع از ${siteTitle}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
+      siteName: siteTitle,
+      images: [
+        {
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`,
+          width: 1200,
+          height: 630,
+          alt: siteTitle,
+        },
+      ],
+      locale: "fa_IR",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: siteTitle,
+      description: `خرید آنلاین با تضمین کیفیت و ارسال سریع از ${siteTitle}`,
+      images: [`${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`],
+    },
+    icons: faviconUrl ? {
+      icon: [
+        { url: faviconUrl },
+      ],
+      apple: [
+        { url: faviconUrl },
+      ],
+    } : {},
+  };
+}
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [logo, result, user] = await Promise.all([
+  const [logo, result, user, settings] = await Promise.all([
     GetActiveLogo(),
     GetShopCategoriesTreeList(),
     GetUserDashboard(),
+    GetSiteSettings(), // <--- اضافه شد
   ]);
+  console.log("=== SERVER SIDE FETCH TEST ===");
+  console.log("Settings from API:", settings);
+  console.log("Active Logo from API:", logo);
+  console.log("==============================");
   
   // استخراج امن آرایه دسته‌بندی‌ها
   const safeCategories = Array.isArray(result) ? result : (result?.data || result?.results || []);
@@ -116,16 +119,17 @@ export default async function RootLayout({
         <UserProvider initialUser={user}>
           <AuthModalProvider>
             <CartProvider>
-              {!user && <AuthModal />}
-              <CategoriesProvider categories={safeCategories}>
-                {/* تغییر مهم: پاس دادن نوبار و فوتر به عنوان پراپ */}
-                <LayoutWrapper
-                  navbar={<Navbar logo={logo} />}
-                  footer={<Footer />}
-                >
-                  <Providers>{children}</Providers>
-                </LayoutWrapper>
-              </CategoriesProvider>
+              <SiteProvider logo={logo} siteTitle={settings?.site_title}> {/* <--- باز شدن پرووایدر */}
+                {!user && <AuthModal />}
+                <CategoriesProvider categories={safeCategories}>
+                  <LayoutWrapper
+                    navbar={<Navbar logo={logo} />}
+                    footer={<Footer />}
+                  >
+                    <Providers>{children}</Providers>
+                  </LayoutWrapper>
+                </CategoriesProvider>
+              </SiteProvider>
             </CartProvider>
           </AuthModalProvider>
         </UserProvider>

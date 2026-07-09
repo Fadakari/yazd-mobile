@@ -4,6 +4,8 @@ import parse, { DOMNode, Element } from "html-react-parser";
 import { Metadata } from "next";
 import Image from "next/image";
 import sanitizeHtml from "sanitize-html";
+import { GetSiteSettings } from "@/services/siteActions";
+
 interface aboutT {
   description: string;
   id: number;
@@ -14,37 +16,40 @@ interface aboutT {
   title: string;
   video: string | null;
 }
-
-export const metadata: Metadata = {
-  title: "درباره ما | یزد موبایل",
-  description:
-    "با یزد موبایل آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.",
-  keywords: [
-    "درباره ما",
-    "یزد موبایل",
-    "فروشگاه یزد موبایل",
-    "داستان یزد موبایل",
-    "خدمات یزد موبایل",
-  ],
-  openGraph: {
-    title: "درباره ما | یزد موبایل",
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await GetSiteSettings();
+  const siteTitle = settings?.site_title
+  return {
+    title: `درباره ما | ${siteTitle}`,
     description:
-      "با یزد موبایل آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}/about-us`,
-    siteName: "یزد موبایل",
-    locale: "fa_IR",
-    type: "website",
-  },
-  twitter: {
-    card: "summary",
-    title: "درباره ما | یزد موبایل",
-    description:
-      "با یزد موبایل آشنا شوید؛ داستان ما، اهداف و خدمات فروشگاه یزد موبایل.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+      `با ${siteTitle} آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.`,
+    keywords: [
+      "درباره ما",
+      `${siteTitle}`,
+      `فروشگاه ${siteTitle}`,
+      `داستان ${siteTitle}`,
+      `خدمات ${siteTitle}`,
+    ],
+    openGraph: {
+      title: "درباره ما",
+      description:
+        `با ${siteTitle} آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/about-us`,
+      siteName: `${siteTitle}`,
+      locale: "fa_IR",
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: "درباره ما",
+      description:
+        `با ${siteTitle} آشنا شوید؛ داستان ما، اهداف و خدمات فروشگاه ${siteTitle}.`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 };
 const transform = (node: DOMNode) => {
   if (node.type === "tag" && node.name === "img") {
@@ -58,12 +63,13 @@ const transform = (node: DOMNode) => {
     const heightNum = height ? parseInt(height) : 400;
 
     return (
-      <Image
+      <img
         src={fullSrc}
         alt={alt || ""}
         width={widthNum}
         height={heightNum}
         className="max-w-[500px] max-h-80 object-contain mx-auto"
+        referrerPolicy="no-referrer"
       />
     );
   }
@@ -112,13 +118,14 @@ async function page() {
               <div key={about.id} className="flex flex-col gap-3">
                 <h2 className="text-3xl font-semibold">{about.title}</h2>
                 {about.image && (
-                  <Image
+                  <img
                     width={1080}
                     height={1920}
                     src={about.image}
                     alt={about.title}
                     className="rounded-lg w-full aspect-auto max-h-full mx-auto"
                     loading="lazy"
+                    referrerPolicy="no-referrer" /* <--- فقط همین یک خط را اضافه کن */
                   />
                 )}
                 {about.video && (

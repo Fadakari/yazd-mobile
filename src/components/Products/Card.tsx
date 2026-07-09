@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CiImageOff } from "react-icons/ci";
 import { ShoppingBasket } from "lucide-react";
 import { useState } from "react";
+import { useSite } from "@/context/SiteContext";
 
 export default function Card({
   item,
@@ -21,6 +22,7 @@ export default function Card({
   const finalPrice = item.final_price ?? item.discount_price ?? originalPrice;
 
   const hasDiscount = finalPrice < originalPrice;
+  const { siteTitle } = useSite();
 
   const discountPercent = hasDiscount
     ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100)
@@ -50,7 +52,7 @@ export default function Card({
           {!imgError && item.cover_image ? (
             <Image
               src={item.cover_image}
-              alt={`${item.name} - یزد موبایل`}
+              alt={`${item.name} - ${siteTitle}`}
               width={400}
               height={300}
               className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"

@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import LayoutShell from "@/components/Products/LayoutShell";
 import { GetProducts, GetShopCategoriesTreeList } from "@/services/shopActions";
 import { Metadata } from "next";
+import { GetSiteSettings } from "@/services/siteActions";
 
 export default async function ProductsPage({ params, searchParams }: any) {
   const { page } = await params;
@@ -23,16 +24,19 @@ export default async function ProductsPage({ params, searchParams }: any) {
   );
 }
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "تخفیف‌های شگفت‌انگیز | فروشگاه یزد موبایل";
+  const settings = await GetSiteSettings();
+  const siteTitle = settings?.site_title
+
+  const title = "تخفیف‌های شگفت‌انگیز | فروشگاه";
   const description =
-    "جدیدترین پیشنهادهای ویژه و تخفیف‌های شگفت‌انگیز فروشگاه یزد موبایل! خرید محصولات منتخب با قیمت باورنکردنی و ارسال سریع.";
+    `جدیدترین پیشنهادهای ویژه و تخفیف‌های شگفت‌انگیز فروشگاه ${siteTitle}! خرید محصولات منتخب با قیمت باورنکردنی و ارسال سریع.`;
   const keywords = [
     "تخفیف ویژه",
     "پیشنهاد شگفت‌انگیز",
     "حراج",
     "فروش ویژه",
     "قیمت باورنکردنی",
-    "فروشگاه یزد موبایل",
+    `فروشگاه ${siteTitle}`,
     "خرید آنلاین ارزان",
   ];
 
@@ -44,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/amazing-offers`,
-      siteName: "یزد موبایل",
+      siteName: `${siteTitle}`,
       locale: "fa_IR",
       type: "website",
     },

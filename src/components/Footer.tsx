@@ -8,7 +8,7 @@ import {
   FaLink,
   FaEnvelope,
 } from "react-icons/fa";
-
+import { GetSiteSettings, GetActiveLogo } from "@/services/siteActions";
 
 // تعریف تایپ‌ها طبق خروجی جنگو
 interface FooterItem {
@@ -28,14 +28,24 @@ interface FooterSectionData {
 
 // تابع دریافت دیتا از سرور
 async function getFooterData(): Promise<FooterSectionData[]> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) return [];
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+  
   try {
-    // اتصال به آدرس دقیق بک‌اند شما
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/footer/`, {
-      
+    const res = await fetch(`${apiUrl}/home/footer/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
+      },
+      // چون فوتر دیر به دیر عوض میشه، کش ۱ ساعته (۳۶۰۰ ثانیه) براش عالی و بهینه‌ست
+      // اگر می‌خوای الان برای تست سریع‌تر آپدیت بشه، موقتاً بذارش روی 60
+      next: { revalidate: 3600 } 
     });
-    if (!res.ok) return [];
+    
+    if (!res.ok) {
+      console.error("Footer fetch failed with status:", res.status);
+      return [];
+    }
+    
     return await res.json();
   } catch (error) {
     console.error("Footer API Error:", error);
@@ -97,10 +107,22 @@ const FooterSection = ({ title, items }: { title: string; items: FooterItem[] })
 </div>
   );
 };
-
+const getFullImageUrl = (path: string | null | undefined) => {
+  if (!path) return "/logo.png";
+  if (path.startsWith("http")) return path;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+  return `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
+};
 // این کامپوننت به صورت Server Component اجرا می‌شود
 async function Footer() {
   const footerSections = await getFooterData();
+  const settings = await GetSiteSettings();
+  const logo = await GetActiveLogo();
+  const siteTitle = settings?.site_title || "سایت ما";
+  const mapUrl = settings?.map_url; // لینک نقشه
+  const enamadLink = settings?.enamad_link;
+  const enamadImage = settings?.enamad_image;
+  const gatewayImage = settings?.payment_gateway_image;
 
   return (
     <footer className="w-full bg-white shadow-2xl block font-pelak font-medium py-10 shrink-0">
@@ -123,25 +145,49 @@ async function Footer() {
       <div className="flex flex-col justify-between text-center pt-10 mx-auto mt-5 px-10 items-center gap-4">
 
         <div className="flex items-center justify-center gap-6 flex-wrap">
-          <a referrerPolicy="origin" target="_blank" href="https://trustseal.enamad.ir/?id=60812&Code=XCwQtIQBzPJU6zedVSIYz6MbH9E5dqEY">
-            <img referrerPolicy="origin" src="https://trustseal.enamad.ir/logo.aspx?id=60812&Code=XCwQtIQBzPJU6zedVSIYz6MbH9E5dqEY" alt="Enamad" style={{ cursor: 'pointer' }} />
-          </a>
-          <img src="/Behpardakht-Mellat-Logo.png" alt="Behpardakht Mellat" className="h-20" />
-          <a 
-            referrerPolicy="origin" 
-            target="_blank" 
-            href="https://maps.google.com/?q=W82X+W7V,Yazd,Yazd+Province,Iran"
-            title="نشانی ما در گوگل مپ"
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-all"
-          >
-            <FaMapMarkerAlt className="text-orange-600 text-xl" />
-            <span className="text-sm font-bold text-orange-600">آدرس در نقشه</span>
-          </a>
+          {/* ۱. نمایش داینامیک اینماد (فقط وقتی لینک و عکس وجود داشته باشه) */}
+          {logo && (
+            <img 
+              src={getFullImageUrl(logo)} 
+              alt={`لوگوی ${siteTitle}`} 
+              className="h-20 object-contain drop-shadow-sm" 
+            />
+          )}
+          {enamadLink && enamadImage && (
+            <a referrerPolicy="origin" target="_blank" href={enamadLink}>
+              <img 
+                referrerPolicy="origin" 
+                src={enamadImage} 
+                alt="Enamad" 
+                style={{ cursor: 'pointer' }} 
+                className="max-h-20"
+              />
+            </a>
+          )}
+
+          {/* ۲. نمایش داینامیک لوگوی درگاه بانکی */}
+          {gatewayImage && (
+            <img src={gatewayImage} alt="درگاه بانکی" className="h-20" />
+          )}
+
+          {/* ۳. نمایش داینامیک دکمه نقشه */}
+          {mapUrl && (
+            <a 
+              referrerPolicy="origin" 
+              target="_blank" 
+              href={mapUrl}
+              title="نشانی ما در گوگل مپ"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-all"
+            >
+              <FaMapMarkerAlt className="text-orange-600 text-xl" />
+              <span className="text-sm font-bold text-orange-600">آدرس در نقشه</span>
+            </a>
+          )}
         </div>
 
         <p className="text-md text-gray-600 max-md:mb-12 lg:px-10" style={{ fontFamily: "pelak, tahoma, serif" }}>
           تمام حقوق این سایت نزد 
-          <span className="text-primary font-extrabold mx-2">یزد موبایل</span>
+          <span className="text-primary font-extrabold mx-2">{siteTitle}</span>
            محفوظ است.
         </p>
         <p className="text-md text-gray-600 max-md:mb-12 lg:px-10" style={{ fontFamily: "pelak, tahoma, serif" }}>

@@ -26,7 +26,7 @@ interface Props {
   title?: string;
 }
 
-export default function LatestBlogSection({ posts, title = "مجله خبری یزد موبایل" }: Props) {
+export default function LatestBlogSection({ posts, title = `مجله خبری` }: Props) {
   
   if (!posts || posts.length === 0) {
     return (

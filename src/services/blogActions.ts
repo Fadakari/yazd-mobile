@@ -4,6 +4,15 @@ import { BlogCategoryNode } from "@/types/categories";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
+const defaultFetchOptions = {
+    headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
+    },
+    // معادل withCredentials: true در Axios
+    credentials: "include" as RequestCredentials, 
+};
+
 type BlogPostsResponse = {
     data: Article[];
     next_page: string | null;
@@ -20,48 +29,52 @@ export const GetBlogPosts = async (params?: BlogPostsParams, page?: string): Pro
         if (params?.category) query.append("category", params.category);
         if (page) query.append("page", page);
 
-        const url = `/blog/posts/?${query.toString()}`;
+        const url = `https://api.abajstore.ir/blog/posts/?${query.toString()}`;
 
-        const result = await api.get<BlogPostsResponse>(url);
-        return result.data;
+        const result = await fetch(url, { next: { revalidate: 60 } });
+        if (!result.ok) return undefined;
+        return await result.json();
     } catch (error) {
         console.error(error);
         return undefined;
     }
 };
-export const GetLatestBlogPosts = unstable_cache(
-    async () => {
-        try {
-            const result = await api.get("/blog/posts/latest");
-            return result.data;
-        } catch (error) {
-            console.error(error);
-            return undefined;
-        }
-    },
-    ["latest-blog-posts"],
-    { revalidate: 600 }
-);
+export async function GetLatestBlogPosts() {
+    try {
+        const res = await fetch("https://api.abajstore.ir/blog/posts/latest", {
+            ...defaultFetchOptions,
+            next: { revalidate: 600 } // آپدیت هر 10 دقیقه
+        });
+        if (!res.ok) return undefined;
+        return await res.json();
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
 
-
-export const GetBlogCategoriesMenuStructure = unstable_cache(
-    async (): Promise<BlogCategoryNode[] | undefined> => {
-        try {
-            const result = await api.get<BlogCategoryNode[]>("/blog/categories/menu_structure/");
-            return result.data;
-        } catch (error) {
-            console.error(error);
-            return undefined;
-        }
-    },
-    ["blog-categories-menu"],
-    { revalidate: 3600 }
-);
+export async function GetBlogCategoriesMenuStructure(): Promise<BlogCategoryNode[] | undefined> {
+    try {
+        const res = await fetch("https://api.abajstore.ir/blog/categories/menu_structure/", {
+            ...defaultFetchOptions,
+            next: { revalidate: 3600 } // آپدیت هر 1 ساعت
+        });
+        if (!res.ok) return undefined;
+        return await res.json();
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
 
 export const GetBlogBySlug = cache(async (slug: string): Promise<any> => {
     try {
-        const result = await api.get(`/blog/posts/${slug}/`);
-        return result.data;
+        const result = await fetch(`https://api.abajstore.ir/blog/posts/${slug}/`, { 
+            ...defaultFetchOptions,
+            next: { revalidate: 60 } 
+        });
+        if (!result.ok) return null;
+        return await result.json();
     } catch (error) {
         console.log(error);
         return null;
@@ -82,8 +95,13 @@ export async function SearchBlogs(params: Search): Promise<any> {
     if (searchParams?.category_id !== undefined) query.append("category", searchParams?.category_id.toString());
 
     try {
-        const result = await api.get(`/blog/posts/search?${query.toString()}`);
-        return result.data
+        // جایگزین api.get
+        const result = await fetch(`https://api.abajstore.ir/blog/posts/search?${query.toString()}`, {
+            ...defaultFetchOptions,
+            next: { revalidate: 60 }
+        });
+        if (!result.ok) return null;
+        return await result.json();
     } catch (error) {
         console.log(error)
         return null

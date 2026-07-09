@@ -7,6 +7,16 @@ import Script from "next/script";
 import { cache } from "react";
 import { Metadata } from "next";
 import { CategoryNode } from "@/types/categories";
+import { GetSiteSettings } from "@/services/siteActions";
+
+const defaultFetchOptions = {
+    headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
+    },
+    // معادل withCredentials: true در Axios
+    credentials: "include" as RequestCredentials, 
+};
 
 const getProductList = cache(async (params: any) => {
   return await GetProducts(params);
@@ -20,7 +30,8 @@ const getCategories = cache(async () => {
 const getSliderSections = cache(async () => {
   try {
     const res = await fetch("https://api.abajstore.ir/home/sliders-index/", {
-      
+      ...defaultFetchOptions,
+        next: { revalidate: 120 } // <--- این خط حتماً باید اضافه بشه (کش ۲ دقیقه‌ای)
     });
     if (!res.ok) return [];
     return res.json();
@@ -117,6 +128,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const search = await searchParams;
   const categoryId = search?.category_id;
+  const settings = await GetSiteSettings();
+  const siteTitle = settings?.site_title
 
   if (categoryId) {
     const categoryRes = await GetShopCategoriesTreeList();
@@ -126,16 +139,16 @@ export async function generateMetadata({
     );
 
     const categoryTitle = category?.name || "دسته‌بندی انتخاب‌شده";
-
-    const title = `${categoryTitle} | خرید انواع ${categoryTitle} با بهترین قیمت | یزد موبایل`;
-    const description = `خرید اینترنتی ${categoryTitle} از فروشگاه یزد موبایل با بهترین قیمت و ارسال سریع. بررسی و فیلتر محصولات ${categoryTitle}.`;
+    
+    const title = `${categoryTitle} | خرید انواع ${categoryTitle} با بهترین قیمت | ${siteTitle}`;
+    const description = `خرید اینترنتی ${categoryTitle} از فروشگاه ${siteTitle} با بهترین قیمت و ارسال سریع. بررسی و فیلتر محصولات ${categoryTitle}.`;
 
     return {
       title,
       description,
       keywords: [
         categoryTitle,
-        "فروشگاه یزد موبایل",
+        `فروشگاه ${siteTitle}`,
         "خرید آنلاین",
         "قیمت مناسب",
       ],
@@ -143,7 +156,7 @@ export async function generateMetadata({
         title,
         description,
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/products?category_id=${categoryId}`,
-        siteName: "یزد موبایل",
+        siteName: `${siteTitle}`,
         locale: "fa_IR",
         type: "website",
       },
@@ -160,24 +173,24 @@ export async function generateMetadata({
   }
 
   return {
-    title: "خرید محصولات | یزد موبایل",
+    title: "خرید محصولات",
     description:
-      "مشاهده و خرید جدیدترین محصولات با بهترین قیمت از فروشگاه یزد موبایل. فیلتر بر اساس قیمت، موجودی، ویژگی و ...",
-    keywords: ["فروشگاه یزد موبایل", "خرید آنلاین", "محصولات", "قیمت مناسب"],
+      `مشاهده و خرید جدیدترین محصولات با بهترین قیمت از فروشگاه ${siteTitle}. فیلتر بر اساس قیمت، موجودی، ویژگی و ...`,
+    keywords: [`فروشگاه ${siteTitle}`, "خرید آنلاین", "محصولات", "قیمت مناسب"],
     openGraph: {
-      title: "خرید محصولات | فروشگاه یزد موبایل",
+      title: "خرید محصولات | فروشگاه",
       description:
-        "فروشگاه یزد موبایل ارائه‌دهنده انواع محصولات با بهترین قیمت و تضمین کیفیت. خرید آنلاین آسان و سریع.",
+        `فروشگاه ${siteTitle} ارائه‌دهنده انواع محصولات با بهترین قیمت و تضمین کیفیت. خرید آنلاین آسان و سریع.`,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/products`,
-      siteName: "یزد موبایل",
+      siteName: `${siteTitle}`,
       locale: "fa_IR",
       type: "website",
     },
     twitter: {
       card: "summary",
-      title: "خرید محصولات | یزد موبایل",
+      title: "خرید محصولات",
       description:
-        "محصولات متنوع با قیمت مناسب از فروشگاه اینترنتی یزد موبایل. خرید سریع، امن و مطمئن.",
+        `محصولات متنوع با قیمت مناسب از فروشگاه اینترنتی ${siteTitle}. خرید سریع، امن و مطمئن.`,
     },
     robots: {
       index: true,

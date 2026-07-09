@@ -1,34 +1,52 @@
 
 import api from "./api";
 import { unstable_cache } from "next/cache";
-// Products ----
-export const GetDiscountedProducts = unstable_cache(
-  async () => {
-    try {
-      const result = await api.get("/home/discounted-products/");
-      return result.data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-  ["discounted-products"],
-  { revalidate: 300 }
-);
 
-export const GetShopCategoriesTreeList = unstable_cache(
-    async () => {
-        try {
-            const result = await api.get("/shop/categories/tree/");
-            return result.data;
-        } catch (error) {
-            console.error(error);
+
+const defaultFetchOptions = {
+    headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
+    },
+    // معادل withCredentials: true در Axios
+    credentials: "include" as RequestCredentials, 
+};
+
+// Products ----
+export async function GetDiscountedProducts() {
+  try {
+    const res = await fetch("https://api.abajstore.ir/home/discounted-products/", {
+        ...defaultFetchOptions,
+      next: { revalidate: 300 }
+    });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+export async function GetShopCategoriesTreeList() {
+    try {
+        // استفاده از fetch نیتیو به جای api.get و unstable_cache
+        const res = await fetch("https://api.abajstore.ir/shop/categories/tree/", {
+            ...defaultFetchOptions,
+            next: { revalidate: 60 } // <--- دیتا کش می‌شود اما هر 60 ثانیه در صورت نیاز آپدیت می‌شود
+        });
+
+        if (!res.ok) {
+            console.error("Failed to fetch categories");
             return [];
         }
-    },
-    ["shop-categories-tree"],
-    { revalidate: 3600 }
-);
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
 interface GetProductsParams {
     category_id?: number;
     min_price?: number;
@@ -60,8 +78,14 @@ export async function GetProducts(
         if (page) query.append("page", String(page));
 
         if (onlyDiscounted) {
-            const resDiscounted = await api.get(`/home/discounted-products/?${query.toString()}`);
-            const discountedData = resDiscounted.data;
+            // جایگزین api.get با fetch نیتیو
+            const resDiscounted = await fetch(`https://api.abajstore.ir/home/discounted-products/?${query.toString()}`, {
+                ...defaultFetchOptions,
+                next: { revalidate: 60 } 
+            });
+            if (!resDiscounted.ok) throw new Error("Failed to fetch discounted products");
+            const discountedData = await resDiscounted.json();
+            
             return {
                 ...discountedData,
                 results: (discountedData.results || discountedData).map((p: any) => ({
@@ -71,12 +95,16 @@ export async function GetProducts(
             };
         }
 
+        // جایگزین api.get با fetch نیتیو
         const [resNormal, discountedList] = await Promise.all([
-            api.get(`/shop/products?${query.toString()}`),
+            fetch(`https://api.abajstore.ir/shop/products?${query.toString()}`, {
+                ...defaultFetchOptions,
+                next: { revalidate: 60 }
+            }),
             GetDiscountedProducts(),
         ]);
         
-        const normalData = resNormal.data;
+        const normalData = resNormal.ok ? await resNormal.json() : { results: [] };
         const normalProducts = normalData.results || [];
 
         const discountedMap = new Map(
@@ -116,54 +144,49 @@ export async function GetProducts(
 
 
 
-export const GetLatestProducts = unstable_cache(
-    async () => {
+export async function GetLatestProducts() {
+    try {
+        const [resLatest, discountedList] = await Promise.all([
+            fetch("https://api.abajstore.ir/shop/latest-products", {
+                ...defaultFetchOptions,
+                next: { revalidate: 300 }
+            }),
+            GetDiscountedProducts(),
+        ]);
 
-        try {
-            const [resLatest, discountedList] = await Promise.all([
-                api.get(`/shop/latest-products`),
-                GetDiscountedProducts(),
-            ]);
+        const latestData = resLatest.ok ? await resLatest.json() : { latest_products: [] };
+        const latestProducts = latestData.latest_products || [];
+        
+        const discountedMap = new Map(
+            discountedList.map((item: any) => [item.slug, item])
+        );
 
-            const latestData = resLatest.data;
-            const latestProducts = latestData.latest_products || [];
-            const discountedMap = new Map(
-                discountedList.map((item: any) => [item.slug, item])
-            );
-
-            const merged = latestProducts.map((product: any) => {
-                const discount: any = discountedMap.get(product.slug);
-                if (discount) {
-                    return {
-                        ...product,
-                        isDiscounted: true,
-                        discount_percentage: discount.discount_percentage,
-                        final_price: discount.final_price
-                    };
-                }
-                return product;
-            });
-            return {
-                data: {
-                    ...latestData,
-                    results: merged
-                }
-            };
-        } catch (error) {
-            console.log(error);
-            return {
-                data: {
-                    count: 0,
-                    next: null,
-                    previous: null,
-                    results: []
-                }
-            };
-        }
-    },
-  ["latest-products"],
-  { revalidate: 300 }
-);
+        const merged = latestProducts.map((product: any) => {
+            const discount: any = discountedMap.get(product.slug);
+            if (discount) {
+                return {
+                    ...product,
+                    isDiscounted: true,
+                    discount_percentage: discount.discount_percentage,
+                    final_price: discount.final_price
+                };
+            }
+            return product;
+        });
+        
+        return {
+            data: {
+                ...latestData,
+                results: merged
+            }
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            data: { count: 0, next: null, previous: null, results: [] }
+        };
+    }
+}
 
 
 export async function GetProductBySlug(slug: string): Promise<any> {
@@ -192,19 +215,19 @@ export async function GetProductBySlug(slug: string): Promise<any> {
 }
 
 
-export const GetFeaturedProducts = unstable_cache(
-  async () => {
-    try {
-      const result = await api.get("/shop/featured-products");
-      return result.data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-  ["featured-products"],
-  { revalidate: 300 }
-);
+export async function GetFeaturedProducts() {
+  try {
+    const res = await fetch("https://api.abajstore.ir/shop/featured-products", {
+        ...defaultFetchOptions,
+      next: { revalidate: 300 }
+    });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
 
 // CART
 export async function GetShopCartList(): Promise<{
@@ -410,19 +433,19 @@ export async function marketing_create_order(data: any, store_name_english: stri
 }
 
 
-export const GetShippingServices = unstable_cache(
-  async () => {
-    try {
-      const result = await api.get("/shop/shipping-services");
-      return result.data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-  ["shipping-services"],
-  { revalidate: 86400 }
-);
+export async function GetShippingServices() {
+  try {
+    const res = await fetch("https://api.abajstore.ir/shop/shipping-services", {
+        ...defaultFetchOptions,
+      next: { revalidate: 86400 } // آپدیت هر 24 ساعت
+    });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
 // Comments
 export async function GetComments(product_id: number) {
     const response = await api.get(`/shop/products/${product_id}/comments/`);

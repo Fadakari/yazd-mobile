@@ -7,6 +7,7 @@ import { GetBlogPosts } from "@/services/blogActions";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Script from "next/script";
+import { GetSiteSettings } from "@/services/siteActions";
 
 interface PageProps {
   searchParams: Promise<{ category?: string }>;
@@ -26,13 +27,15 @@ const getCashedBlogPosts = async (searchParams: any, page?: string) => {
 export async function generateMetadata({
   searchParams,
 }: PageProps): Promise<Metadata> {
+  const settings = await GetSiteSettings();
+  const siteTitle = settings?.site_title
   const category = (await searchParams).category;
 
-  let title = "مقالات یزد موبایل";
-  let description = "آخرین مقالات و اخبار مرتبط با یزد موبایل را اینجا بخوانید.";
+  let title = `مقالات ${siteTitle}`;
+  let description = `آخرین مقالات و اخبار مرتبط با ${siteTitle} را اینجا بخوانید.`;
   if (category) {
-    title = `مقالات دسته‌بندی ${category} | یزد موبایل`;
-    description = `مقالات مرتبط با دسته‌بندی شماره ${category} در فروشگاه یزد موبایل.`;
+    title = `مقالات دسته‌بندی ${category} | ${siteTitle}`;
+    description = `مقالات مرتبط با دسته‌بندی شماره ${category} در فروشگاه ${siteTitle}.`;
   }
 
   return {
@@ -40,15 +43,15 @@ export async function generateMetadata({
     description,
     keywords: [
       "مقالات",
-      "یزد موبایل",
-      "اخبار یزد موبایل",
+      `${siteTitle}`,
+      `اخبار ${siteTitle}`,
       ...(category ? [`دسته‌بندی ${category}`] : []),
     ],
     openGraph: {
       title,
       description,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/articles${category ? `?category=${category}` : ""}`,
-      siteName: "یزد موبایل",
+      siteName: `${siteTitle}`,
       locale: "fa_IR",
       type: "website",
     },

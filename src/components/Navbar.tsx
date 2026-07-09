@@ -177,6 +177,22 @@ export default function Navbar({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const getFullImageUrl = (path: string | null | undefined) => {
+  // ۱. اگر اصلاً لوگویی نبود، برگرد به تصویر پیش‌فرض
+  if (!path) return "/logo.png"; 
+  
+  // ۲. اگر خودش آدرس کامل بود (با http شروع می‌شد)، برگردان
+  if (path.startsWith("http")) return path;
+
+  // ۳. ترکیب ایمن با دامین اصلی
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+  
+  // مطمئن شو که اگر در مسیر / وجود نداشت، اضافه شود تا URL نشکند
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  
+  return `${baseUrl}${cleanPath}`;
+};
+
   return (
     <header className="w-full font-sans dir-rtl select-none z-50">
 
@@ -218,7 +234,7 @@ export default function Navbar({
             {/* Desktop: Logo */}
             <Link href="/" className="hidden lg:block shrink-0">
               <Image
-                src={siteLogo}
+                src={getFullImageUrl(logo)}
                 alt="Logo"
                 width={200}
                 height={80}

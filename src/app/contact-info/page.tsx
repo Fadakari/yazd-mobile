@@ -4,41 +4,48 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import { BsFillTelephonePlusFill } from "react-icons/bs";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { GetSiteSettings } from "@/services/siteActions";
+
 interface Contact {
   id: number;
   phone_number: string | null;
   address: string | null;
 }
-export const metadata: Metadata = {
-  title: "ارتباط با ما | یزد موبایل",
-  description:
-    "راه‌های تماس با فروشگاه یزد موبایل؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.",
-  keywords: [
-    "ارتباط با ما",
-    "تماس با یزد موبایل",
-    "فروشگاه یزد موبایل",
-    "آدرس یزد موبایل",
-    "شماره تلفن یزد موبایل",
-  ],
-  openGraph: {
-    title: "ارتباط با ما | یزد موبایل",
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await GetSiteSettings();
+  const siteTitle = settings?.site_title
+
+  return {
+    title: `ارتباط با ما`,
     description:
-      "راه‌های تماس با فروشگاه یزد موبایل؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}/contact-info`,
-    siteName: "یزد موبایل",
-    locale: "fa_IR",
-    type: "website",
-  },
-  twitter: {
-    card: "summary",
-    title: "ارتباط با ما | یزد موبایل",
-    description:
-      "راه‌های تماس با فروشگاه یزد موبایل؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+      `راه‌های تماس با فروشگاه ${siteTitle}؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.`,
+    keywords: [
+      "ارتباط با ما",
+      `تماس با ${siteTitle}`,
+      `فروشگاه ${siteTitle}`,
+      `آدرس ${siteTitle}`,
+      `شماره تلفن ${siteTitle}`,
+    ],
+    openGraph: {
+      title: "ارتباط با ما",
+      description:
+        `راه‌های تماس با فروشگاه ${siteTitle} آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/contact-info`,
+      siteName: "${siteTitle}",
+      locale: "fa_IR",
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: "ارتباط با ما",
+      description:
+        `راه‌های تماس با فروشگاه ${siteTitle} آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  }
 };
 async function page() {
   const result = await homeContactInfoList();

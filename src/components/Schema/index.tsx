@@ -3,6 +3,7 @@
 import Article from "@/types/blog";
 import ProductType from "@/types/product";
 import stripHtml from "@/utils/stripHtml";
+import { GetSiteSettings } from "@/services/siteActions";
 
 export type BreadcrumbItem = { name: string; url?: string };
 
@@ -10,7 +11,7 @@ export type BreadcrumbItem = { name: string; url?: string };
  * JSON-LD برای یک مقاله
  */
 
-export const articleSchema = (article: Article) => {
+export const articleSchema = (article: Article, siteTitle: string) => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mpttools.co";
 
   const toISO = (dateStr?: string | null) => {
@@ -32,7 +33,7 @@ export const articleSchema = (article: Article) => {
     dateModified: dateModifiedISO,
     author: {
       "@type": "Organization",
-      name: "یزد موبایل",
+      name: `${siteTitle || "سایت ما"}`,
     },
     description: article.introduction || article.title,
     image: article.thumbnail,
@@ -43,7 +44,7 @@ export const articleSchema = (article: Article) => {
 /**
  * JSON-LD برای یک محصول تکی
  */
-export const productSchema = (product: ProductType) => {
+export const productSchema = (product: ProductType, siteTitle: string) => {
   return {
     "@context": "https://schema.org/",
     "@type": "Product",
@@ -53,7 +54,7 @@ export const productSchema = (product: ProductType) => {
       product.description_1 || product.description_2 || product.name
     ),
     sku: product.slug,
-    brand: "یزد موبایل",
+    brand: `${siteTitle || "سایت ما"}`,
     offers: {
       "@type": "Offer",
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${product.slug}`,
@@ -69,14 +70,14 @@ export const productSchema = (product: ProductType) => {
 /**
  * JSON-LD برای لیست محصولات
  */
-export const productsSchema = (products: ProductType[]) => {
-  return products.map(productSchema);
+export const productsSchema = (products: ProductType[], siteTitle: string) => {
+  return products.map(p => productSchema(p, siteTitle));
 };
 /**
  * JSON-LD برای لیست مقالات
  */
-export const articlesSchema = (articles: Article[]) => {
-  return articles.map(articleSchema);
+export const articlesSchema = (articles: Article[], siteTitle: string) => {
+  return articles.map(p => articleSchema(p, siteTitle));
 };
 
 /**

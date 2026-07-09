@@ -14,6 +14,7 @@ import Image from "next/image";
 import { CiImageOff } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
 import { Modal, ModalContent, useDisclosure } from "@heroui/react";
+import { useSite } from "@/context/SiteContext";
 
 const initialData: {
   articles: BlogCategoryNode[];
@@ -50,6 +51,7 @@ function SearchInput({
   searchValue: string;
 }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { siteTitle } = useSite();
   const handleResultClick: any = () => {
     onChange("");
     onClose();
@@ -59,7 +61,7 @@ function SearchInput({
       <RiSearch2Line className="size-6 absolute right-5 text-zinc-400" />
       <input
         type="search"
-        placeholder="جستجو در یزد موبایل.."
+        placeholder="جستجو در سایت.."
         autoComplete="off"
         name="search"
         id="search"
@@ -71,7 +73,7 @@ function SearchInput({
         onClick={onOpen}
         className="block sm:hidden input !bg-white !rounded-full !border-zinc-200 !pr-10 w-full text-sm lg:text-base text-right"
       >
-        جستجو در یزد موبایل..
+        جستجو در {siteTitle}..
       </button>
       <Modal
         isDismissable={false}
@@ -106,7 +108,7 @@ function SearchInput({
               <div className="relative">
                 <input
                   type="search"
-                  placeholder="جستجو در یزد موبایل.."
+                  placeholder="جستجو در سایت.."
                   autoComplete="off"
                   name="search"
                   id="search"

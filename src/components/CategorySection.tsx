@@ -108,8 +108,15 @@ export default function CategorySection({ categories }: Props) {
               prevEl: prevRef.current,
               nextEl: nextRef.current,
             }}
+            dir="rtl"
             spaceBetween={24}
             slidesPerView="auto"
+
+            // 1. centeredSlides کاملاااااا حذف شد!
+            watchOverflow={true}
+          
+            wrapperClass={categories.length < 12 ? "!justify-center !w-full" : "!w-full"}
+
             onBeforeInit={(swiper) => {
               if (typeof swiper.params.navigation !== 'boolean' && swiper.params.navigation) {
                 swiper.params.navigation.prevEl = prevRef.current;

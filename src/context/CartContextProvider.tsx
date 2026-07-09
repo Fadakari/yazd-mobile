@@ -9,6 +9,7 @@ export type CartFormat = {
   total_quantity: number;
   total_price: number;
   total_delivery: number;
+  packaging_cost: number;
   final_price: number;
   items: any[];
 };
@@ -33,6 +34,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     total_quantity: 0,
     total_price: 0,
     total_delivery: 0,
+    packaging_cost: 0,
     final_price: 0,
     items: [],
   });

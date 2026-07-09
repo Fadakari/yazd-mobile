@@ -17,6 +17,7 @@ import ReadingProgressBar from "@/components/ReadingProgressBar";
 import { articleSchema, breadcrumbSchema } from "@/components/Schema";
 import { imageSchema } from "@/components/Schema/imageSchema";
 import Script from "next/script";
+import { GetSiteSettings } from "@/services/siteActions";
 
 export const revalidate = 3600;
 
@@ -36,27 +37,29 @@ export async function generateMetadata({
     const { slug } = await params;
     const decodedSlug = decodeURIComponent(slug);
     const data = await GetBlogBySlug(decodedSlug);
+    const settings = await GetSiteSettings();
+    const siteTitle = settings?.site_title
     if (!data) {
       return {
-        title: "مقاله یافت نشد | یزد موبایل",
+        title: "مقاله یافت نشد",
       };
     }
     return {
-      title: `${data.title} | یزد موبایل`,
+      title: `${data.title} | ${siteTitle}`,
       description: data.introduction,
-      keywords: [data.title, "مقاله یزد موبایل", `مقاله ${data.title}`],
+      keywords: [data.title, `مقاله ${siteTitle}`, `مقاله ${data.title}`],
       openGraph: {
         title: data.title,
         description: data.introduction,
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/article/${data.slug}`,
-        siteName: "یزد موبایل",
+        siteName: `${siteTitle}`,
         locale: "fa_IR",
         type: "article",
         publishedTime: data.published_at || data.created_at,
         modifiedTime: data.updated_at,
         images: [
           {
-            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://yazd-mobile.ir'}/logo.png`,
+            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://akhoondigroup.com'}/logo.png`,
             alt: data.title || "مقاله",
             width: 1200,
             height: 630,
@@ -76,9 +79,11 @@ export async function generateMetadata({
       },
     };
   } catch (error: any) {
+    const settings = await GetSiteSettings();
+    const siteTitle = settings?.site_title
     console.error("Metadata Error:", error?.message);
     // اگر اینجا ارور بده، این تایتل رو نشون میده و سرور رو منفجر نمیکنه
-    return { title: "خطای سرور (سئو) | یزد موبایل" };
+    return { title: `خطای سرور (سئو) | ${siteTitle}` };
   }
 }
 

@@ -10,9 +10,6 @@ import NewProductsSlider, { NewProductItem } from "@/components/NewProductsSlide
 import { GetShopCategoriesTreeList } from "@/services/shopActions"; // <--- ایمپورت جدید
 
 export const revalidate = 300;
-export const metadata: Metadata = {
-  title: "یزد موبایل | صفحه اصلی",
-};
 
 // --- اینترفیس‌های API ---
 interface ApiProduct {
@@ -369,6 +366,7 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
           });
         })()}
       </section>
+      
 
       {/* شگفت‌انگیز */}
       {shegeftAngizData.length > 0 && <ShegeftAngizSlider products={shegeftAngizData} />}
