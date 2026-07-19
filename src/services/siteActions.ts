@@ -23,20 +23,28 @@ export async function GetActiveLogo() {
 export async function GetSiteSettings() {
     try {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'https://api.yazd-mobile.ir'}/home/site-settings/`,
+            `${process.env.NEXT_PUBLIC_API_URL}/home/site-settings/`,
             {
-                // استفاده از no-store برای تنظیمات ادمین تا تغییرات آنی باشد
-                cache: 'no-store', 
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
+                    "Content-Type": "application/json",
+                    "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY || "",
+                },
+                next: {
+                    revalidate: 300,
+                    tags: ["site-settings"],
                 },
             }
         );
+
         if (!res.ok) return null;
+
         return await res.json();
+
     } catch (error) {
-        console.error("GetSiteSettings error:", error);
+
+        console.error(error);
+
         return null;
+
     }
 }

@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const faviconUrl = settings?.favicon;
 
   return {
-    metadataBase: new URL("https://yazd-mobile.ir.com"),
+    metadataBase: new URL("https://yazd-mobile.ir.ir"),
     title: {
       // تایتل پیش‌فرض برای صفحه اصلی
       default: `${siteTitle} | فروشگاه آنلاین با تضمین کیفیت`,
