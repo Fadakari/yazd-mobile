@@ -76,6 +76,8 @@ export default function NewProductsSlider({
 
   if (!products || products.length === 0) return null;
 
+  const shouldCenter = products.length <= 5;
+
   return (
     <section className="container mx-auto px-4 py-12 mb-8 relative group/section" dir="rtl">
       {/* --- HEADER --- */}
@@ -127,13 +129,15 @@ export default function NewProductsSlider({
       {/* --- SLIDER --- */}
       <div
         ref={scrollRef}
-        className="flex gap-5 overflow-x-auto pb-8 pt-4 px-2 scroll-smooth no-scrollbar"
+        className={`flex flex-nowrap gap-5 overflow-x-auto overflow-y-hidden pb-8 pt-4 px-2 scroll-smooth no-scrollbar ${
+          shouldCenter ? "justify-center" : "justify-start"
+        }`}
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {products.map((product) => (
           <div
             key={product.id}
-            className="min-w-[200px] bg-white rounded-[12px] p-3 relative group transition-all duration-300 hover:-translate-y-2 border border-transparent hover:border-orange-400 shadow-[0_8px_30px_rgb(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(249,115,22,0.1)] flex flex-col justify-between overflow-hidden"
+            className="flex-shrink-0 w-[200px] bg-white rounded-[12px] p-3 relative group transition-all duration-300 hover:-translate-y-2 border border-transparent hover:border-orange-400 shadow-[0_8px_30px_rgb(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(249,115,22,0.1)] flex flex-col justify-between overflow-hidden"
           >
             {/* --- TOP SECTION (Image & Badges) --- */}
             <div className="relative w-full aspect-[4/3] bg-gray-50 rounded-[20px] overflow-hidden mb-4 isolate">

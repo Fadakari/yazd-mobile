@@ -167,7 +167,12 @@ li::marker {
   input,
   textarea,
   select,
-  button {
+  button,
+  .input,
+  input[type="text"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"] {
     font-size: 16px !important;
   }
 

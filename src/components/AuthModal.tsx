@@ -299,7 +299,7 @@ export default function AuthModal() {
                       base: "w-full",
                       wrapper: "w-full",
                       segmentWrapper: "w-full",
-                      segment: "input w-full !py-6",
+                      segment: "input w-full !py-6 text-base",
                       errorMessage: "text-right",
                     }}
                   />
