@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.abajstore.ir';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.yazd-mobile.ir';
 const api = axios.create({
     baseURL: BASE_URL,
     timeout: 20000,
@@ -36,5 +36,5 @@ const api = axios.create({
 //         return Promise.reject(err);
 //     }
 // )
-
+console.log("BASE_URL =", BASE_URL);
 export default api;

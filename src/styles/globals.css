@@ -155,8 +155,26 @@ li::marker {
     font-size: 14px;
   }
 }
+@supports (-webkit-touch-callout: none) {
+  .input {
+    font-size: 16px !important;
+  }
+}
 .input {
   @apply outline-none !text-zinc-500 border border-zinc-300 p-3 rounded-sm w-full bg-transparent shadow-none;
+}
+@supports (-webkit-touch-callout: none) {
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 16px !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    font-size: 16px !important;
+  }
 }
 .btn-primary {
   @apply p-3 bg-orange-500  text-white   transition-colors ease-in-out;

@@ -19,7 +19,7 @@ export default async function ProductsPage({ params, searchParams }: any) {
       products={data.results || []}
       pagination={{ count: data?.count || 0, page: Number(page) || 1 }}
       searchParams={search}
-      href="products/offers"
+      href="/products/offers"
     />
   );
 }

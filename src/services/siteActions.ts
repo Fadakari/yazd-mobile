@@ -1,7 +1,7 @@
 export async function GetActiveLogo() {
     try {
         const res = await fetch(
-            "https://api.abajstore.ir/home/active-logo/",
+            "https://api.yazd-mobile.ir/home/active-logo/",
             { cache: "no-store" } // <--- این خط برای جلوگیری کامل از کش شدن اضافه شود
         );
 
@@ -23,7 +23,7 @@ export async function GetActiveLogo() {
 export async function GetSiteSettings() {
     try {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'https://api.abajstore.ir'}/home/site-settings/`,
+            `${process.env.NEXT_PUBLIC_API_URL || 'https://api.yazd-mobile.ir'}/home/site-settings/`,
             {
                 // استفاده از no-store برای تنظیمات ادمین تا تغییرات آنی باشد
                 cache: 'no-store', 

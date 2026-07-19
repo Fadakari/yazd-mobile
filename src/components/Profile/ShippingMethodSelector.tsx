@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useCart } from "@/context/CartContextProvider";
 import { addToast } from "@heroui/toast";
 import { FaCheck, FaTruck } from "react-icons/fa";
 
@@ -19,6 +20,7 @@ const ShippingMethodSelector = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const { refreshCart } = useCart();
 
   // دریافت شیوه‌های ارسال
   useEffect(() => {
@@ -35,6 +37,7 @@ const ShippingMethodSelector = () => {
         const defaultService = activeServices.find((s) => s.is_default);
         if (defaultService) {
           setSelectedId(defaultService.id);
+          await setShippingService(defaultService.id);
         }
       } catch (error: any) {
         console.error("Shipping Services Error:", error);
@@ -67,6 +70,7 @@ const ShippingMethodSelector = () => {
       }
 
       const responseData = await res.json();
+      console.log("SET SHIPPING RESPONSE:", responseData);
       const isUnset = responseData.result?.includes("Unset");
 
       // اگر unset شد، selectedId را null کن
@@ -75,6 +79,8 @@ const ShippingMethodSelector = () => {
       } else {
         setSelectedId(serviceId);
       }
+
+      await refreshCart();
 
       addToast({
         title: "موفق",

@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'api.artakalaa.com' },
       {
         protocol: 'https',
-        hostname: 'api.abajstore.ir',
+        hostname: 'api.yazd-mobile.ir',
       },
       { protocol: 'https', hostname: 'mobilerafie.ir' },
       // --- موارد جدید اضافه شده ---
@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'api.dicebear.com' },   // برای آواتار نویسنده‌ها
       {
         protocol: "https",
-        hostname: "api.akhoondigroup.comir", 
+        hostname: "api.yazd-mobile.irir", 
       },
     ],
   },

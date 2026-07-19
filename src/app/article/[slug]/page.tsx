@@ -59,7 +59,7 @@ export async function generateMetadata({
         modifiedTime: data.updated_at,
         images: [
           {
-            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://akhoondigroup.com'}/logo.png`,
+            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://yazd-mobile.ir'}/logo.png`,
             alt: data.title || "مقاله",
             width: 1200,
             height: 630,
@@ -203,7 +203,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
                     <li key={post.id} className="flex items-start gap-4">
                       <Link href={`/article/${post.slug}`}>
                         <Image
-                          src={post.thumbnail ? (post.thumbnail.startsWith('http') ? post.thumbnail : `https://api.abajstore.ir${post.thumbnail}`) : "/logo.png"}
+                          src={post.thumbnail ? (post.thumbnail.startsWith('http') ? post.thumbnail : `https://api.yazd-mobile.ir${post.thumbnail}`) : "/logo.png"}
                           alt={post.title || "مطلب جدید"}
                           width={100}
                           height={100}

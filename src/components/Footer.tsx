@@ -28,7 +28,7 @@ interface FooterSectionData {
 
 // تابع دریافت دیتا از سرور
 async function getFooterData(): Promise<FooterSectionData[]> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
   
   try {
     const res = await fetch(`${apiUrl}/home/footer/`, {
@@ -110,7 +110,7 @@ const FooterSection = ({ title, items }: { title: string; items: FooterItem[] })
 const getFullImageUrl = (path: string | null | undefined) => {
   if (!path) return "/logo.png";
   if (path.startsWith("http")) return path;
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
   return `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
 };
 // این کامپوننت به صورت Server Component اجرا می‌شود

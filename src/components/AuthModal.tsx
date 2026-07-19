@@ -162,7 +162,7 @@ export default function AuthModal() {
       placement="bottom-center"
       className="max-w-full h-[100dvh] m-0 sm:max-w-lg sm:h-auto"
     >
-      <ModalContent className="text-sm rounded-sm overflow-auto h-full">
+      <ModalContent className="text-base rounded-sm overflow-auto h-full">
         {(onClose) => (
           <form
             onSubmit={
@@ -188,7 +188,7 @@ export default function AuthModal() {
                   <input
                     {...phoneForm.register("phone_number")}
                     maxLength={11}
-                    className="input text-base sm:text-sm"
+                    className="input text-base sm:text-base"
                     id="phone_number"
                     inputMode="numeric"
                     placeholder="مثلاً 09123456789"
@@ -212,7 +212,7 @@ export default function AuthModal() {
                     <input
                       {...loginForm.register("password")}
                       type={showPassword ? "text" : "password"}
-                      className="input pr-12 text-base sm:text-sm"
+                      className="input pr-12 text-base sm:text-base"
                       placeholder="رمز عبور خود را وارد کنید"
                       id="password"
                     />

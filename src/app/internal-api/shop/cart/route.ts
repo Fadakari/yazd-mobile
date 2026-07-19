@@ -33,6 +33,12 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         console.log("📦 Request Body:", body);
 
+        console.log("🚀 CART ADD URL:", `${process.env.NEXT_PUBLIC_API_URL}/shop/cart/add/`);
+
+        console.log("🚀 CART ADD BODY:", JSON.stringify(body));
+
+        console.log("🚀 TOKEN EXISTS:", !!token);
+
         const res = await api.post(`/shop/cart/add/`, body, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -40,21 +46,31 @@ export async function POST(req: NextRequest) {
             },
         });
 
+        console.log("✅ CART ADD RESPONSE STATUS:", res.status);
+
+        console.log("✅ CART ADD RESPONSE DATA:", res.data);
+
 
         return new Response(JSON.stringify(res.data), {
             status: res.status,
             headers: { "Content-Type": "application/json" },
         });
     } catch (error: any) {
-        console.error("❌ API Error:", error?.response?.data || error.message);
+        console.error("❌ API Error FULL:", error);
+        console.error("❌ API Error RESPONSE:", error?.response?.data);
+        console.error("❌ API Error STATUS:", error?.response?.status);
 
-        const errorMessage = error?.response?.data?.error || "خطای ناشناخته";
-        const statusCode = error?.response?.status || 500;
-
-        return new Response(JSON.stringify({ error: errorMessage }), {
-            status: statusCode,
-            headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+            JSON.stringify({
+                error: error?.response?.data || error.message
+            }),
+            {
+                status: error?.response?.status || 500,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
     }
 }
 

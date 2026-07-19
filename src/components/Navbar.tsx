@@ -185,7 +185,7 @@ export default function Navbar({
   if (path.startsWith("http")) return path;
 
   // ۳. ترکیب ایمن با دامین اصلی
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
   
   // مطمئن شو که اگر در مسیر / وجود نداشت، اضافه شود تا URL نشکند
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
@@ -327,7 +327,7 @@ export default function Navbar({
                   { name: "وبلاگ آموزشی", href: "/articles" },
                   { name: "درباره ما", href: "/about-us" },
                   { name: "تماس با ما", href: "/contact-info" },
-                  { name: "تخفیف‌های ویژه", href: "/offers", special: true },
+                  { name: "تخفیف‌های ویژه", href: "/products/offers", special: true },
                 ].map((item) => (
                   <Link
                     key={item.href}

@@ -25,7 +25,7 @@ import ProductMetaTags from "@/components/ProductMetaTags";
 // تابع کمکی برای دریافت روش‌های ارسال
 async function getShippingServices() {
   try {
-    const res = await fetch('http://api.abajstore.ir/shop/shipping-services/', {
+    const res = await fetch('http://api.yazd-mobile.ir/shop/shipping-services/', {
       method: 'GET',
       headers: {
         'accept': 'application/json',

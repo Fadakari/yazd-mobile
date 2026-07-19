@@ -278,10 +278,10 @@ const CreateOrder = () => {
           <div className="space-y-2">
             <div className="flex justify-between">
               <p>
-                قیمت کالاها ({cart.total_items.toLocaleString("fa-IR")} کالا)
+                قیمت کالاها ({(cart?.total_items || 0).toLocaleString("fa-IR")} کالا)
               </p>
               <p className="font-semibold">
-                {cart.total_price.toLocaleString("fa-IR")} تومان
+                {(cart?.total_price || 0).toLocaleString("fa-IR")} تومان
               </p>
             </div>
             {discountAmount > 0 && (
@@ -295,7 +295,7 @@ const CreateOrder = () => {
             <div className="flex justify-between">
               <p>هزینه ارسال</p>
               <p className="font-semibold">
-                {cart.total_delivery === 0 ? (
+                {!cart?.total_delivery || cart?.total_delivery === 0 ? (
                   <span className="text-red-500">رایگان</span>
                 ) : (
                   `${cart.total_delivery.toLocaleString("fa-IR")} تومان`
@@ -305,7 +305,8 @@ const CreateOrder = () => {
             <div className="flex justify-between text-zinc-700">
               <p>هزینه بسته‌بندی</p>
               <p className="font-semibold">
-                {cart.packaging_cost === 0 ? (
+                {/* تغییر اصلی در این قسمت برای جلوگیری از خطا */}
+                {!cart?.packaging_cost || cart?.packaging_cost === 0 ? (
                   <span className="text-green-600 font-bold">رایگان</span>
                 ) : (
                   `${cart.packaging_cost.toLocaleString("fa-IR")} تومان`
@@ -315,7 +316,7 @@ const CreateOrder = () => {
             <hr className="my-3" />
             <div className="flex justify-between text-lg font-semibold">
               <p>مبلغ قابل پرداخت</p>
-              <p>{cart.final_price.toLocaleString("fa-IR")} تومان</p>
+              <p>{(cart?.final_price || 0).toLocaleString("fa-IR")} تومان</p>
             </div>
           </div>
 

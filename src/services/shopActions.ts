@@ -12,10 +12,12 @@ const defaultFetchOptions = {
     credentials: "include" as RequestCredentials, 
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 // Products ----
 export async function GetDiscountedProducts() {
   try {
-    const res = await fetch("https://api.abajstore.ir/home/discounted-products/", {
+    const res = await fetch("https://api.yazd-mobile.ir/home/discounted-products/", {
         ...defaultFetchOptions,
       next: { revalidate: 300 }
     });
@@ -30,7 +32,7 @@ export async function GetDiscountedProducts() {
 export async function GetShopCategoriesTreeList() {
     try {
         // استفاده از fetch نیتیو به جای api.get و unstable_cache
-        const res = await fetch("https://api.abajstore.ir/shop/categories/tree/", {
+        const res = await fetch("https://api.yazd-mobile.ir/shop/categories/tree/", {
             ...defaultFetchOptions,
             next: { revalidate: 60 } // <--- دیتا کش می‌شود اما هر 60 ثانیه در صورت نیاز آپدیت می‌شود
         });
@@ -79,7 +81,7 @@ export async function GetProducts(
 
         if (onlyDiscounted) {
             // جایگزین api.get با fetch نیتیو
-            const resDiscounted = await fetch(`https://api.abajstore.ir/home/discounted-products/?${query.toString()}`, {
+            const resDiscounted = await fetch(`https://api.yazd-mobile.ir/home/discounted-products/?${query.toString()}`, {
                 ...defaultFetchOptions,
                 next: { revalidate: 60 } 
             });
@@ -97,7 +99,7 @@ export async function GetProducts(
 
         // جایگزین api.get با fetch نیتیو
         const [resNormal, discountedList] = await Promise.all([
-            fetch(`https://api.abajstore.ir/shop/products?${query.toString()}`, {
+            fetch(`https://api.yazd-mobile.ir/shop/products?${query.toString()}`, {
                 ...defaultFetchOptions,
                 next: { revalidate: 60 }
             }),
@@ -147,7 +149,7 @@ export async function GetProducts(
 export async function GetLatestProducts() {
     try {
         const [resLatest, discountedList] = await Promise.all([
-            fetch("https://api.abajstore.ir/shop/latest-products", {
+            fetch("https://api.yazd-mobile.ir/shop/latest-products", {
                 ...defaultFetchOptions,
                 next: { revalidate: 300 }
             }),
@@ -191,33 +193,65 @@ export async function GetLatestProducts() {
 
 export async function GetProductBySlug(slug: string): Promise<any> {
     try {
-        const productRes = await api.get(`/shop/products/${slug}/`);
-        const product = productRes.data;
-        try {
-            const discountRes = await api.get(`/home/discounted-products/${slug}/`);
-            const discount = discountRes.data;
-            if (discount) {
-                return {
-                    ...product,
-                    isDiscounted: true,
-                    final_price: discount.final_price,
-                };
-            }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (err) {
+
+        const [productRes, discountRes] = await Promise.allSettled([
+
+            fetch(`${API_URL}/shop/products/${encodeURIComponent(slug)}/`, {
+                ...defaultFetchOptions,
+                next: {
+                    revalidate: 600,
+                    tags: [`product-${slug}`],
+                },
+            }),
+
+            fetch(`${API_URL}/home/discounted-products/${encodeURIComponent(slug)}/`, {
+                ...defaultFetchOptions,
+                next: {
+                    revalidate: 600,
+                    tags: [`product-discount-${slug}`],
+                },
+            })
+
+        ]);
+
+        if (productRes.status !== "fulfilled")
+            return null;
+
+        if (!productRes.value.ok)
+            return null;
+
+        const product = await productRes.value.json();
+
+        if (
+            discountRes.status === "fulfilled" &&
+            discountRes.value.ok
+        ) {
+
+            const discount = await discountRes.value.json();
+
+            return {
+                ...product,
+                isDiscounted: true,
+                discount_percentage: discount.discount_percentage,
+                final_price: discount.final_price,
+            };
+
         }
 
         return product;
+
     } catch (error) {
-        console.error('GetProductBySlug error:', error);
+
+        console.error("GetProductBySlug:", error);
+
         return null;
+
     }
 }
 
-
 export async function GetFeaturedProducts() {
   try {
-    const res = await fetch("https://api.abajstore.ir/shop/featured-products", {
+    const res = await fetch("https://api.yazd-mobile.ir/shop/featured-products", {
         ...defaultFetchOptions,
       next: { revalidate: 300 }
     });
@@ -435,7 +469,7 @@ export async function marketing_create_order(data: any, store_name_english: stri
 
 export async function GetShippingServices() {
   try {
-    const res = await fetch("https://api.abajstore.ir/shop/shipping-services", {
+    const res = await fetch("https://api.yazd-mobile.ir/shop/shipping-services", {
         ...defaultFetchOptions,
       next: { revalidate: 86400 } // آپدیت هر 24 ساعت
     });
@@ -448,10 +482,34 @@ export async function GetShippingServices() {
 }
 // Comments
 export async function GetComments(product_id: number) {
-    const response = await api.get(`/shop/products/${product_id}/comments/`);
-    return response.data;
-}
 
+    try {
+
+        const res = await fetch(
+            `${API_URL}/shop/products/${product_id}/comments/`,
+            {
+                ...defaultFetchOptions,
+                next: {
+                    revalidate: 300,
+                    tags: [`comments-${product_id}`],
+                },
+            }
+        );
+
+        if (!res.ok)
+            return [];
+
+        return await res.json();
+
+    } catch (e) {
+
+        console.error(e);
+
+        return [];
+
+    }
+
+}
 
 export async function PostComment(product_id: number, data: { text: string; parent?: number | null }) {
     const res = await fetch(`/internal-api/shop/comments/${String(product_id)}/`, {

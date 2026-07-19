@@ -29,7 +29,7 @@ const getCategories = cache(async () => {
 // دریافت داده‌های بخش‌های اسلایدر
 const getSliderSections = cache(async () => {
   try {
-    const res = await fetch("https://api.abajstore.ir/home/sliders-index/", {
+    const res = await fetch("https://api.yazd-mobile.ir/home/sliders-index/", {
       ...defaultFetchOptions,
         next: { revalidate: 120 } // <--- این خط حتماً باید اضافه بشه (کش ۲ دقیقه‌ای)
     });
