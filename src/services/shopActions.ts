@@ -199,7 +199,7 @@ export async function GetProductBySlug(slug: string): Promise<any> {
             fetch(`${API_URL}/shop/products/${encodeURIComponent(slug)}/`, {
                 ...defaultFetchOptions,
                 next: {
-                    revalidate: 600,
+                    revalidate: 120,
                     tags: [`product-${slug}`],
                 },
             }),
@@ -207,7 +207,7 @@ export async function GetProductBySlug(slug: string): Promise<any> {
             fetch(`${API_URL}/home/discounted-products/${encodeURIComponent(slug)}/`, {
                 ...defaultFetchOptions,
                 next: {
-                    revalidate: 600,
+                    revalidate: 120,
                     tags: [`product-discount-${slug}`],
                 },
             })
