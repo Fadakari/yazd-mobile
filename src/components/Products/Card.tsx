@@ -33,6 +33,11 @@ export default function Card({
       ? item.is_available
       : item.isDiscounted || true;
 
+  console.log({
+    name: item.name,
+    cover_image: item.cover_image,
+  });
+
   return (
     <div
       key={item.id}

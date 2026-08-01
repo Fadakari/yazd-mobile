@@ -34,8 +34,7 @@ export default async function ProductsPage(props: {
   const filters = { ...search, page: currentPage };
   
   const data = await getProductList(filters, page);
-  const categoryRes = await getCategories();
-  const categories = categoryRes?.data || [];
+  const categories: CategoryNode[] = (await GetShopCategoriesTreeList()) || [];
   
   const breadcrumbs = [
     { name: "خانه", url: "/" },

@@ -1,7 +1,7 @@
 export async function GetActiveLogo() {
     try {
         const res = await fetch(
-            "https://api.yazd-mobile.ir/home/active-logo/",
+            `${process.env.NEXT_PUBLIC_API_URL}/home/active-logo/`,
             { cache: "no-store" } // <--- این خط برای جلوگیری کامل از کش شدن اضافه شود
         );
 

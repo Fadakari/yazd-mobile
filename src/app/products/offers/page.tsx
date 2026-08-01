@@ -5,6 +5,8 @@ import { GetProducts, GetShopCategoriesTreeList } from "@/services/shopActions";
 import { Metadata } from "next";
 import { cache } from "react";
 import { GetSiteSettings } from "@/services/siteActions";
+import { CategoryNode } from "@/types/categories";
+
 
 const getProductList = cache(
   async (filters: any, page: any, is_available: any) => {
@@ -20,8 +22,7 @@ export default async function ProductsPage({ searchParams }: any) {
   const data = await getProductList(search, 1, true);
   console.log(data);
 
-  const categoryRes = await getCategories();
-  const categories = categoryRes?.data || [];
+  const categories: CategoryNode[] = (await GetShopCategoriesTreeList()) || [];
   return (
     <LayoutShell
       categories={categories}

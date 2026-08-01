@@ -29,7 +29,7 @@ export const GetBlogPosts = async (params?: BlogPostsParams, page?: string): Pro
         if (params?.category) query.append("category", params.category);
         if (page) query.append("page", page);
 
-        const url = `https://api.yazd-mobile.ir/blog/posts/?${query.toString()}`;
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/blog/posts/?${query.toString()}`;
 
         const result = await fetch(url, { next: { revalidate: 60 } });
         if (!result.ok) return undefined;
@@ -41,7 +41,7 @@ export const GetBlogPosts = async (params?: BlogPostsParams, page?: string): Pro
 };
 export async function GetLatestBlogPosts() {
     try {
-        const res = await fetch("https://api.yazd-mobile.ir/blog/posts/latest", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/latest`, {
             ...defaultFetchOptions,
             next: { revalidate: 600 } // آپدیت هر 10 دقیقه
         });
@@ -55,7 +55,7 @@ export async function GetLatestBlogPosts() {
 
 export async function GetBlogCategoriesMenuStructure(): Promise<BlogCategoryNode[] | undefined> {
     try {
-        const res = await fetch("https://api.yazd-mobile.ir/blog/categories/menu_structure/", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/categories/menu_structure/`, {
             ...defaultFetchOptions,
             next: { revalidate: 3600 } // آپدیت هر 1 ساعت
         });
@@ -69,7 +69,7 @@ export async function GetBlogCategoriesMenuStructure(): Promise<BlogCategoryNode
 
 export const GetBlogBySlug = cache(async (slug: string): Promise<any> => {
     try {
-        const result = await fetch(`https://api.yazd-mobile.ir/blog/posts/${slug}/`, { 
+        const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/${slug}/`, { 
             ...defaultFetchOptions,
             next: { revalidate: 60 } 
         });
@@ -96,7 +96,7 @@ export async function SearchBlogs(params: Search): Promise<any> {
 
     try {
         // جایگزین api.get
-        const result = await fetch(`https://api.yazd-mobile.ir/blog/posts/search?${query.toString()}`, {
+        const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/search?${query.toString()}`, {
             ...defaultFetchOptions,
             next: { revalidate: 60 }
         });

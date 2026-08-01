@@ -4,6 +4,8 @@ import LayoutShell from "@/components/Products/LayoutShell";
 import { GetProducts, GetShopCategoriesTreeList } from "@/services/shopActions";
 import { Metadata } from "next";
 import { GetSiteSettings } from "@/services/siteActions";
+import { CategoryNode } from "@/types/categories";
+
 
 export default async function ProductsPage({ params, searchParams }: any) {
   const { page } = await params;
@@ -11,8 +13,7 @@ export default async function ProductsPage({ params, searchParams }: any) {
   const currentPage = Number(params.page) || 1;
   const filters = { ...search, page: currentPage };
   const data = await GetProducts(filters, page, true);
-  const categoryRes = await GetShopCategoriesTreeList();
-  const categories = categoryRes?.data || [];
+  const categories: CategoryNode[] = (await GetShopCategoriesTreeList()) || [];
   return (
     <LayoutShell
       categories={categories}

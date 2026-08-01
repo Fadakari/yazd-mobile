@@ -47,7 +47,7 @@ interface ApiSection {
 async function getHomeData(): Promise<ApiSection[]> {
   try {
     const res = await fetch(
-      "https://api.yazd-mobile.ir/home/sliders-index/",
+      `${process.env.NEXT_PUBLIC_API_URL}/home/sliders-index/`,
       {
         next: {
           revalidate: 300,
@@ -67,7 +67,7 @@ async function getHomeData(): Promise<ApiSection[]> {
 // در فایل page.tsx
 async function getLatestArticles(): Promise<BlogPostItem[]> {
   try {
-    const res = await fetch("https://api.yazd-mobile.ir/blog/posts/", { 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/`, { 
         
         next: {
           revalidate: 300
@@ -123,7 +123,7 @@ function flattenCategories(categories: any[], defaultIcon: string): CategoryItem
 async function getActiveLogo(): Promise<string> {
   try {
     // آدرس API را مطابق ناوبار تنظیم کردم
-    const res = await fetch("https://api.yazd-mobile.ir/home/active-logo/", { 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/active-logo/`, { 
       next: { revalidate: 3600 } // کش برای ۱ ساعت
     });
     

@@ -25,7 +25,7 @@ import ProductMetaTags from "@/components/ProductMetaTags";
 // تابع کمکی برای دریافت روش‌های ارسال
 async function getShippingServices() {
   try {
-    const res = await fetch('http://api.yazd-mobile.ir/shop/shipping-services/', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/shipping-services/`, {
       method: 'GET',
       headers: {
         'accept': 'application/json',
@@ -138,8 +138,7 @@ export default async function Page({
   if (!res) return notFound();
 
   const data: ProductType = res;
-  const result = await GetShopCategoriesTreeList();
-  const categories: CategoryNode[] = result?.data || [];
+  const categories: CategoryNode[] = (await GetShopCategoriesTreeList()) || [];
   const shippingMethods = await getShippingServices(); // دریافت روش‌های ارسال
 
   const categoryFind = findCategory(categories, data.category);
