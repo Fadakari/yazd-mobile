@@ -1,15 +1,14 @@
-import axios from 'axios';
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.yazd-mobile.ir';
+import axios from "axios";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const api = axios.create({
-    baseURL: BASE_URL,
-    timeout: 20000,
-    headers: {
-        'Content-Type': 'application/json',
-        "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY,
+  baseURL: BASE_URL,
+  timeout: 20000,
+  headers: {
+    "Content-Type": "application/json",
+    "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY,
+  },
 
-    },
-    
-    withCredentials: true
+  withCredentials: true,
 });
 
 // api.interceptors.response.use(

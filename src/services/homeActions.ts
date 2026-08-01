@@ -11,9 +11,11 @@ const defaultFetchOptions = {
     credentials: "include" as RequestCredentials, 
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ;
+
 export async function homeAboutUsList() {
     try {
-        const res = await fetch("https://api.yazd-mobile.ir/home/about-us/", {
+        const res = await fetch(`${API_URL}/home/about-us/`, {
             ...defaultFetchOptions,
             next: { revalidate: 3600 }
         });
@@ -27,7 +29,7 @@ export async function homeAboutUsList() {
 }
 export async function homeContactInfoList() {
     try {
-        const res = await fetch("https://api.yazd-mobile.ir/home/contact-info/", {
+        const res = await fetch(`${API_URL}/home/contact-info/`, {
             ...defaultFetchOptions,
             next: { revalidate: 3600 }
         });
@@ -41,7 +43,7 @@ export async function homeContactInfoList() {
 }
 export async function homeGalleryList() {
     try {
-        const res = await fetch("https://api.yazd-mobile.ir/home/gallery/", {
+        const res = await fetch(`${API_URL}/home/gallery/`, {
             ...defaultFetchOptions,
             next: { revalidate: 3600 }
         });
@@ -54,10 +56,11 @@ export async function homeGalleryList() {
 }
 export async function homeSliderList() {
     try {
-        const res = await fetch("https://api.yazd-mobile.ir/home/sliders/", {
+        const res = await fetch(`${API_URL}/home/sliders/`, {
             ...defaultFetchOptions,
             next: { revalidate: 600 } // آپدیت هر 10 دقیقه
         });
+        console.log("slider",res);
         if (!res.ok) return null;
         return await res.json();
     } catch (error) {
@@ -100,7 +103,6 @@ export async function getUserOrders() {
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
             },
-
         });
         return response.data;
     } catch (error) {

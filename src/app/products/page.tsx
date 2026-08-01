@@ -9,10 +9,13 @@ import { Metadata } from "next";
 import { CategoryNode } from "@/types/categories";
 import { GetSiteSettings } from "@/services/siteActions";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+
 const defaultFetchOptions = {
     headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
+        'X-API-KEY': API_URL || '',
     },
     // معادل withCredentials: true در Axios
     credentials: "include" as RequestCredentials, 
@@ -29,7 +32,7 @@ const getCategories = cache(async () => {
 // دریافت داده‌های بخش‌های اسلایدر
 const getSliderSections = cache(async () => {
   try {
-    const res = await fetch("https://api.yazd-mobile.ir/home/sliders-index/", {
+    const res = await fetch(`${API_URL}/home/sliders-index/`, {
       ...defaultFetchOptions,
         next: { revalidate: 120 } // <--- این خط حتماً باید اضافه بشه (کش ۲ دقیقه‌ای)
     });
