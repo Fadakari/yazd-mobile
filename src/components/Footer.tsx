@@ -28,13 +28,13 @@ interface FooterSectionData {
 
 // تابع دریافت دیتا از سرور
 async function getFooterData(): Promise<FooterSectionData[]> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   
   try {
-    const res = await fetch(`${apiUrl}/home/footer/`, {
+    const res = await fetch(`${API_URL}/home/footer/`, {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
+        'X-API-KEY': API_URL || '',
       },
       // چون فوتر دیر به دیر عوض میشه، کش ۱ ساعته (۳۶۰۰ ثانیه) براش عالی و بهینه‌ست
       // اگر می‌خوای الان برای تست سریع‌تر آپدیت بشه، موقتاً بذارش روی 60
@@ -110,7 +110,7 @@ const FooterSection = ({ title, items }: { title: string; items: FooterItem[] })
 const getFullImageUrl = (path: string | null | undefined) => {
   if (!path) return "/logo.png";
   if (path.startsWith("http")) return path;
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL ;
   return `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
 };
 // این کامپوننت به صورت Server Component اجرا می‌شود

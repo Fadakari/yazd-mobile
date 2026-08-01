@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import LayoutShell from "@/components/Products/LayoutShell";
 import { GetProducts, GetShopCategoriesTreeList } from "@/services/shopActions";
 import { Metadata } from "next";

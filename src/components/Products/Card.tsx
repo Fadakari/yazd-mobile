@@ -7,6 +7,16 @@ import { ShoppingBasket } from "lucide-react";
 import { useState } from "react";
 import { useSite } from "@/context/SiteContext";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+const getImageSrc = (src?: string): string => {
+  if (!src) return "";
+  try {
+    return new URL(src).toString();
+  } catch {
+    return new URL(src, API_URL).toString();
+  }
+};
 export default function Card({
   item,
   href,
@@ -51,7 +61,7 @@ export default function Card({
         <div className="h-40 sm:h-52 md:h-60 flex justify-center items-center overflow-hidden rounded-xl">
           {!imgError && item.cover_image ? (
             <Image
-              src={item.cover_image}
+              src={getImageSrc(item.cover_image)}
               alt={`${item.name} - ${siteTitle}`}
               width={400}
               height={300}
