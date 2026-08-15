@@ -1,0 +1,6 @@
+* {
+  font-family: "Shabnam", system-ui, sans-serif;
+}
+.swiper-pagination-bullet-active{
+    background-color: rgb(235, 113, 0) !important;
+}
