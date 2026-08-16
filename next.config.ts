@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'api.abajstore.ir',
       },
-      { protocol: 'https', hostname: 'mobilerafie.ir' },
+      { protocol: 'https', hostname: 'abajstore.ir' },
       // --- موارد جدید اضافه شده ---
       { protocol: 'https', hostname: 'images.unsplash.com' }, // برای عکس‌های بلاگ
       { protocol: 'https', hostname: 'api.dicebear.com' },   // برای آواتار نویسنده‌ها
