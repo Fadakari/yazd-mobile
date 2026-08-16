@@ -13,9 +13,9 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
     remotePatterns: [
-      { protocol: 'https', hostname: 'artakalaa.com' },
-      { protocol: 'https', hostname: 'api.artakalaa.ir' },
-      { protocol: 'https', hostname: 'api.artakalaa.com' },
+      { protocol: 'https', hostname: 'abajstore.ir' },
+      { protocol: 'https', hostname: 'api.abajstore.ir' },
+      { protocol: 'https', hostname: 'api.abajstore.ir' },
       {
         protocol: 'https',
         hostname: 'api.yazd-mobile.ir',
@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'api.dicebear.com' },   // برای آواتار نویسنده‌ها
       {
         protocol: "https",
-        hostname: "api.yazd-mobile.irir", 
+        hostname: "api.abajstore.ir", 
       },
     ],
   },
