@@ -59,7 +59,7 @@ export async function generateMetadata({
         modifiedTime: data.updated_at,
         images: [
           {
-            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://abajstore.ir}/logo.png`,
+            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://abajstore.ir'}/logo.png`,
             alt: data.title || "مقاله",
             width: 1200,
             height: 630,
