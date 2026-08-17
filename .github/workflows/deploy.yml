@@ -16,6 +16,8 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/deploy_key
             cd /opt/projects/abajstore/frontend
             git pull origin main
             cd /opt/projects/abajstore
