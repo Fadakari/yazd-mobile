@@ -1,0 +1,25 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/deploy_key
+            cd /opt/projects/abajstore/frontend
+            git pull origin main
+            cd /opt/projects/abajstore
+            docker compose build --no-cache
+            docker compose up -d

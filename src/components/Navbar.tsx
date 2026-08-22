@@ -184,7 +184,8 @@ export default function Navbar({
   // ۲. اگر خودش آدرس کامل بود (با http شروع می‌شد)، برگردان
   if (path.startsWith("http")) return path;
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  // ۳. ترکیب ایمن با دامین اصلی
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
   
   // مطمئن شو که اگر در مسیر / وجود نداشت، اضافه شود تا URL نشکند
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
