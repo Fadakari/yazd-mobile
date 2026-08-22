@@ -17,7 +17,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 // Products ----
 export async function GetDiscountedProducts() {
   try {
-    const res = await fetch("https://api.yazd-mobile.ir/home/discounted-products/", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/discounted-products/`, {
         ...defaultFetchOptions,
       next: { revalidate: 300 }
     });
@@ -32,7 +32,7 @@ export async function GetDiscountedProducts() {
 export async function GetShopCategoriesTreeList() {
     try {
         // استفاده از fetch نیتیو به جای api.get و unstable_cache
-        const res = await fetch("https://api.yazd-mobile.ir/shop/categories/tree/", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/categories/tree/`, {
             ...defaultFetchOptions,
             next: { revalidate: 60 } // <--- دیتا کش می‌شود اما هر 60 ثانیه در صورت نیاز آپدیت می‌شود
         });
@@ -81,7 +81,7 @@ export async function GetProducts(
 
         if (onlyDiscounted) {
             // جایگزین api.get با fetch نیتیو
-            const resDiscounted = await fetch(`https://api.yazd-mobile.ir/home/discounted-products/?${query.toString()}`, {
+            const resDiscounted = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/discounted-products/?${query.toString()}`, {
                 ...defaultFetchOptions,
                 next: { revalidate: 60 } 
             });
@@ -99,7 +99,7 @@ export async function GetProducts(
 
         // جایگزین api.get با fetch نیتیو
         const [resNormal, discountedList] = await Promise.all([
-            fetch(`https://api.yazd-mobile.ir/shop/products?${query.toString()}`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/products?${query.toString()}`, {
                 ...defaultFetchOptions,
                 next: { revalidate: 60 }
             }),
@@ -149,7 +149,7 @@ export async function GetProducts(
 export async function GetLatestProducts() {
     try {
         const [resLatest, discountedList] = await Promise.all([
-            fetch("https://api.yazd-mobile.ir/shop/latest-products", {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/latest-products`, {
                 ...defaultFetchOptions,
                 next: { revalidate: 300 }
             }),
@@ -251,7 +251,7 @@ export async function GetProductBySlug(slug: string): Promise<any> {
 
 export async function GetFeaturedProducts() {
   try {
-    const res = await fetch("https://api.yazd-mobile.ir/shop/featured-products", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/featured-products`, {
         ...defaultFetchOptions,
       next: { revalidate: 300 }
     });
@@ -469,7 +469,7 @@ export async function marketing_create_order(data: any, store_name_english: stri
 
 export async function GetShippingServices() {
   try {
-    const res = await fetch("https://api.yazd-mobile.ir/shop/shipping-services", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/shipping-services`, {
         ...defaultFetchOptions,
       next: { revalidate: 86400 } // آپدیت هر 24 ساعت
     });

@@ -143,7 +143,7 @@ export default async function Page({
 
   const categoryFind = findCategory(categories, data.category);
   const comments = await GetComments(data.id);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mpttools.co";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `${process.env.NEXT_PUBLIC_API_URL}`;
   
   const breadcrumbs = [
     { name: "خانه", url: `${siteUrl}/` },

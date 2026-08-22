@@ -57,7 +57,7 @@ const transform = (node: DOMNode) => {
 
     if (!src) return null;
 
-    const fullSrc = src.startsWith("http") ? src : `https://mpttools.co${src}`;
+    const fullSrc = src.startsWith("http") ? src : `${process.env.NEXT_PUBLIC_API_URL}${src}`;
 
     const widthNum = width ? parseInt(width) : 600;
     const heightNum = height ? parseInt(height) : 400;
