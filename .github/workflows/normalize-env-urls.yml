@@ -1,0 +1,100 @@
+name: Normalize environment URLs
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Normalize environment-dependent URLs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          OLD_API = 'https://api.yazd-mobile.ir'
+          OLD_SITE = 'https://yazd-mobile.ir'
+          OLD_MPT = 'https://mpttools.co'
+
+          exts = {'.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'}
+          files = [p for p in Path('src').rglob('*') if p.is_file() and p.suffix in exts]
+
+          literal_url = re.compile(r'(["\'`])(' + re.escape(OLD_API) + '|' + re.escape(OLD_SITE) + '|' + re.escape(OLD_MPT) + r')([^"\'`]*)\1')
+          for p in files:
+              s = p.read_text(encoding='utf-8')
+              old = s
+
+              def repl(m):
+                  domain = m.group(2)
+                  tail = m.group(3)
+                  env = 'NEXT_PUBLIC_API_URL' if domain == OLD_API else 'NEXT_PUBLIC_SITE_URL'
+                  return f'`${{process.env.{env}}}{tail}`'
+
+              s = literal_url.sub(repl, s)
+              s = s.replace('const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";', 'const baseUrl = process.env.NEXT_PUBLIC_API_URL!;')
+              s = s.replace("const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yazd-mobile.ir';", 'const baseUrl = process.env.NEXT_PUBLIC_API_URL!;')
+              s = s.replace('const siteUrl = process.env.NEXT_PUBLIC_BACK_END || "https://mpttools.co";', 'const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;')
+              s = s.replace("const siteUrl = process.env.NEXT_PUBLIC_BACK_END || 'https://mpttools.co';", 'const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;')
+
+              if p.as_posix() in {'src/app/about-us/page.tsx', 'src/components/Products/Product/TabsBox.tsx'}:
+                  s = s.replace('src.startsWith("http") ? src : `${process.env.NEXT_PUBLIC_SITE_URL}${src}`', 'src.startsWith("http") ? src : `${process.env.NEXT_PUBLIC_API_URL}${src}`')
+                  s = s.replace('src.startsWith("http")\n        ? src\n        : `${process.env.NEXT_PUBLIC_SITE_URL}${src}`', 'src.startsWith("http")\n        ? src\n        : `${process.env.NEXT_PUBLIC_API_URL}${src}`')
+
+              if s != old:
+                  p.write_text(s, encoding='utf-8')
+
+          p = Path('next.config.ts')
+          s = p.read_text(encoding='utf-8')
+          if 'const apiHostname =' not in s:
+              s = s.replace('import type { NextConfig } from "next";\n', 'import type { NextConfig } from "next";\n\nconst apiHostname = process.env.NEXT_PUBLIC_API_URL\n  ? new URL(process.env.NEXT_PUBLIC_API_URL).hostname\n  : undefined;\n')
+          s = re.sub(r'\n\s*\{\s*protocol:\s*["\']https["\'],\s*hostname:\s*["\']api\.yazd-mobile\.ir["\'],?\s*\},', '', s)
+          s = re.sub(r'\n\s*\{\s*protocol:\s*["\']https["\'],\s*hostname:\s*["\']api\.yazd-mobile\.irir["\'],?\s*\},', '', s)
+          if '...(apiHostname ?' not in s:
+              s = s.replace('remotePatterns: [', "remotePatterns: [\n      ...(apiHostname ? [{ protocol: 'https', hostname: apiHostname }] : []),")
+          p.write_text(s, encoding='utf-8')
+
+          p = Path('src/app/layout.tsx')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('metadataBase: new URL("https://yazd-mobile.ir.ir"),', 'metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),')
+          p.write_text(s, encoding='utf-8')
+
+          p = Path('src/app/article/[slug]/page.tsx')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('const siteUrl = process.env.NEXT_PUBLIC_BACK_END || "https://mpttools.co";', 'const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;')
+          p.write_text(s, encoding='utf-8')
+
+          Path('.env.example').write_text('NEXT_PUBLIC_API_URL=https://api.abajstore.ir\nNEXT_PUBLIC_SITE_URL=https://abajstore.ir\nNEXT_PUBLIC_API_KEY=your_api_key_here\n', encoding='utf-8')
+
+          p = Path('.gitignore')
+          s = p.read_text(encoding='utf-8')
+          if '!/.env.example' not in s:
+              s = s.replace('.env*', '.env*\n!/.env.example')
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verify legacy domains are gone from application source
+        run: |
+          if grep -RniE 'api\.yazd-mobile\.ir|yazd-mobile\.ir|mpttools\.co' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.git --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' --include='*.mjs' --include='*.cjs' .; then
+            echo 'Legacy environment-specific domains remain in source.'
+            exit 1
+          fi
+
+      - name: Commit changes and remove this one-shot workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .github/workflows/normalize-env-urls.yml
+          git add -A
+          git commit -m "fix: use environment variables for site and API URLs"
+          git push origin main
