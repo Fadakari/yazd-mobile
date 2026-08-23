@@ -25,7 +25,6 @@ import { CategoryNode } from "@/types/categories";
 import { User } from "@/types/user";
 
 // Assets
-import defaultLogo from "../../public/logo.png";
 
 const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -161,7 +160,6 @@ export default function Navbar({
   const categories = useCategories();
   const { onOpen: onAuthOpen }: any = useAuthModal();
 
-  const siteLogo = logo || defaultLogo;
   const [isSticky, setIsSticky] = useState(false);
 
   const topLinks = [
@@ -178,8 +176,8 @@ export default function Navbar({
   }, []);
 
   const getFullImageUrl = (path: string | null | undefined) => {
-  // ۱. اگر اصلاً لوگویی نبود، برگرد به تصویر پیش‌فرض
-  if (!path) return "/logo.png"; 
+  // ۱. اگر اصلاً لوگویی نبود، نال برگردان
+  if (!path) return null; 
   
   // ۲. اگر خودش آدرس کامل بود (با http شروع می‌شد)، برگردان
   if (path.startsWith("http")) return path;
@@ -226,21 +224,27 @@ export default function Navbar({
             {/* Mobile: Hamburger & Logo */}
             <div className="lg:hidden flex items-center gap-3">
               <MobileDrawer onAuthOpen={onAuthOpen} user={user} links={topLinks} categories={categories} />
-              <Link href="/" className="relative w-30 h-20">
-                <Image src={siteLogo} alt="Logo" fill className="object-contain" priority />
+              <Link href="/" className="relative w-30 h-20 flex items-center justify-center">
+                {getFullImageUrl(logo) ? (
+                  <Image src={getFullImageUrl(logo) as string} alt="Logo" fill className="object-contain" priority />
+                ) : (
+                  <div className="w-20 h-10"></div>
+                )}
               </Link>
             </div>
 
             {/* Desktop: Logo */}
-            <Link href="/" className="hidden lg:block shrink-0">
-              <Image
-                src={getFullImageUrl(logo)}
-                alt="Logo"
-                width={200}
-                height={80}
-                className="h-auto w-auto max-h-14"
-                priority
-              />
+            <Link href="/" className="hidden lg:flex shrink-0 items-center min-w-[120px] h-[56px]">
+              {getFullImageUrl(logo) ? (
+                <Image
+                  src={getFullImageUrl(logo) as string}
+                  alt="Logo"
+                  width={200}
+                  height={80}
+                  className="h-auto w-auto max-h-14"
+                  priority
+                />
+              ) : null}
             </Link>
 
             {/* Desktop: Search */}
