@@ -176,8 +176,8 @@ export default function Navbar({
   }, []);
 
   const getFullImageUrl = (path: string | null | undefined) => {
-  // ۱. اگر اصلاً لوگویی نبود، نال برگردان
-  if (!path) return null; 
+  // ۱. اگر اصلاً لوگویی نبود یا خالی بود، لوگوی پیش‌فرض را برگردان
+  if (!path || path.trim() === "" || path === "لوگو دریافت نشد") return "/assets/logo-abaj.png"; 
   
   // ۲. اگر خودش آدرس کامل بود (با http شروع می‌شد)، برگردان
   if (path.startsWith("http")) return path;
@@ -190,6 +190,8 @@ export default function Navbar({
   
   return `${baseUrl}${cleanPath}`;
 };
+
+  const finalLogoUrl = getFullImageUrl(logo);
 
   return (
     <header className="w-full font-sans dir-rtl select-none z-50">
@@ -225,26 +227,20 @@ export default function Navbar({
             <div className="lg:hidden flex items-center gap-3">
               <MobileDrawer onAuthOpen={onAuthOpen} user={user} links={topLinks} categories={categories} />
               <Link href="/" className="relative w-30 h-20 flex items-center justify-center">
-                {getFullImageUrl(logo) ? (
-                  <Image src={getFullImageUrl(logo) as string} alt="Logo" fill className="object-contain" priority />
-                ) : (
-                  <div className="w-20 h-10"></div>
-                )}
+                <Image src={finalLogoUrl} alt="Logo" fill className="object-contain" priority />
               </Link>
             </div>
 
             {/* Desktop: Logo */}
             <Link href="/" className="hidden lg:flex shrink-0 items-center min-w-[120px] h-[56px]">
-              {getFullImageUrl(logo) ? (
-                <Image
-                  src={getFullImageUrl(logo) as string}
-                  alt="Logo"
-                  width={200}
-                  height={80}
-                  className="h-auto w-auto max-h-14"
-                  priority
-                />
-              ) : null}
+              <Image
+                src={finalLogoUrl}
+                alt="Logo"
+                width={200}
+                height={80}
+                className="h-auto w-auto max-h-14"
+                priority
+              />
             </Link>
 
             {/* Desktop: Search */}
