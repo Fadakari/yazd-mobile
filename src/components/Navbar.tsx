@@ -14,7 +14,7 @@ import { CiLogin } from "react-icons/ci";
 import { BiCategory } from "react-icons/bi";
 
 // Components & Contexts
-import { Drawer, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter, useDisclosure } from "@heroui/react";
+import { Drawer, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter, useDisclosure, Modal, ModalContent } from "@heroui/react";
 import { useUser } from "../context/UserContext";
 import { useAuthModal } from "../context/AuthModalProvider";
 import { useCategories } from "../context/CategoriesContext";
@@ -150,6 +150,57 @@ const SearchForm = () => {
   );
 };
 
+const MobileSearchModal = () => {
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/products?search=${encodeURIComponent(query)}`);
+      onClose();
+    }
+  };
+
+  return (
+    <>
+      <button onClick={onOpen} className="p-2 text-gray-700 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
+        <FiSearch className="size-6" />
+      </button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        placement="top"
+        classNames={{
+          backdrop: "bg-black/40 backdrop-blur-sm",
+          base: "m-4 mt-16 rounded-2xl bg-white shadow-2xl",
+        }}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <div className="px-5 py-6">
+              <form onSubmit={handleSearch} className="relative flex items-center pt-5">
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="جستجو در هزاران محصول..."
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl h-14 px-4 pr-12 text-sm outline-none focus:border-[#ff5722] focus:bg-white transition-colors"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+                <button type="submit" className="absolute right-3 text-[#ff5722] p-2 bg-orange-50 rounded-lg">
+                  <FiSearch className="size-5" />
+                </button>
+              </form>
+            </div>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
 export default function Navbar({
     logo,
 }: {
@@ -183,7 +234,7 @@ export default function Navbar({
   if (path.startsWith("http")) return path;
 
   // ۳. ترکیب ایمن با دامین اصلی
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
   
   // مطمئن شو که اگر در مسیر / وجود نداشت، اضافه شود تا URL نشکند
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
@@ -192,6 +243,12 @@ export default function Navbar({
 };
 
   const finalLogoUrl = getFullImageUrl(logo);
+
+  const mobileBubbleClass = `lg:hidden flex items-center pointer-events-auto border transition-all duration-500 ease-in-out ${
+    isSticky 
+      ? 'bg-white/60 backdrop-blur-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] border-white/60' 
+      : 'bg-transparent border-transparent shadow-none'
+  }`;
 
   return (
     <header className="w-full font-sans dir-rtl select-none z-50">
@@ -219,86 +276,97 @@ export default function Navbar({
       </div>
 
       {/* --- MAIN HEADER (Middle) --- */}
-      <div className="bg-white py-4 lg:py-6 relative z-30 transition-all duration-300">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between gap-4 lg:gap-8">
+      <div className="h-[72px] lg:h-auto z-40 relative">
+        <div 
+          className={`transition-all duration-300 z-40 w-full pointer-events-none lg:pointer-events-auto
+            ${isSticky 
+              ? "fixed top-3 left-0 right-0 px-3 lg:px-0 lg:static lg:bg-white lg:shadow-none lg:border-none lg:rounded-none lg:py-6 lg:!bg-white"
+              : "relative pt-3 lg:py-6 lg:bg-white px-3 lg:px-0"
+            }`}
+        >
+          <div className="container mx-auto px-0 lg:px-4">
+            <div className="flex items-center justify-between lg:gap-8">
 
-            {/* Mobile: Hamburger & Logo */}
-            <div className="lg:hidden flex items-center gap-3">
-              <MobileDrawer onAuthOpen={onAuthOpen} user={user} links={topLinks} categories={categories} />
-              <Link href="/" className="relative w-30 h-20 flex items-center justify-center">
-                <Image src={finalLogoUrl} alt="Logo" fill className="object-contain" priority />
+              {/* Mobile: Hamburger & Logo Pill */}
+              <div className={`${mobileBubbleClass} gap-1 rounded-2xl px-2 py-1.5`}>
+                <MobileDrawer onAuthOpen={onAuthOpen} user={user} links={topLinks} categories={categories} />
+                <Link href="/" className="relative w-24 h-9 flex items-center justify-center ml-1 active:scale-95 transition-transform duration-300">
+                  <Image src={finalLogoUrl} alt="Logo" fill className="object-contain" priority />
+                </Link>
+              </div>
+
+              {/* Desktop: Logo */}
+              <Link href="/" className="hidden lg:flex shrink-0 items-center min-w-[120px] h-[56px]">
+                <Image
+                  src={finalLogoUrl}
+                  alt="Logo"
+                  width={200}
+                  height={80}
+                  className="h-auto w-auto max-h-14"
+                  priority
+                />
               </Link>
-            </div>
 
-            {/* Desktop: Logo */}
-            <Link href="/" className="hidden lg:flex shrink-0 items-center min-w-[120px] h-[56px]">
-              <Image
-                src={finalLogoUrl}
-                alt="Logo"
-                width={200}
-                height={80}
-                className="h-auto w-auto max-h-14"
-                priority
-              />
-            </Link>
+              {/* Mobile: Left Actions Container (Search + Cart/Login) */}
+              <div className="lg:hidden flex items-center gap-2">
+                {/* Search Bubble */}
+                <div className={`${mobileBubbleClass} justify-center rounded-full p-0.5`}>
+                  <MobileSearchModal />
+                </div>
 
-            {/* Desktop: Search */}
-            <div className="hidden lg:block flex-1 max-w-[600px] mx-auto">
-              <SearchForm />
-            </div>
-
-            {/* Desktop: Actions (User, Cart, etc) */}
-            <div className="hidden lg:flex items-center justify-end gap-3">
-              {/* دکمه ورود / پنل */}
-
-
-              <span className="w-[1px] h-8 bg-gray-100 mx-1"></span>
-
-              {/* سبد خرید */}
-              <div className="relative group">
-                <div className="relative z-10">
-                  {cart && cart.items && cart.items.length > 0 ? (
-                    <CartDrawer cart={cart} />
-                  ) : (
-                    <Link href="/profile/cart" className="w-11 h-11 flex items-center justify-center rounded-xl bg-orange-50 text-[#ff5722] border border-orange-100 hover:shadow-lg hover:shadow-orange-100 hover:-translate-y-0.5 transition-all duration-300 relative">
+                {/* Cart & Login Bubble */}
+                <div className={`${mobileBubbleClass} gap-1 rounded-full px-1.5 py-1.5`}>
+                  {!user?.identity && (
+                    <button onClick={onAuthOpen} className="p-1.5 text-gray-700 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
+                      <CiLogin className="size-6" />
+                    </button>
+                  )}
+                  <div className="relative">
+                    {/* نسخه ساده‌تر سبد خرید برای موبایل */}
+                    <Link href="/profile/cart" className="flex items-center justify-center w-9 h-9 rounded-full bg-white/60 text-gray-700 relative hover:bg-white/80 active:scale-90 active:bg-white/40 transition-all duration-300">
                       <FiShoppingCart className="size-5" />
                       {cart && cart.total_items > 0 && (
-                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-lg">
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm border-2 border-white">
                           {cart.total_items}
                         </span>
                       )}
                     </Link>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Mobile: Cart & Login Icon */}
-            <div className="lg:hidden flex items-center gap-2">
-              {!user?.identity && (
-                <button onClick={onAuthOpen} className="p-2 text-gray-700">
-                  <CiLogin className="size-7" />
-                </button>
-              )}
-              <div className="relative">
-                {/* نسخه ساده‌تر سبد خرید برای موبایل */}
-                <Link href="/profile/cart" className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-700 relative">
-                  <FiShoppingCart className="size-5" />
-                  {cart && cart.total_items > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold shadow-sm border-2 border-white">
-                      {cart.total_items}
-                    </span>
-                  )}
-                </Link>
+              {/* Desktop: Search */}
+              <div className="hidden lg:block flex-1 max-w-[600px] mx-auto">
+                <SearchForm />
               </div>
+
+              {/* Desktop: Actions (User, Cart, etc) */}
+              <div className="hidden lg:flex items-center justify-end gap-3">
+                {/* دکمه ورود / پنل */}
+
+
+                <span className="w-[1px] h-8 bg-gray-100 mx-1"></span>
+
+                {/* سبد خرید */}
+                <div className="relative group">
+                  <div className="relative z-10">
+                    {cart && cart.items && cart.items.length > 0 ? (
+                      <CartDrawer cart={cart} />
+                    ) : (
+                      <Link href="/profile/cart" className="w-11 h-11 flex items-center justify-center rounded-xl bg-orange-50 text-[#ff5722] border border-orange-100 hover:shadow-lg hover:shadow-orange-100 hover:-translate-y-0.5 transition-all duration-300 relative">
+                        <FiShoppingCart className="size-5" />
+                        {cart && cart.total_items > 0 && (
+                          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-lg">
+                            {cart.total_items}
+                          </span>
+                        )}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </div>
+
             </div>
-
-          </div>
-
-          {/* Mobile: Search Bar (Below Header) */}
-          <div className="mt-4 lg:hidden w-full px-1">
-            <SearchForm />
           </div>
         </div>
       </div>
@@ -485,7 +553,7 @@ export function MobileDrawer({ categories, links, user, onAuthOpen }: { categori
 
   return (
     <>
-      <button onClick={onOpen} className="lg:hidden p-2 -mr-2 text-gray-800 hover:bg-gray-100 rounded-full transition-colors">
+      <button onClick={onOpen} className="lg:hidden p-2 -mr-2 text-gray-800 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
         <HiOutlineMenuAlt3 className="size-7" />
       </button>
 

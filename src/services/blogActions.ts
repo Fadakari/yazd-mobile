@@ -4,13 +4,16 @@ import { BlogCategoryNode } from "@/types/categories";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
-const defaultFetchOptions = {
-    headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
-    },
-    // معادل withCredentials: true در Axios
-    credentials: "include" as RequestCredentials, 
+const getFetchOptions = () => {
+    const isClient = typeof window !== 'undefined';
+    return {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+        credentials: "include" as RequestCredentials,
+        ...(isClient ? { cache: "no-store" as RequestCache } : {})
+    };
 };
 
 type BlogPostsResponse = {
@@ -31,7 +34,7 @@ export const GetBlogPosts = async (params?: BlogPostsParams, page?: string): Pro
 
         const url = `${process.env.NEXT_PUBLIC_API_URL}/blog/posts/?${query.toString()}`;
 
-        const result = await fetch(url, { next: { revalidate: 60 } });
+        const result = await fetch(url, { ...getFetchOptions(), next: { revalidate: 60 } });
         if (!result.ok) return undefined;
         return await result.json();
     } catch (error) {
@@ -42,7 +45,7 @@ export const GetBlogPosts = async (params?: BlogPostsParams, page?: string): Pro
 export async function GetLatestBlogPosts() {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/latest`, {
-            ...defaultFetchOptions,
+            ...getFetchOptions(),
             next: { revalidate: 600 } // آپدیت هر 10 دقیقه
         });
         if (!res.ok) return undefined;
@@ -56,7 +59,7 @@ export async function GetLatestBlogPosts() {
 export async function GetBlogCategoriesMenuStructure(): Promise<BlogCategoryNode[] | undefined> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/categories/menu_structure/`, {
-            ...defaultFetchOptions,
+            ...getFetchOptions(),
             next: { revalidate: 3600 } // آپدیت هر 1 ساعت
         });
         if (!res.ok) return undefined;
@@ -70,7 +73,7 @@ export async function GetBlogCategoriesMenuStructure(): Promise<BlogCategoryNode
 export const GetBlogBySlug = cache(async (slug: string): Promise<any> => {
     try {
         const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/${slug}/`, { 
-            ...defaultFetchOptions,
+            ...getFetchOptions(),
             next: { revalidate: 60 } 
         });
         if (!result.ok) return null;
@@ -96,8 +99,8 @@ export async function SearchBlogs(params: Search): Promise<any> {
 
     try {
         // جایگزین api.get
-        const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/search?${query.toString()}`, {
-            ...defaultFetchOptions,
+        const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/search/?${query.toString()}`, {
+            ...getFetchOptions(),
             next: { revalidate: 60 }
         });
         if (!result.ok) return null;

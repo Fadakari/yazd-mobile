@@ -13,20 +13,20 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
     remotePatterns: [
-      { protocol: 'https', hostname: 'abajstore.ir' },
-      { protocol: 'https', hostname: 'api.abajstore.ir' },
-      { protocol: 'https', hostname: 'api.abajstore.ir' },
+      { protocol: 'https', hostname: 'yazd-mobile.ir' },
+      { protocol: 'https', hostname: 'api.yazd-mobile.ir' },
+      { protocol: 'https', hostname: 'api.yazd-mobile.ir' },
       {
         protocol: 'https',
-        hostname: 'api.abajstore.ir',
+        hostname: 'api.yazd-mobile.ir',
       },
-      { protocol: 'https', hostname: 'abajstore.ir' },
+      { protocol: 'https', hostname: 'yazd-mobile.ir' },
       // --- موارد جدید اضافه شده ---
       { protocol: 'https', hostname: 'images.unsplash.com' }, // برای عکس‌های بلاگ
       { protocol: 'https', hostname: 'api.dicebear.com' },   // برای آواتار نویسنده‌ها
       {
         protocol: "https",
-        hostname: "api.abajstore.ir", 
+        hostname: "api.yazd-mobile.ir", 
       },
     ],
   },

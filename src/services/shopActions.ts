@@ -3,13 +3,16 @@ import api from "./api";
 import { unstable_cache } from "next/cache";
 
 
-const defaultFetchOptions = {
-    headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
-    },
-    // معادل withCredentials: true در Axios
-    credentials: "include" as RequestCredentials, 
+const getFetchOptions = () => {
+    const isClient = typeof window !== 'undefined';
+    return {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+        credentials: "include" as RequestCredentials,
+        ...(isClient ? { cache: "no-store" as RequestCache } : {})
+    };
 };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
@@ -18,8 +21,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 export async function GetDiscountedProducts() {
   try {
     const res = await fetch(`${API_URL}/home/discounted-products/`, {
-        ...defaultFetchOptions,
-      next: { revalidate: 300 }
+        ...getFetchOptions(),
+      next: { revalidate: 30 }
     });
     if (!res.ok) return [];
     return await res.json();
@@ -33,8 +36,8 @@ export async function GetShopCategoriesTreeList() {
     try {
         // استفاده از fetch نیتیو به جای api.get و unstable_cache
         const res = await fetch(`${API_URL}/shop/categories/tree/`, {
-            ...defaultFetchOptions,
-            next: { revalidate: 60 } // <--- دیتا کش می‌شود اما هر 60 ثانیه در صورت نیاز آپدیت می‌شود
+            ...getFetchOptions(),
+            next: { revalidate: 30 } // <--- دیتا کش می‌شود اما هر 30 ثانیه در صورت نیاز آپدیت می‌شود
         });
 
         if (!res.ok) {
@@ -82,8 +85,8 @@ export async function GetProducts(
         if (onlyDiscounted) {
             // جایگزین api.get با fetch نیتیو
             const resDiscounted = await fetch(`${API_URL}/home/discounted-products/?${query.toString()}`, {
-                ...defaultFetchOptions,
-                next: { revalidate: 60 } 
+                ...getFetchOptions(),
+                next: { revalidate: 30 } 
             });
             if (!resDiscounted.ok) throw new Error("Failed to fetch discounted products");
             const discountedData = await resDiscounted.json();
@@ -99,9 +102,9 @@ export async function GetProducts(
 
         // جایگزین api.get با fetch نیتیو
         const [resNormal, discountedList] = await Promise.all([
-            fetch(`${API_URL}/shop/products?${query.toString()}`, {
-                ...defaultFetchOptions,
-                next: { revalidate: 60 }
+            fetch(`${API_URL}/shop/products/?${query.toString()}`, {
+                ...getFetchOptions(),
+                next: { revalidate: 30 }
             }),
             GetDiscountedProducts(),
         ]);
@@ -149,9 +152,9 @@ export async function GetProducts(
 export async function GetLatestProducts() {
     try {
         const [resLatest, discountedList] = await Promise.all([
-            fetch(`${API_URL}/shop/latest-products`, {
-                ...defaultFetchOptions,
-                next: { revalidate: 300 }
+            fetch(`${API_URL}/shop/latest-products/`, {
+                ...getFetchOptions(),
+                next: { revalidate: 30 }
             }),
             GetDiscountedProducts(),
         ]);
@@ -197,17 +200,17 @@ export async function GetProductBySlug(slug: string): Promise<any> {
         const [productRes, discountRes] = await Promise.allSettled([
 
             fetch(`${API_URL}/shop/products/${encodeURIComponent(slug)}/`, {
-                ...defaultFetchOptions,
+                ...getFetchOptions(),
                 next: {
-                    revalidate: 120,
+                    revalidate: 30,
                     tags: [`product-${slug}`],
                 },
             }),
 
             fetch(`${API_URL}/home/discounted-products/${encodeURIComponent(slug)}/`, {
-                ...defaultFetchOptions,
+                ...getFetchOptions(),
                 next: {
-                    revalidate: 120,
+                    revalidate: 30,
                     tags: [`product-discount-${slug}`],
                 },
             })
@@ -251,9 +254,9 @@ export async function GetProductBySlug(slug: string): Promise<any> {
 
 export async function GetFeaturedProducts() {
   try {
-    const res = await fetch(`${API_URL}/shop/featured-products`, {
-        ...defaultFetchOptions,
-      next: { revalidate: 300 }
+    const res = await fetch(`${API_URL}/shop/featured-products/`, {
+        ...getFetchOptions(),
+      next: { revalidate: 30 }
     });
     if (!res.ok) return [];
     return await res.json();
@@ -469,8 +472,8 @@ export async function marketing_create_order(data: any, store_name_english: stri
 
 export async function GetShippingServices() {
   try {
-    const res = await fetch(`${API_URL}/shop/shipping-services`, {
-        ...defaultFetchOptions,
+    const res = await fetch(`${API_URL}/shop/shipping-services/`, {
+        ...getFetchOptions(),
       next: { revalidate: 86400 } // آپدیت هر 24 ساعت
     });
     if (!res.ok) return [];
@@ -488,7 +491,7 @@ export async function GetComments(product_id: number) {
         const res = await fetch(
             `${API_URL}/shop/products/${product_id}/comments/`,
             {
-                ...defaultFetchOptions,
+                ...getFetchOptions(),
                 next: {
                     revalidate: 300,
                     tags: [`comments-${product_id}`],

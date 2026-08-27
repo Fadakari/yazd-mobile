@@ -10,6 +10,7 @@ export default async function Page() {
   const discountedOrders = Array.isArray(data?.discounted_orders)
     ? data.discounted_orders
     : [];
+
   const mapOrders = (data: any[], type: "regular" | "discounted") =>
     data.map((order) => ({
       id: `${order?.id || "0"}-${type}`,

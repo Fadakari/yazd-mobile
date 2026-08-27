@@ -94,17 +94,20 @@ export async function getUserOrders() {
     const accessToken = cookieStore.get('access_token')?.value;
 
     if (!accessToken) {
+        console.log("[getUserOrders] No access token found in cookies.");
         return null;
-    } try {
+    } 
+    try {
+        console.log(`[getUserOrders] Fetching orders for token: ${accessToken.substring(0, 10)}...`);
         const response = await api.get(`/users/orders`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
             },
-
         });
+        console.log("[getUserOrders] Success! Data received:", JSON.stringify(response.data).substring(0, 200) + "...");
         return response.data;
-    } catch (error) {
-        console.error("GetOrders error:", error);
+    } catch (error: any) {
+        console.error("[getUserOrders] API Error:", error?.response?.data || error?.message);
         return null;
     }
 }
