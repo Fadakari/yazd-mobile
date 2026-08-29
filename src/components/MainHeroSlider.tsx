@@ -46,7 +46,7 @@ export default function MainHeroSlider({ slides }: Props) {
                 src={slide.image}
                 alt={slide.title || "بنر فروشگاه"}
                 fill
-                className="object-cover hidden md:block"
+                className="hidden md:block"
                 priority
                 sizes="(max-width: 768px) 100vw, 75vw"
               />
@@ -54,7 +54,7 @@ export default function MainHeroSlider({ slides }: Props) {
                 src={slide.mobileImage || slide.image}
                 alt={slide.title || "بنر فروشگاه"}
                 fill
-                className="object-cover block md:hidden"
+                className="block md:hidden"
                 priority
                 sizes="100vw"
               />

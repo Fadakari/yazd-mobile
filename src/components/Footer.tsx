@@ -187,12 +187,12 @@ async function Footer() {
 
         <p className="text-md text-gray-600 max-md:mb-12 lg:px-10" style={{ fontFamily: "pelak, tahoma, serif" }}>
           تمام حقوق این سایت نزد 
-          <span className="text-primary font-extrabold mx-2">{siteTitle}</span>
+          <span className="text-blue-800 font-extrabold mx-2">{siteTitle}</span>
            محفوظ است.
         </p>
         <p className="text-md text-gray-600 max-md:mb-12 lg:px-10" style={{ fontFamily: "pelak, tahoma, serif" }}>
           طراحی شده توسط گروه  
-          <span className="text-primary font-extrabold mx-2">Pattern</span>
+          <span className="text-blue-800 font-extrabold mx-2">Pattern</span>
         </p>
       </div>
     </footer>

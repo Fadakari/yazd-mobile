@@ -81,7 +81,7 @@ export default function PaginationBox({
         className={cn(
           `${className} hover:bg-default-200/50 text-sm rounded-xs`,
           isActive &&
-            "text-white bg-primary hover:bg-primary/80 active:bg-primary-500 font-bold rounded-xs"
+            "text-white bg-primary hover:bg-primary/80 active:bg-blue-900 font-bold rounded-xs"
         )}
         onClick={() => setPage(value)}
       >
