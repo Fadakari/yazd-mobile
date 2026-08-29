@@ -168,7 +168,7 @@ export default async function Page({
     const cleanPath = path.trim();
     if (!cleanPath) return "";
     if (cleanPath.startsWith("http")) return cleanPath;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.valiasrstore.com";
     return `${baseUrl}${cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`}`;
   };
 

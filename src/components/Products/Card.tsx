@@ -41,7 +41,7 @@ export default function Card({
     const cleanPath = path.trim();
     if (!cleanPath) return "";
     if (cleanPath.startsWith("http")) return cleanPath;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.valiasrstore.com";
     return `${baseUrl}${cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`}`;
   };
 
@@ -120,8 +120,8 @@ export default function Card({
           href={href ? href : `/product/${item.slug}`}
           className={`btn flex justify-center items-center gap-2 py-2.5 sm:py-3.5 px-4 sm:px-5 rounded-2xl text-sm sm:text-md transition ${
             isAvailable
-              ? "bg-orange-500 hover:bg-orange-600 text-white"
-              : "!bg-orange-400 text-white"
+              ? "bg-blue-500 hover:bg-blue-600 text-white"
+              : "!bg-blue-400 text-white"
           }`}
         >
           <ShoppingBasket className="size-5 sm:size-6" />

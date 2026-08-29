@@ -62,14 +62,14 @@ const getIconByType = (type: string, value: string) => {
     if (value.includes("whatsapp")) return <FaWhatsapp />;
     return <FaLink />;
   }
-  return <div className="bg-orange-400 w-5 h-5 rounded-full" />;
+  return <div className="bg-blue-400 w-5 h-5 rounded-full" />;
 };
 
 const FooterSection = ({ title, items }: { title: string; items: FooterItem[] }) => {
   return (
     <div className={`p-4 rounded-lg w-full`}>
   <h4 className="text-2xl font-semibold text-[#424242] text-right flex items-center gap-2 mb-4">
-    <div className="bg-orange-400 w-3 h-6 rounded-full" />
+    <div className="bg-blue-400 w-3 h-6 rounded-full" />
     {title}
   </h4>
 
@@ -89,7 +89,7 @@ const FooterSection = ({ title, items }: { title: string; items: FooterItem[] })
             className={`text-zinc-700 flex items-center justify-between w-full ${item.item_type === 'address' ? 'cursor-default pointer-events-none' : ''}`}
           >
             <div className="flex items-center gap-2">
-              <span className="text-orange-500 text-3xl">
+              <span className="text-blue-500 text-3xl">
                 {getIconByType(item.item_type, item.value)}
               </span>
               <div className="flex flex-col items-start">
@@ -177,10 +177,10 @@ async function Footer() {
               target="_blank" 
               href={mapUrl}
               title="نشانی ما در گوگل مپ"
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-all"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all"
             >
-              <FaMapMarkerAlt className="text-orange-600 text-xl" />
-              <span className="text-sm font-bold text-orange-600">آدرس در نقشه</span>
+              <FaMapMarkerAlt className="text-blue-600 text-xl" />
+              <span className="text-sm font-bold text-blue-600">آدرس در نقشه</span>
             </a>
           )}
         </div>

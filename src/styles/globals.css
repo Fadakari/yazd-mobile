@@ -9,16 +9,16 @@
 @custom-variant dark (&:is(.dark *));
 @config "../../tailwind.config.js";
 @theme {
-  --color-primary: #e05d27;
-  --color-primary-100: #ffe6e2;
-  --color-primary-200: #ffbf99;
-  --color-primary-300: #ff9966;
-  --color-primary-400: #ff8a4d;
-  --color-primary-500: #e05d27;
-  --color-primary-600: #b31f1f;
-  --color-primary-700: #861717;
-  --color-primary-800: #590f0f;
-  --color-primary-900: #2d0808;
+  --color-primary: #001f5c;
+  --color-primary-100: #e6e9f2;
+  --color-primary-200: #b3bcd9;
+  --color-primary-300: #8090bf;
+  --color-primary-400: #4d63a6;
+  --color-primary-500: #1a378c;
+  --color-primary-600: #001f5c;
+  --color-primary-700: #001642;
+  --color-primary-800: #000c29;
+  --color-primary-900: #00040f;
   --color-danger: #ef4056;
   --font-iranyekan: "iranyekan", sans-serif;
   --font-pelak: "pelak", sans-serif;
@@ -182,7 +182,7 @@ li::marker {
   }
 }
 .btn-primary {
-  @apply p-3 bg-orange-500  text-white   transition-colors ease-in-out;
+  @apply p-3 bg-blue-800  text-white   transition-colors ease-in-out;
 }
 html {
   font-size: 13px;

@@ -79,13 +79,13 @@ export default function MobileBottomNav() {
               {/* نشانگر فعال بودن (خط بالای آیکون) */}
               <div 
                 className={`absolute top-0 w-6 h-1 rounded-full transition-all duration-300 ${
-                  isActive ? "bg-[#ff5722] opacity-100 shadow-[0_2px_8px_rgba(255,87,34,0.4)]" : "bg-transparent opacity-0"
+                  isActive ? "bg-[#0053c0] opacity-100 shadow-[0_2px_8px_rgba(255,87,34,0.4)]" : "bg-transparent opacity-0"
                 }`}
               />
               
               <div 
                 className={`transition-all duration-300 transform ${
-                  isActive ? "text-[#ff5722] -translate-y-0.5" : "text-gray-600"
+                  isActive ? "text-[#0053c0] -translate-y-0.5" : "text-gray-600"
                 }`}
               >
                 {item.icon}
@@ -93,7 +93,7 @@ export default function MobileBottomNav() {
               
               <span 
                 className={`text-[10px] font-bold transition-all duration-300 ${
-                  isActive ? "text-[#ff5722] opacity-100" : "text-gray-600 opacity-80"
+                  isActive ? "text-[#0053c0] opacity-100" : "text-gray-600 opacity-80"
                 }`}
               >
                 {item.label}

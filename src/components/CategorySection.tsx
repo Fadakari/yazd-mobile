@@ -38,7 +38,7 @@ export default function CategorySection({ categories }: Props) {
       {/* --- هدر بخش --- */}
       <div className="container mx-auto px-4 mb-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg">
+          <span className="flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
               <path fillRule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clipRule="evenodd" />
             </svg>
@@ -52,7 +52,7 @@ export default function CategorySection({ categories }: Props) {
         <div className="hidden lg:flex items-center gap-2">
           <button
             ref={nextRef}
-            className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-500 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all duration-300 flex-shrink-0"
+            className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-300 flex-shrink-0"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5L15.75 12l-7.5 7.5" />
@@ -60,7 +60,7 @@ export default function CategorySection({ categories }: Props) {
           </button>
           <button
             ref={prevRef}
-            className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-500 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all duration-300 flex-shrink-0"
+            className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-300 flex-shrink-0"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -82,7 +82,7 @@ export default function CategorySection({ categories }: Props) {
                 className="group flex flex-col items-center gap-2"
               >
                 <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center flex-shrink-0">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-orange-50 rounded-full border-2 border-gray-100 group-hover:border-orange-400 shadow-sm group-hover:shadow-md transition-all duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-50 rounded-full border-2 border-gray-100 group-hover:border-blue-400 shadow-sm group-hover:shadow-md transition-all duration-300"></div>
                   <div className="relative w-12 h-12 sm:w-14 sm:h-14 z-10 transition-transform duration-300 group-hover:scale-110">
                     <Image
                       src={cat.icon}
@@ -92,7 +92,7 @@ export default function CategorySection({ categories }: Props) {
                     />
                   </div>
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-gray-700 group-hover:text-orange-600 text-center leading-tight line-clamp-2">
+                <span className="text-xs sm:text-sm font-bold text-gray-700 group-hover:text-blue-600 text-center leading-tight line-clamp-2">
                   {cat.name}
                 </span>
               </Link>
@@ -133,11 +133,11 @@ export default function CategorySection({ categories }: Props) {
                   {/* دایره آیکون */}
                   <div className="relative w-28 h-28 flex items-center justify-center flex-shrink-0">
                     {/* پس‌زمینه دایره */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-50 rounded-full border-2 border-gray-100 group-hover:border-orange-400 shadow-md group-hover:shadow-[0_8px_16px_rgba(255,87,34,0.15)] transition-all duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-50 rounded-full border-2 border-gray-100 group-hover:border-blue-400 shadow-md group-hover:shadow-[0_8px_16px_rgba(255,87,34,0.15)] transition-all duration-300"></div>
 
                     {/* دایره‌ی متحرک در هاور */}
                     <div
-                      className="absolute inset-0 rounded-full border-2 border-dashed border-transparent group-hover:border-orange-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="absolute inset-0 rounded-full border-2 border-dashed border-transparent group-hover:border-blue-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       style={{
                         animation: "spin 8s linear infinite",
                       }}
@@ -155,7 +155,7 @@ export default function CategorySection({ categories }: Props) {
                   </div>
 
                   {/* نام دسته‌بندی */}
-                  <span className="text-sm font-bold text-gray-800 group-hover:text-orange-600 text-center leading-snug line-clamp-2">
+                  <span className="text-sm font-bold text-gray-800 group-hover:text-blue-600 text-center leading-snug line-clamp-2">
                     {cat.name}
                   </span>
                 </Link>

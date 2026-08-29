@@ -83,19 +83,19 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
         
         {/* 1. پس‌زمینه (Background Images) */}
         {/* بک‌گراند رنگ اصلی برای جلوگیری از پرش تصویر */}
-        <div className="absolute inset-0 bg-orange-500 -z-20"></div>
+        <div className="absolute inset-0 bg-primary -z-20"></div>
         
         {/* تصویر دسکتاپ */}
         <img 
           src="/assets/subtract1.png" 
           alt="Background Desktop" 
-          className="absolute inset-0 w-full h-[75%] object-fill hidden md:block -z-0 top-[15%]"
+          className="absolute inset-0 w-full h-[75%] object-fill hidden md:block -z-0 top-[15%] opacity-20"
         />
         {/* تصویر موبایل */}
         <img 
           src="/assets/subtract2.png" 
           alt="Background Mobile" 
-          className="absolute inset-0 w-full h-full object-fill block md:hidden -z-0"
+          className="absolute inset-0 w-full h-full object-fill block md:hidden -z-0 opacity-20"
         />
 
         {/* 2. محتوا */}
@@ -105,11 +105,11 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
           <div className="w-full md:w-[220px] lg:w-[260px] shrink-0 flex flex-col justify-center items-center gap-6 md:gap-8 p-4 z-10">
             
             {/* تصویر عنوان پیشنهاد شگفت انگیز */}
-            <div className="relative w-[450px] h-[80px] md:w-[180px] md:h-[80px] mt-[2.5rem]">
+            <div className="relative w-[150px] h-[50px] md:w-[150px] md:h-[50px] mt-[2.5rem]">
                {/* اگر تصویر "پیشنهاد شگفت انگیز" دارید اینجا بگذارید، وگرنه از heroImageSrc استفاده میکنیم */}
                <Image
                 src={heroImageSrc}
-                alt="پیشنهاد شگفت‌انگیز"
+                alt="شگفت انگیز"
                 fill
                 className="object-contain"
               />
@@ -142,10 +142,10 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
               className="!py-4 !px-1"
             >
               {products.map((product) => (
-                <SwiperSlide key={product.id} className="h-[130%]">
-                  <div className="bg-white rounded-xl overflow-hidden h-full flex flex-col justify-between group/card relative shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.04] hover:border hover:border-orange-500 transition-all hover:z-10">
+                <SwiperSlide key={product.id} className="h-full">
+                  <div className="bg-white rounded-xl overflow-hidden h-full flex flex-col justify-between group/card relative shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gray-200">
                     
-                    <Link href={product.link} className="block p-3 flex-1">
+                    <Link href={product.link} className="block p-3 flex-1 flex flex-col">
                         {/* تصویر محصول */}
                         <div className="relative w-full aspect-square mb-3">
                           <Image
@@ -157,15 +157,15 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
                         </div>
 
                         {/* عنوان محصول */}
-                        <h3 className="text-[13px] text-gray-700 font-medium line-clamp-2 leading-6 mb-2">
+                        <h3 className="text-[13px] text-gray-800 font-medium line-clamp-2 leading-6 mb-3 hover:text-primary transition-colors">
                           {product.title}
                         </h3>
 
                         {/* بخش قیمت */}
-                        <div className="flex flex-col gap-1 mt-auto">
+                        <div className="flex flex-col gap-1 mt-auto border-t border-gray-50 pt-3">
                           {product.oldPrice && product.discountPercentage ? (
                             <div className="flex items-center justify-between">
-                               <div className="bg-[#ef394e] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+                               <div className="bg-red-600 text-white text-[12px] font-bold px-1.5 py-0.5 rounded">
                                 {product.discountPercentage}٪
                                </div>
                                <del className="text-gray-400 text-xs">
@@ -176,28 +176,14 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
                             <div className="h-[22px]"></div> // فضای خالی
                           )}
                           
-                          <div className="flex items-center justify-end gap-1 text-gray-800">
-                            <span className="font-bold text-lg">
+                          <div className="flex items-center justify-end gap-1 text-gray-900 mt-1">
+                            <span className="font-bold text-[17px]">
                               {product.price.toLocaleString("fa-IR")}
                             </span>
-                            <span className="text-[10px] font-light">تومان</span>
+                            <span className="text-[11px] font-light text-gray-500">تومان</span>
                           </div>
                         </div>
                     </Link>
-
-                    {/* دکمه افزودن به سبد خرید (پایین کارت) */}
-                    <button 
-                        className="w-full border-t border-gray-100 py-3 flex items-center justify-center gap-2 text-[#ef394e] text-sm font-bold hover:bg-gray-50 transition-colors cursor-pointer"
-                        // اینجا می‌توانید onClick را برای افزودن به سبد خرید هندل کنید
-                        // onClick={() => addToCart(product)} 
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                        افزودن به سبد خرید
-                    </button>
                     
                   </div>
                 </SwiperSlide>
@@ -206,10 +192,10 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
             
             {/* دکمه‌های نویگیشن */}
             <div className="hidden lg:block">
-                <button ref={(node) => setPrevEl(node)} className="absolute top-1/2 left-2 z-20 w-10 h-10 bg-white/90 shadow text-gray-500 rounded-full flex items-center justify-center -translate-y-1/2 hover:text-[#ef394e] disabled:opacity-50 cursor-pointer">
+                <button ref={(node) => setPrevEl(node)} className="absolute top-1/2 left-2 z-20 w-10 h-10 bg-white shadow-md text-gray-500 rounded-full flex items-center justify-center -translate-y-1/2 hover:text-primary transition-colors disabled:opacity-50 cursor-pointer border border-gray-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 </button>
-                <button ref={(node) => setNextEl(node)} className="absolute top-1/2 right-[270px] z-20 w-10 h-10 bg-white/90 shadow text-gray-500 rounded-full flex items-center justify-center -translate-y-1/2 hover:text-[#ef394e] disabled:opacity-50 cursor-pointer">
+                <button ref={(node) => setNextEl(node)} className="absolute top-1/2 right-[270px] z-20 w-10 h-10 bg-white shadow-md text-gray-500 rounded-full flex items-center justify-center -translate-y-1/2 hover:text-primary transition-colors disabled:opacity-50 cursor-pointer border border-gray-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                 </button>
             </div>

@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const faviconUrl = settings?.favicon;
 
   return {
-    metadataBase: new URL("https://abajstore.ir"),
+    metadataBase: new URL("https://valiasrstore.com"),
     title: {
       // تایتل پیش‌فرض برای صفحه اصلی
       default: `${siteTitle} | فروشگاه آنلاین با تضمین کیفیت`,
@@ -104,7 +104,7 @@ export default async function RootLayout({
         className={`${iranyekan.variable} ${pelak.variable} ${noora.variable} ${dana.variable} ${iranyekan.className} w-full min-h-screen relative antialiased text-[#212529] flex flex-col overflow-x-hidden`}
       >
         <NextTopLoader
-          color="#ff5722"
+          color="#0053c0"
           initialPosition={0.08}
           crawlSpeed={200}
           height={3}
@@ -112,7 +112,7 @@ export default async function RootLayout({
           showSpinner={false} // اسپینر زشت پیش‌فرض را حذف کردم
           easing="ease"
           speed={200}
-          shadow="0 0 10px #ff5722,0 0 5px #ff5722" // سایه نئونی نارنجی
+          shadow="0 0 10px #0053c0,0 0 5px #0053c0" // سایه نئونی نارنجی
           zIndex={1600}
         />
         <ConsoleLog />

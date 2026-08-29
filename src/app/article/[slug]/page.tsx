@@ -59,7 +59,7 @@ export async function generateMetadata({
         modifiedTime: data.updated_at,
         images: [
           {
-            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://abajstore.ir'}/logo.png`,
+            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://valiasrstore.com'}/logo.png`,
             alt: data.title || "مقاله",
             width: 1200,
             height: 630,
@@ -108,7 +108,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
       (post: Article) => post.slug !== data.slug
     );
 
-    const siteUrl = process.env.NEXT_PUBLIC_BACK_END || "https://abajstore.ir";
+    const siteUrl = process.env.NEXT_PUBLIC_BACK_END || "https://valiasrstore.com";
 
     const breadcrumbs = [
       { name: "خانه", url: `${siteUrl}/` },

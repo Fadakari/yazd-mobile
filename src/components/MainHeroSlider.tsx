@@ -75,7 +75,7 @@ export default function MainHeroSlider({ slides }: Props) {
                 {/*  */}
                 {/* <Link
                   href={slide.link}
-                  className="dp-cs-link text-black px-8 py-3 bg-amber-600/40 backdrop-blur-[15px] rounded-full font-bold hover:bg-orange-500/80 hover:text-white transition-all duration-300 fade-in-up delay-300 shadow-lg"
+                  className="dp-cs-link text-black px-8 py-3 bg-blue-600/40 backdrop-blur-[15px] rounded-full font-bold hover:bg-blue-500/80 hover:text-white transition-all duration-300 fade-in-up delay-300 shadow-lg"
                 >
                   مشاهده
                 </Link> */}
