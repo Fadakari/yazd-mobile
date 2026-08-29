@@ -327,7 +327,7 @@ export default function AuthModal() {
                           <a href="/terms" target="_blank" className="text-cyan-600 underline underline-offset-4 mx-1">
                             قوانین و مقررات
                           </a>
-                          آباج استور را مطالعه کرده و می‌پذیرم.
+                           را مطالعه کرده و می‌پذیرم.
                         </label>
                       </div>
                     </>
