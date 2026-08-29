@@ -9,42 +9,53 @@ export const login = async (phone_number: string, password: string) => {
         },
         credentials: "include",
     });
-    if (!res.ok) throw new Error("Login failed");
+    
     const data = await res.json();
-
     if (!res.ok) {
-        throw new Error(data.error || "خطا در تأیید کد");
+        throw new Error(data.error || "خطا در ورود");
+    }
+
+    if (data.is_new_user || data.accepted_terms === false) {
+        await acceptTerms("1.0.0");
     }
 
     addToast({
-        title: data.message || "ثبت نام با موفقیت تکمیل شد",
+        title: data.message || "ورود موفقیت‌آمیز بود",
     });
-    location.reload()
-    return await res.json();
+    location.reload();
+    return data;
 };
 // otp
 export const sendOtp = async (phone_number: string) => {
     try {
-        const result = await api.post("/users/otp/request/", { phone_number })
-        if (result.status == 200) {
+        const response = await fetch("/internal-api/auth/send-otp", {
+            method: "POST",
+            body: JSON.stringify({ phone_number }),
+            headers: { "Content-Type": "application/json" }
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
             addToast({
-                title: "کد تایید با موفیقت به شماره تلفن شما ارسال شد ",
+                title: "کد تایید با موفقیت به شماره تلفن شما ارسال شد",
                 description: phone_number
-            })
-            return result
-        } else if (result.status == 400) {
+            });
+            return { status: 200, data };
+        } else if (response.status === 400) {
             addToast({
-                title: "شماره تلفن باید ۱۱ رقم باشد",
+                title: "شماره تلفن وارد شده نامعتبر است",
                 description: phone_number,
                 color: "danger"
-            })
+            });
+            return { status: 400, data };
+        } else {
+             throw new Error(data.error);
         }
     } catch (error: any) {
-        console.log(error)
-
+        console.log(error);
         addToast({
-            title: error?.response?.message || "ورود ناموفق بود"
-        })
+            title: error?.message || "وقوع خطای نامشخص"
+        });
     }
 }
 export const verifyOtp = async (
@@ -65,7 +76,11 @@ export const verifyOtp = async (
         const data = await result.json();
 
         if (!result.ok) {
-            throw new Error(data.error || "خطا در تأیید کد");
+            throw new Error(data.error || "خطا در تایید کد");
+        }
+
+        if (data.is_new_user || data.accepted_terms === false) {
+            await acceptTerms("1.0.0");
         }
 
         addToast({
@@ -81,6 +96,26 @@ export const verifyOtp = async (
             classNames: { description: "text-xs" },
             color: "danger",
         });
+    }
+};
+
+export const acceptTerms = async (terms_version: string) => {
+    try {
+        const response = await fetch("/internal-api/auth/accept-terms", {
+            method: "POST",
+            body: JSON.stringify({ terms_version, accept: true }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || "خطا در تایید قوانین");
+        }
+        return data;
+    } catch (error: any) {
+        console.error(error);
+        return null;
     }
 };
 
@@ -151,9 +186,18 @@ export const changePassword = async (data: any) => {
 };
 
 export async function checkPhoneExists(phone: string) {
-    const res = await api.post("/users/check-user-status/", { phone_number: phone });
-    const data = await res.data;
-    return data?.has_password;
+    try {
+        const res = await fetch("/internal-api/auth/check-status", {
+            method: "POST",
+            body: JSON.stringify({ phone_number: phone }),
+            headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
+        return data?.has_password;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
 }
 export async function GenDiscount(data: { order_amount: number }) {
     try {

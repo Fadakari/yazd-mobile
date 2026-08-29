@@ -7,6 +7,11 @@ export default interface ProductType {
   description_1: string;
   description_2: string;
   category: string;
+  brand?: {
+    id: number;
+    name: string;
+    slug: string;
+  };
   stock: number;
   discountPercent?: number;
   slug: string;

@@ -163,14 +163,23 @@ export default async function Page({
     imageSchema(data.cover_image, data.name),
   ];
 
+  const getFullImageUrl = (path: string | null | undefined) => {
+    if (!path || typeof path !== "string") return "";
+    const cleanPath = path.trim();
+    if (!cleanPath) return "";
+    if (cleanPath.startsWith("http")) return cleanPath;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+    return `${baseUrl}${cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`}`;
+  };
+
   const images =
     data.images && data.images.length > 0
       ? data.images
           .sort((a, b) => a.order - b.order)
-          .map((img) => img.image)
+          .map((img) => getFullImageUrl(img.image))
           .filter(Boolean)
       : data.cover_image
-        ? [data.cover_image]
+        ? [getFullImageUrl(data.cover_image)]
         : [];
 
   // فیلتر کردن روش‌های ارسال فعال
@@ -222,6 +231,17 @@ export default async function Page({
                       {data.category}
                     </Link>
                   </div>
+                  {data.brand && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <span>برند :‌</span>{" "}
+                      <Link
+                        href={`/products/?brand_id=${data.brand.id}`}
+                        className="text-cyan-400 spoiler-link relative"
+                      >
+                        {data.brand.name}
+                      </Link>
+                    </div>
+                  )}
                   <div>
                     <span>مشاهده انواع </span>{" "}
                     <Link

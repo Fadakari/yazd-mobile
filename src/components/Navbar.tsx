@@ -234,7 +234,7 @@ export default function Navbar({
   if (path.startsWith("http")) return path;
 
   // ۳. ترکیب ایمن با دامین اصلی
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
   
   // مطمئن شو که اگر در مسیر / وجود نداشت، اضافه شود تا URL نشکند
   const cleanPath = path.startsWith("/") ? path : `/${path}`;

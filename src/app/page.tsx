@@ -164,9 +164,18 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
   // نکته: دیگر نیازی به categorySection از apiData نداریم چون ناقص است
 
   // برای محصولات/محصولات درون دسته‌بندی‌ها، یک مپر عمومی می‌سازیم
+  const getFullImageUrl = (path: string | null | undefined) => {
+    if (!path || typeof path !== "string") return "";
+    const cleanPath = path.trim();
+    if (!cleanPath) return "";
+    if (cleanPath.startsWith("http")) return cleanPath;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+    return `${baseUrl}${cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`}`;
+  };
+
   const mapApiProductToNewProduct = (p: any): NewProductItem => {
     let discountPrice = p.discount_price ?? p.price;
-    if (discountPrice == 0) {
+    if (discountPrice == 0 || discountPrice == null) {
       discountPrice = p.price;
     };
     const originalPrice = p.price;
@@ -186,9 +195,9 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
       price: discountPrice,
       oldPrice: hasDiscount ? originalPrice : undefined,
       discount: hasDiscount ? discountPercent : undefined,
-      image: p.cover_image || siteLogo,
+      image: p.cover_image ? getFullImageUrl(p.cover_image) : siteLogo,
       isSpecial: p.is_featured,
-      slug: p.slug,
+      slug: p.slug
     };
   };
 

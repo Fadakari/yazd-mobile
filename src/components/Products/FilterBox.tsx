@@ -333,6 +333,7 @@ export default function FilterBox({
                     onValueChange={handleMinChange}
                     hideStepper
                     size="sm"
+                    inputMode="decimal"
                     classNames={{
                       inputWrapper: "input !rounded-full",
                       input: "input font-dana  border-none",
@@ -352,6 +353,7 @@ export default function FilterBox({
                     value={maxInput}
                     onValueChange={handleMaxChange}
                     hideStepper
+                    inputMode="decimal"
                     classNames={{
                       inputWrapper: "input !rounded-full",
                       input: "input font-dana border-none",

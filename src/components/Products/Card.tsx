@@ -19,7 +19,10 @@ export default function Card({
   const [imgError, setImgError] = useState(false);
   const originalPrice = item.unit_price ?? item.price ?? 0;
 
-  const finalPrice = item.final_price ?? item.discount_price ?? originalPrice;
+  let finalPrice = item.final_price ?? item.discount_price;
+  if (finalPrice === 0 || finalPrice === null || finalPrice === undefined) {
+    finalPrice = originalPrice;
+  }
 
   const hasDiscount = finalPrice < originalPrice;
   const { siteTitle } = useSite();
@@ -33,10 +36,16 @@ export default function Card({
       ? item.is_available
       : item.isDiscounted || true;
 
-  console.log({
-    name: item.name,
-    cover_image: item.cover_image,
-  });
+  const getFullImageUrl = (path: string | null | undefined) => {
+    if (!path || typeof path !== "string") return "";
+    const cleanPath = path.trim();
+    if (!cleanPath) return "";
+    if (cleanPath.startsWith("http")) return cleanPath;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.abajstore.ir";
+    return `${baseUrl}${cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`}`;
+  };
+
+  const finalImageUrl = getFullImageUrl(item.cover_image);
 
   return (
     <div
@@ -54,9 +63,9 @@ export default function Card({
 
       <div className="flex flex-col gap-2">
         <div className="h-40 sm:h-52 md:h-60 flex justify-center items-center overflow-hidden rounded-xl">
-          {!imgError && item.cover_image ? (
-            <Image
-              src={item.cover_image}
+          {!imgError && finalImageUrl ? (
+            <img
+              src={finalImageUrl}
               alt={`${item.name} - ${siteTitle}`}
               width={400}
               height={300}
@@ -73,9 +82,9 @@ export default function Card({
           <p className="font-bold text-base sm:text-lg text-zinc-800 line-clamp-2">
             {item.name}
           </p>
-          {item.category && (
+          {(item.category || item.brand) && (
             <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
-              {item.category}
+              {item.category} {item.brand && ` | ${item.brand.name}`}
             </p>
           )}
         </div>

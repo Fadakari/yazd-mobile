@@ -6,9 +6,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     try {
         const res = await api.post("/users/login/password/", body);
-        const { access, message } = res.data;
+        const { access, message, is_new_user, accepted_terms } = res.data;
 
-        const response = NextResponse.json({ message });
+        const response = NextResponse.json({ message, is_new_user, accepted_terms });
 
         response.cookies.set("access_token", access, {
             httpOnly: true,

@@ -65,6 +65,21 @@ export async function homeSliderList() {
         return null;
     }
 }
+
+export async function getTerms() {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/terms/`, {
+            ...defaultFetchOptions,
+            next: { revalidate: 3600 }
+        });
+        if (!res.ok) return null;
+        return await res.json();
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 export async function GetDiscountedOrders() {
     "use server";
     const cookieStore = await cookies();

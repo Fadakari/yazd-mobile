@@ -24,6 +24,7 @@ import {
   login,
   sendOtp,
   verifyOtp,
+  acceptTerms,
 } from "@/services/usersActions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthModal } from "@/context/AuthModalProvider";
@@ -37,6 +38,7 @@ export default function AuthModal() {
   const [resendTimer, setResendTimer] = useState(120);
   const [loading, setLoading] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const searchParams = useSearchParams();
   const [hasPasswordError, setHasPasswordError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -312,21 +314,37 @@ export default function AuthModal() {
                         maxLength={11}
                         className="input"
                       />
+                      
+                      <div className="flex items-center gap-2 mt-4 text-sm text-gray-700">
+                        <input 
+                          type="checkbox" 
+                          id="accept_terms"
+                          className="size-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 cursor-pointer"
+                          checked={acceptedTerms}
+                          onChange={(e) => setAcceptedTerms(e.target.checked)}
+                        />
+                        <label htmlFor="accept_terms" className="cursor-pointer select-none">
+                          <a href="/terms" target="_blank" className="text-cyan-600 underline underline-offset-4 mx-1">
+                            قوانین و مقررات
+                          </a>
+                          آباج استور را مطالعه کرده و می‌پذیرم.
+                        </label>
+                      </div>
                     </>
                   )}
                 </>
               )}
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full btn-primary disabled:opacity-60 disabled:cursor-wait mb-5"
+                disabled={loading || (step === "OTP" && isNewUser && !acceptedTerms)}
+                className="w-full btn-primary disabled:opacity-60 disabled:cursor-wait disabled:bg-gray-400 mb-5 mt-4"
               >
                 {loading
                   ? "لطفا صبر کنید..."
                   : step === "PHONE"
                     ? "ادامه"
                     : step === "OTP"
-                      ? "تایید"
+                      ? "تایید و عضویت"
                       : "ورود"}
               </button>
 
