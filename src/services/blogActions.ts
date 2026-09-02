@@ -34,7 +34,7 @@ export const GetBlogPosts = async (params?: BlogPostsParams, page?: string): Pro
 
         const url = `${process.env.NEXT_PUBLIC_API_URL}/blog/posts/?${query.toString()}`;
 
-        const result = await fetch(url, { ...getFetchOptions(), next: { revalidate: 60 } });
+        const result = await fetch(url, { ...getFetchOptions(), next: { revalidate: 30 } });
         if (!result.ok) return undefined;
         return await result.json();
     } catch (error) {
@@ -46,7 +46,7 @@ export async function GetLatestBlogPosts() {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/latest`, {
             ...getFetchOptions(),
-            next: { revalidate: 600 } // آپدیت هر 10 دقیقه
+            next: { revalidate: 30 } // آپدیت هر 10 دقیقه
         });
         if (!res.ok) return undefined;
         return await res.json();
@@ -60,7 +60,7 @@ export async function GetBlogCategoriesMenuStructure(): Promise<BlogCategoryNode
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/categories/menu_structure/`, {
             ...getFetchOptions(),
-            next: { revalidate: 3600 } // آپدیت هر 1 ساعت
+            next: { revalidate: 30 } // آپدیت هر 1 ساعت
         });
         if (!res.ok) return undefined;
         return await res.json();
@@ -74,7 +74,7 @@ export const GetBlogBySlug = cache(async (slug: string): Promise<any> => {
     try {
         const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/${slug}/`, { 
             ...getFetchOptions(),
-            next: { revalidate: 60 } 
+            next: { revalidate: 30 } 
         });
         if (!result.ok) return null;
         return await result.json();
@@ -101,7 +101,7 @@ export async function SearchBlogs(params: Search): Promise<any> {
         // جایگزین api.get
         const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/search/?${query.toString()}`, {
             ...getFetchOptions(),
-            next: { revalidate: 60 }
+            next: { revalidate: 30 }
         });
         if (!result.ok) return null;
         return await result.json();

@@ -38,7 +38,7 @@ async function getFooterData(): Promise<FooterSectionData[]> {
       },
       // چون فوتر دیر به دیر عوض میشه، کش ۱ ساعته (۳۶۰۰ ثانیه) براش عالی و بهینه‌ست
       // اگر می‌خوای الان برای تست سریع‌تر آپدیت بشه، موقتاً بذارش روی 60
-      next: { revalidate: 3600 } 
+      next: { revalidate: 30 } 
     });
     
     if (!res.ok) {

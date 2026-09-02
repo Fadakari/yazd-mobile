@@ -30,7 +30,7 @@ export async function GetSiteSettings() {
                     "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY || "",
                 },
                 next: {
-                    revalidate: 300,
+                    revalidate: 30,
                     tags: ["site-settings"],
                 },
             }

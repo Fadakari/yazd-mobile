@@ -124,7 +124,7 @@ async function getActiveLogo(): Promise<string> {
   try {
     // آدرس API را مطابق ناوبار تنظیم کردم
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/active-logo/`, { 
-      next: { revalidate: 3600 } // کش برای ۱ ساعت
+      next: { revalidate: 30 } // کش برای ۱ ساعت
     });
     
     if (!res.ok) return "/logo.png"; // عکس پیش‌فرض در صورت خطا

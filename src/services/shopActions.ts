@@ -124,29 +124,19 @@ export async function GetProducts(
         }
 
         // جایگزین api.get با fetch نیتیو
-        const [resNormal, discountedList] = await Promise.all([
-            fetch(`${API_URL}/shop/products/?${query.toString()}`, {
-                ...getFetchOptions(),
-                next: { revalidate: 30 }
-            }),
-            GetDiscountedProducts(),
-        ]);
-        
+        const resNormal = await fetch(`${API_URL}/shop/products/?${query.toString()}`, {
+            ...getFetchOptions(),
+            next: { revalidate: 30 }
+        });
         const normalData = resNormal.ok ? await resNormal.json() : { results: [] };
         const normalProducts = normalData.results || [];
-
-        const discountedMap = new Map(
-            discountedList.map((item: any) => [item.slug, item])
-        );
-
+        
         const merged = normalProducts.map((product: any) => {
-            const discount: any = discountedMap.get(product.slug);
-            if (discount) {
+            if (product.price > product.final_price) {
                 return {
                     ...product,
                     isDiscounted: true,
-                    discount_percentage: discount.discount_percentage,
-                    final_price: discount.final_price
+                    discount_percentage: Math.round(((product.price - product.final_price) / product.price) * 100)
                 };
             }
             return product;
@@ -174,29 +164,19 @@ export async function GetProducts(
 
 export async function GetLatestProducts() {
     try {
-        const [resLatest, discountedList] = await Promise.all([
-            fetch(`${API_URL}/shop/latest-products/`, {
-                ...getFetchOptions(),
-                next: { revalidate: 30 }
-            }),
-            GetDiscountedProducts(),
-        ]);
-
+        const resLatest = await fetch(`${API_URL}/shop/latest-products/`, {
+            ...getFetchOptions(),
+            next: { revalidate: 30 }
+        });
         const latestData = resLatest.ok ? await resLatest.json() : { latest_products: [] };
         const latestProducts = latestData.latest_products || [];
         
-        const discountedMap = new Map(
-            discountedList.map((item: any) => [item.slug, item])
-        );
-
         const merged = latestProducts.map((product: any) => {
-            const discount: any = discountedMap.get(product.slug);
-            if (discount) {
+            if (product.price > product.final_price) {
                 return {
                     ...product,
                     isDiscounted: true,
-                    discount_percentage: discount.discount_percentage,
-                    final_price: discount.final_price
+                    discount_percentage: Math.round(((product.price - product.final_price) / product.price) * 100)
                 };
             }
             return product;
@@ -459,7 +439,7 @@ export async function GetShippingServices() {
   try {
     const res = await fetch(`${API_URL}/shop/shipping-services/`, {
         ...getFetchOptions(),
-      next: { revalidate: 86400 } // آپدیت هر 24 ساعت
+      next: { revalidate: 30 } // آپدیت هر 24 ساعت
     });
     if (!res.ok) return [];
     return await res.json();
@@ -478,7 +458,7 @@ export async function GetComments(product_id: number) {
             {
                 ...getFetchOptions(),
                 next: {
-                    revalidate: 300,
+                    revalidate: 30,
                     tags: [`comments-${product_id}`],
                 },
             }
@@ -578,3 +558,7 @@ export async function goToGateways(id: number | string) {
         alert("خطا در اتصال به درگاه پرداخت");
     }
 }
+
+
+
+
