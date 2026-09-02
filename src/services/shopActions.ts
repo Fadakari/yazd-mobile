@@ -48,12 +48,34 @@ export async function GetShopCategoriesTreeList() {
         const data = await res.json();
         return data;
     } catch (error) {
-        console.error(error);
+        console.error("Error fetching categories:", error);
         return [];
     }
 }
+
+export async function GetBrands() {
+    try {
+        const res = await fetch(`${API_URL}/shop/brands/`, {
+            ...getFetchOptions(),
+            next: { revalidate: 30 }
+        });
+
+        if (!res.ok) {
+            console.error("Failed to fetch brands");
+            return [];
+        }
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching brands:", error);
+        return [];
+    }
+}
+
 interface GetProductsParams {
     category_id?: number;
+    brand_id?: number;
     min_price?: number;
     max_price?: number;
     is_available?: boolean;
@@ -73,6 +95,7 @@ export async function GetProducts(
         const query = new URLSearchParams();
 
         if (searchParams?.category_id !== undefined) query.append("category_id", searchParams.category_id.toString());
+        if (searchParams?.brand_id !== undefined) query.append("brand_id", searchParams.brand_id.toString());
         if (searchParams?.min_price !== undefined) query.append("min_price", searchParams.min_price.toString());
         if (searchParams?.max_price !== undefined) query.append("max_price", searchParams.max_price.toString());
         if (searchParams?.is_available !== undefined) query.append("is_available", String(searchParams.is_available));
@@ -196,59 +219,21 @@ export async function GetLatestProducts() {
 
 export async function GetProductBySlug(slug: string): Promise<any> {
     try {
+        const res = await fetch(`${API_URL}/shop/products/${encodeURIComponent(slug)}/`, {
+            ...getFetchOptions(),
+            next: {
+                revalidate: 30,
+                tags: [`product-${slug}`],
+            },
+        });
 
-        const [productRes, discountRes] = await Promise.allSettled([
+        if (!res.ok) return null;
 
-            fetch(`${API_URL}/shop/products/${encodeURIComponent(slug)}/`, {
-                ...getFetchOptions(),
-                next: {
-                    revalidate: 30,
-                    tags: [`product-${slug}`],
-                },
-            }),
-
-            fetch(`${API_URL}/home/discounted-products/${encodeURIComponent(slug)}/`, {
-                ...getFetchOptions(),
-                next: {
-                    revalidate: 30,
-                    tags: [`product-discount-${slug}`],
-                },
-            })
-
-        ]);
-
-        if (productRes.status !== "fulfilled")
-            return null;
-
-        if (!productRes.value.ok)
-            return null;
-
-        const product = await productRes.value.json();
-
-        if (
-            discountRes.status === "fulfilled" &&
-            discountRes.value.ok
-        ) {
-
-            const discount = await discountRes.value.json();
-
-            return {
-                ...product,
-                isDiscounted: true,
-                discount_percentage: discount.discount_percentage,
-                final_price: discount.final_price,
-            };
-
-        }
-
+        const product = await res.json();
         return product;
-
     } catch (error) {
-
         console.error("GetProductBySlug:", error);
-
         return null;
-
     }
 }
 

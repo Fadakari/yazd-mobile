@@ -1,3 +1,5 @@
+export const revalidate = 30;
+
 import BreadcrumbsBox from "@/components/Products/BreadcrumbsBox";
 import Image from "next/image";
 import Link from "next/link";

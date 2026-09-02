@@ -9,7 +9,7 @@ import LatestBlogSection, { BlogPostItem } from "@/components/LatestBlogSection"
 import NewProductsSlider, { NewProductItem } from "@/components/NewProductsSlider";
 import { GetShopCategoriesTreeList } from "@/services/shopActions"; // <--- ایمپورت جدید
 
-export const revalidate = 300;
+export const revalidate = 30;
 
 // --- اینترفیس‌های API ---
 interface ApiProduct {
@@ -50,7 +50,7 @@ async function getHomeData(): Promise<ApiSection[]> {
       `${process.env.NEXT_PUBLIC_API_URL}/home/sliders-index/`,
       {
         next: {
-          revalidate: 300,
+          revalidate: 30,
         },
       }
     );
@@ -70,7 +70,7 @@ async function getLatestArticles(): Promise<BlogPostItem[]> {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/`, { 
         
         next: {
-          revalidate: 300
+          revalidate: 30
         }
     });
     

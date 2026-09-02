@@ -1,7 +1,7 @@
 export const revalidate = 30;
 
 import LayoutShell from "@/components/Products/LayoutShell";
-import { GetProducts, GetShopCategoriesTreeList } from "@/services/shopActions";
+import { GetProducts, GetShopCategoriesTreeList, GetBrands } from "@/services/shopActions";
 import { breadcrumbSchema, productsSchema } from "@/components/Schema";
 import Script from "next/script";
 import { cache } from "react";
@@ -26,12 +26,16 @@ const getCategories = cache(async () => {
   return await GetShopCategoriesTreeList();
 });
 
+const getBrandsCached = cache(async () => {
+  return await GetBrands();
+});
+
 // دریافت داده‌های بخش‌های اسلایدر
 const getSliderSections = cache(async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/sliders-index/`, {
       ...defaultFetchOptions,
-        next: { revalidate: 120 } // <--- این خط حتماً باید اضافه بشه (کش ۲ دقیقه‌ای)
+        next: { revalidate: 30 }
     });
     if (!res.ok) return [];
     return res.json();
@@ -89,6 +93,9 @@ export default async function ProductsPage({ searchParams }: any) {
   const categoryRes = await getCategories();
   const categories = Array.isArray(categoryRes) ? categoryRes : (categoryRes?.data || categoryRes?.results || []);
 
+  const brandsData = await getBrandsCached();
+  const brands = Array.isArray(brandsData) ? brandsData : (brandsData?.value || []);
+
   const breadcrumbs = [
     { name: "خانه", url: `${process.env.NEXT_PUBLIC_SITE_URL}/` },
     { name: "محصولات", url: `${process.env.NEXT_PUBLIC_SITE_URL}/products` },
@@ -111,6 +118,7 @@ export default async function ProductsPage({ searchParams }: any) {
 
       <LayoutShell
         categories={categories}
+        brands={brands}
         products={data.results || []}
         pagination={{
           count: data.count,

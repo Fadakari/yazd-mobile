@@ -12,10 +12,13 @@ const minPrice = 3000;
 const maxPrice = 459420000;
 
 export default function FilterBox({
+  selected,
   isShow,
+  brands: initialBrands = [],
 }: {
   selected?: boolean;
   isShow?: boolean;
+  brands?: any[];
 }) {
   const categories = useCategories();
   const searchParams = useSearchParams();
@@ -33,6 +36,14 @@ export default function FilterBox({
   const [minInput, setMinInput] = useState(minPrice);
   const [maxInput, setMaxInput] = useState(maxPrice);
   const [searchCategory, setSearchCategory] = useState<string>("");
+
+  const brands = initialBrands;
+  const [searchBrand, setSearchBrand] = useState<string>("");
+  const [selectedKeysBrand, setSelectedKeysBrand] = useState<any>(new Set(["1"]));
+
+  const searchedBrands = brands.filter((b) =>
+    b.name?.toLowerCase().includes(searchBrand.toLowerCase())
+  );
 
   useEffect(() => {
     if (Array.isArray(value)) {
@@ -65,8 +76,14 @@ export default function FilterBox({
   const applyFilters = (params: Record<string, any>) => {
     startTransition(() => {
       const query = new URLSearchParams(searchParams);
-      if (params.category_id !== undefined)
-        query.set("category_id", params.category_id.toString());
+      if (params.category_id !== undefined) {
+        if (params.category_id === null) query.delete("category_id");
+        else query.set("category_id", params.category_id.toString());
+      }
+      if (params.brand_id !== undefined) {
+        if (params.brand_id === null) query.delete("brand_id");
+        else query.set("brand_id", params.brand_id.toString());
+      }
       if (params.min_price !== undefined)
         query.set("min_price", params.min_price.toString());
       if (params.max_price !== undefined)
@@ -97,6 +114,7 @@ export default function FilterBox({
 
   const activeFilters = {
     category_id: searchParams.get("category_id"),
+    brand_id: searchParams.get("brand_id"),
     min_price: searchParams.get("min_price"),
     max_price: searchParams.get("max_price"),
     is_available: searchParams.get("is_available"),
@@ -151,7 +169,19 @@ export default function FilterBox({
                   {
                     categories?.find(
                       (c) => c.id.toString() === activeFilters.category_id
-                    )?.name
+                    )?.name || ""
+                  }
+                </span>
+              </li>
+            )}
+            {activeFilters.brand_id && (
+              <li className="flex items-center gap-1">
+                <span className="text-zinc-500">• برند:</span>
+                <span className="text-zinc-800 font-medium">
+                  {
+                    brands?.find(
+                      (b) => b.id.toString() === activeFilters.brand_id
+                    )?.name || ""
                   }
                 </span>
               </li>
@@ -275,7 +305,61 @@ export default function FilterBox({
           </AccordionItem>
         </Accordion>
       </div>
-      <div className="relative bg-white shadow rounded-sm py-0 text-zinc-700">
+
+      <div className="relative bg-white shadow rounded-sm py-0 text-zinc-700 mt-4">
+        <GoChevronUp
+          className={`size-5 absolute top-5 left-5 transition-transform duration-300 ${
+            selectedKeysBrand.size === 1 ? "-rotate-180" : "rotate-0"
+          }`}
+        />
+        <Accordion
+          selectedKeys={selectedKeysBrand}
+          onSelectionChange={setSelectedKeysBrand}
+          showDivider={false}
+          hideIndicator
+        >
+          <AccordionItem key="1" title="برندها">
+            <div className="relative w-full flex items-center">
+              <input
+                value={searchBrand}
+                onChange={(e) => setSearchBrand(e.target.value)}
+                autoComplete="off"
+                type="search"
+                placeholder="جستجوی برند ..."
+                className="p-2 pr-10 border border-zinc-300 rounded-xs w-full outline-none"
+              />
+              <BiSearch className="size-6 absolute top-3 right-2 text-zinc-400" />
+            </div>
+            <ul className="overflow-y-auto max-h-64 text-zinc-500 pt-4 relative rounded-2xl mb-2 xl:mb-4">
+              {searchedBrands.length > 0 ? (
+                searchedBrands.map((brand) => {
+                  const selectedId = searchParams.get("brand_id");
+                  const isSelected = selectedId === brand.id.toString();
+                  return (
+                    <li key={brand.id} className="mb-1">
+                      <button
+                        onClick={() => applyFilters({ brand_id: isSelected ? null : brand.id })}
+                        className={`py-2 flex items-center gap-1 ${
+                          isSelected ? "text-primary-500 font-bold" : ""
+                        }`}
+                      >
+                        <MdChevronLeft className="size-5" />
+                        <span>{brand.name}</span>
+                      </button>
+                    </li>
+                  );
+                })
+              ) : (
+                <div className="text-center text-zinc-400 py-4 text-sm">
+                  برندی موجود نیست
+                </div>
+              )}
+            </ul>
+          </AccordionItem>
+        </Accordion>
+      </div>
+
+      <div className="relative bg-white shadow rounded-sm py-0 text-zinc-700 mt-4">
         <GoChevronUp
           className={`size-5 absolute top-5 left-5 transition-transform duration-300 ${
             selectedKeys2.size === 1 ? "-rotate-180" : "rotate-0"
