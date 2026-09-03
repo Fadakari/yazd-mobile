@@ -22,8 +22,6 @@ const schema = z.object({
     .min(1, "نام الزامی است.")
     .regex(/^[\u0600-\u06FF\s]+$/, "فقط حروف فارسی مجاز است."),
   last_name: z.string().min(1, "نام خانوادگی الزامی است."),
-  national_code: z.string().optional(),
-  job: z.string().optional(),
   address: z.string().min(1, "آدرس الزامی است."),
   postal_code: z.string().min(1, "کد پستی الزامی است."),
   birth_date: z.string().optional(),
@@ -31,7 +29,6 @@ const schema = z.object({
   city: z.string().min(1, "شهر الزامی است."),
   phone_number: z.string().optional(),
   referral_code: z.string().optional(),
-  email: z.string().email("ایمیل معتبر نیست.").optional(),
 });
 
 const password_Schema = z
@@ -54,11 +51,9 @@ type FormSchema = z.infer<typeof schema>;
 type FieldKey = keyof FormSchema;
 
 const inputTypes: Partial<Record<FieldKey, string>> = {
-  email: "email",
   birth_date: "date",
   phone_number: "tel",
   postal_code: "number",
-  national_code: "number",
 };
 
 function PersonalInfoForm() {
@@ -70,9 +65,6 @@ function PersonalInfoForm() {
     first_name: identity?.first_name || "",
     last_name: identity?.last_name || "",
     phone_number: convertNumberToPersian(String(identity?.phone_number)) || "",
-    national_code: identity?.national_code || "",
-    email: identity?.email || "",
-    job: identity?.job || "",
     birth_date: identity?.birth_date || "",
     province: identity?.province || "",
     city: identity?.city || "",
@@ -446,8 +438,6 @@ function fieldLabel(key: FieldKey): string {
   const labels: Record<FieldKey, string> = {
     first_name: "نام",
     last_name: "نام خانوادگی",
-    national_code: "کد ملی",
-    job: "شغل",
     address: "آدرس",
     postal_code: "کد پستی",
     birth_date: "تاریخ تولد",
@@ -455,9 +445,9 @@ function fieldLabel(key: FieldKey): string {
     city: "شهر",
     phone_number: "شماره تلفن",
     referral_code: "کد معرف",
-    email: "ایمیل",
   };
   return labels[key];
 }
 
 export default PersonalInfoForm;
+

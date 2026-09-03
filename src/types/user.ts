@@ -3,9 +3,6 @@ export interface User {
         phone_number: string;
         first_name: string | null;
         last_name: string | null;
-        national_code: string | null;
-        email: string | null;
-        job: string | null;
         address: string | null;
         postal_code: string | null;
         birth_date: string | null;
@@ -33,4 +30,4 @@ export type OrderItem = {
     status: "pending" | "paid" | "canceled" | string;
     city: string;
     date: string;
-};      
+};
