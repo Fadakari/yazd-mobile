@@ -5,7 +5,7 @@ const SESSION_STORAGE_KEY = "analytics_session_id";
 
 export type AnalyticsPageContext = {
   page_type?: "product" | "page";
-  product_id?: string;
+  product_id?: number;
   product_name?: string;
   product_slug?: string;
 };
@@ -69,9 +69,9 @@ export function trackPageView(context: AnalyticsPageContext = {}): void {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      "Cache-Control": "no-cache",
     },
     body: JSON.stringify(payload),
+    // Analytics requests must never be satisfied from browser/framework caches.
     cache: "no-store",
     credentials: "include",
     keepalive: true,
