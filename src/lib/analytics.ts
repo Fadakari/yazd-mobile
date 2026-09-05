@@ -3,14 +3,19 @@
 const ANALYTICS_ENDPOINT = "/analytics/track/";
 const SESSION_STORAGE_KEY = "analytics_session_id";
 
+export type AnalyticsPageContext = {
+  page_type?: "product" | "page";
+  product_id?: string;
+  product_name?: string;
+  product_slug?: string;
+};
+
 function createSessionId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return crypto.randomUUID();
   }
 
-  return `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random()
-    .toString(36)
-    .slice(2)}`;
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random()}`;
 }
 
 function getSessionId(): string {
@@ -38,7 +43,7 @@ function getAnalyticsUrl(): string | null {
   return `${baseUrl.replace(/\/$/, "")}${ANALYTICS_ENDPOINT}`;
 }
 
-export function trackPageView(): void {
+export function trackPageView(context: AnalyticsPageContext = {}): void {
   if (typeof window === "undefined") {
     return;
   }
@@ -56,6 +61,7 @@ export function trackPageView(): void {
     session_id: getSessionId(),
     screen_width: window.screen.width,
     screen_height: window.screen.height,
+    ...context,
   };
 
   void fetch(url, {
@@ -63,6 +69,7 @@ export function trackPageView(): void {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      "Cache-Control": "no-cache",
     },
     body: JSON.stringify(payload),
     cache: "no-store",
