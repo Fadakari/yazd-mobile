@@ -13,17 +13,14 @@ import LayoutWrapper from "./LayoutWrapper";
 import ConsoleLog from "@/components/ConsoleLog";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import NextTopLoader from 'nextjs-toploader';
-import { GetActiveLogo } from "@/services/siteActions";
-import { GetSiteSettings } from "@/services/siteActions";
+import NextTopLoader from "nextjs-toploader";
+import { GetActiveLogo, GetSiteSettings } from "@/services/siteActions";
 import { SiteProvider } from "@/context/SiteContext";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
-// ۲. این تابع را جایگزین بلاک metadata استاتیک قبلی کن:
 export async function generateMetadata(): Promise<Metadata> {
-  
   const settings = await GetSiteSettings();
-  
-  // مقادیر فال‌بک مطمئن در صورتی که بک‌اند هنوز دیتایی نفرستاده باشد
+
   const siteTitle = settings?.site_title || "سایت ما";
   const siteDescription = `${siteTitle}، فروشگاه تخصصی با بهترین قیمت و تضمین کیفیت. ارسال سریع، تخفیف‌های ویژه، و مقالات آموزشی تخصصی.`;
   const siteKeywords = [
@@ -40,10 +37,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL("https://valiasrstore.com"),
     title: {
-      // تایتل پیش‌فرض برای صفحه اصلی
       default: `${siteTitle} | فروشگاه آنلاین با تضمین کیفیت`,
-      // تمپلت برای تمام صفحات فرعی (تایتل صفحه فرعی جایگزین %s می‌شود)
-      template: `%s | ${siteTitle}`
+      template: `%s | ${siteTitle}`,
     },
     description: siteDescription,
     keywords: siteKeywords,
@@ -69,16 +64,15 @@ export async function generateMetadata(): Promise<Metadata> {
       description: `خرید آنلاین با تضمین کیفیت و ارسال سریع از ${siteTitle}`,
       images: [`${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`],
     },
-    icons: faviconUrl ? {
-      icon: [
-        { url: faviconUrl },
-      ],
-      apple: [
-        { url: faviconUrl },
-      ],
-    } : {},
+    icons: faviconUrl
+      ? {
+          icon: [{ url: faviconUrl }],
+          apple: [{ url: faviconUrl }],
+        }
+      : {},
   };
 }
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -88,19 +82,22 @@ export default async function RootLayout({
     GetActiveLogo(),
     GetShopCategoriesTreeList(),
     GetUserDashboard(),
-    GetSiteSettings(), // <--- اضافه شد
+    GetSiteSettings(),
   ]);
+
   console.log("=== SERVER SIDE FETCH TEST ===");
   console.log("Settings from API:", settings);
   console.log("Active Logo from API:", logo);
   console.log("==============================");
-  
-  // استخراج امن آرایه دسته‌بندی‌ها
-  const safeCategories = Array.isArray(result) ? result : (result?.data || result?.results || []);
+
+  const safeCategories = Array.isArray(result)
+    ? result
+    : result?.data || result?.results || [];
+
   return (
     <html lang="fa-IR" dir="rtl" className="scroll-smooth bg-[#f9f9f9]">
       <body
-      suppressHydrationWarning={true}
+        suppressHydrationWarning={true}
         className={`${iranyekan.variable} ${pelak.variable} ${noora.variable} ${dana.variable} ${iranyekan.className} w-full min-h-screen relative antialiased text-[#212529] flex flex-col overflow-x-hidden`}
       >
         <NextTopLoader
@@ -109,17 +106,18 @@ export default async function RootLayout({
           crawlSpeed={200}
           height={3}
           crawl={true}
-          showSpinner={false} // اسپینر زشت پیش‌فرض را حذف کردم
+          showSpinner={false}
           easing="ease"
           speed={200}
-          shadow="0 0 10px #0053c0,0 0 5px #0053c0" // سایه نئونی نارنجی
+          shadow="0 0 10px #0053c0,0 0 5px #0053c0"
           zIndex={1600}
         />
         <ConsoleLog />
+        <AnalyticsTracker />
         <UserProvider initialUser={user}>
           <AuthModalProvider>
             <CartProvider>
-              <SiteProvider logo={logo} siteTitle={settings?.site_title}> {/* <--- باز شدن پرووایدر */}
+              <SiteProvider logo={logo} siteTitle={settings?.site_title}>
                 {!user && <AuthModal />}
                 <CategoriesProvider categories={safeCategories}>
                   <LayoutWrapper
