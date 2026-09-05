@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { trackPageView } from "@/lib/analytics";
 
 type ProductViewAnalyticsProps = {
@@ -14,7 +14,15 @@ export default function ProductViewAnalytics({
   productName,
   productSlug,
 }: ProductViewAnalyticsProps) {
+  const trackedProductRef = useRef<number | null>(null);
+
   useEffect(() => {
+    if (trackedProductRef.current === productId) {
+      return;
+    }
+
+    trackedProductRef.current = productId;
+
     trackPageView({
       page_type: "product",
       product_id: productId,
