@@ -21,6 +21,7 @@ import ProductOptions from "@/components/Products/Product/ProductOptions";
 import { ProductProvider } from "@/context/ProductContext";
 import ProductPriceBox from "@/components/Products/Product/ProductPriceBox";
 import ProductMetaTags from "@/components/ProductMetaTags";
+import ProductViewAnalytics from "@/components/ProductViewAnalytics";
 
 // تابع کمکی برای دریافت روش‌های ارسال
 async function getShippingServices() {
@@ -32,9 +33,9 @@ async function getShippingServices() {
         'X-CSRFTOKEN': 'VzLJ2enpPgMw9rXJprJVvBuRlr7bX7tnjvl0RzYMhH02siiI7uLD9wYBPYouYqcS'
       },
       // کش کردن پاسخ برای 5 دقیقه جهت افزایش پرفورمنس
-      next: { revalidate: 300 } 
+      next: { revalidate: 300 }
     });
-    
+
     if (!res.ok) {
       return [];
     }
@@ -133,7 +134,7 @@ export default async function Page({
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   if (!slug || typeof slug !== "string") return notFound();
-  
+
   const res = await GetProductBySlug(decodedSlug);
   if (!res) return notFound();
 
@@ -144,7 +145,7 @@ export default async function Page({
   const categoryFind = findCategory(categories, data.category);
   const comments = await GetComments(data.id);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mpttools.co";
-  
+
   const breadcrumbs = [
     { name: "خانه", url: `${siteUrl}/` },
     { name: "محصولات", url: `${siteUrl}/products` },
@@ -187,8 +188,14 @@ export default async function Page({
 
   return (
     <>
+      <ProductViewAnalytics
+        productId={data.id}
+        productName={data.name}
+        productSlug={decodedSlug}
+      />
+
       <ProductMetaTags product={data} />
-      
+
       <Script
         id="product-jsonld"
         type="application/ld+json"
@@ -259,7 +266,7 @@ export default async function Page({
                   />
                 </div>
               </div>
-              
+
               <div className="w-5/12 h-full space-y-3 lg:block hidden">
                 <div className="bg-zinc-100 border border-zinc-200 p-5 text-center space-y-4 rounded-md">
                   <ProductPriceBox product={data} />
@@ -285,15 +292,15 @@ export default async function Page({
                     <a href="#" className="text-cyan-400 spoiler-link relative text-sm">
                       آیا قیمت مناسب‌تری سراغ دارید؟
                     </a>
-                    
+
                     {/* --- تغییر جدید: لیست روش‌های ارسال برای دسکتاپ --- */}
                     <div className="mt-5">
                       <h4 className="font-bold text-zinc-700 mb-3 text-sm">روش‌های ارسال موجود:</h4>
                       <div className="space-y-2">
                         {activeShippingMethods.length > 0 ? (
                           activeShippingMethods.map((method: any) => (
-                            <div 
-                              key={method.id} 
+                            <div
+                              key={method.id}
                               className="bg-white border border-zinc-200 rounded-lg p-3 flex flex-col gap-1 shadow-sm text-sm"
                             >
                               <div className="flex items-center gap-2 font-bold text-zinc-800">
@@ -311,13 +318,13 @@ export default async function Page({
                       </div>
                     </div>
                     {/* --- پایان تغییر --- */}
-                    
+
                   </>
                 )}
               </div>
             </div>
           </div>
-          
+
           <div className="hidden sm:block lg:hidden bg-zinc-100 border border-zinc-200 p-5 my-5 text-center space-y-4 rounded-md">
             <ProductPriceBox product={data} />
             <AddToCart
@@ -331,7 +338,7 @@ export default async function Page({
              <a href="#" className="text-cyan-400 spoiler-link relative text-sm">
               آیا قیمت مناسب‌تری سراغ دارید؟
             </a>
-            
+
             <div className="bg-white border border-zinc-200 rounded-lg p-4 mt-4 shadow-sm">
                 <h4 className="font-bold text-zinc-800 mb-3 text-sm border-b pb-2">روش‌های ارسال</h4>
                 <div className="space-y-3">
@@ -362,7 +369,7 @@ export default async function Page({
               product={data}
             />
           </div>
-          
+
           <div className="bg-white shadow-lg shadow-black/10 rounded-[5px] w-full mt-7 text-sm">
             <TabsBox
               comments={comments}
