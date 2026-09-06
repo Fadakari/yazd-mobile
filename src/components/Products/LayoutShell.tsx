@@ -8,6 +8,7 @@ import FilterBox from "./FilterBox";
 import SortBox from "./SortBox";
 import { useCategories } from "@/context/CategoriesContext";
 type LayoutShellProps = {
+  brands?: any;
   products: ProductType[];
   searchParams: any;
   pagination?: { count: number; page: number };
@@ -18,6 +19,7 @@ export default function LayoutShell({
   searchParams,
   products,
   pagination,
+  brands,
   href,
 }: LayoutShellProps) {
   const categories = useCategories();
@@ -70,7 +72,7 @@ export default function LayoutShell({
     <div className={"space-y-5 container customSm:max-w-[566px]"}>
       <BreadcrumbsBox items={breadcrumbItems} />
       <section className="flex gap-4 w-full h-full ">
-        <FilterBox selected={selected} />
+        <FilterBox selected={selected} brands={brands} />
         <div className="size-full space-y-5">
           <SortBox />
           <Products
@@ -84,3 +86,4 @@ export default function LayoutShell({
     </div>
   );
 }
+

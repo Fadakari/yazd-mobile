@@ -53,6 +53,7 @@ export async function GetShopCategoriesTreeList() {
     }
 }
 interface GetProductsParams {
+    brand_id?: number;
     category_id?: number;
     min_price?: number;
     max_price?: number;
@@ -73,6 +74,7 @@ export async function GetProducts(
         const query = new URLSearchParams();
 
         if (searchParams?.category_id !== undefined) query.append("category_id", searchParams.category_id.toString());
+        if (searchParams?.brand_id !== undefined) query.append("brand_id", searchParams.brand_id.toString());
         if (searchParams?.min_price !== undefined) query.append("min_price", searchParams.min_price.toString());
         if (searchParams?.max_price !== undefined) query.append("max_price", searchParams.max_price.toString());
         if (searchParams?.is_available !== undefined) query.append("is_available", String(searchParams.is_available));
@@ -591,5 +593,19 @@ export async function goToGateways(id: number | string) {
     } catch (err) {
         console.error("[DEBUG] Payment error caught:", err);
         alert("خطا در اتصال به درگاه پرداخت");
+    }
+}
+
+export async function GetBrands() {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/brands/`, {
+            ...getFetchOptions(),
+            next: { revalidate: 30 }
+        });
+        if (!res.ok) return [];
+        return await res.json();
+    } catch (error) {
+        console.error("GetBrands:", error);
+        return [];
     }
 }

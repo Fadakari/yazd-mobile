@@ -13,9 +13,11 @@ const maxPrice = 459420000;
 
 export default function FilterBox({
   isShow,
+  brands,
 }: {
   selected?: boolean;
   isShow?: boolean;
+  brands?: any;
 }) {
   const categories = useCategories();
   const searchParams = useSearchParams();
@@ -25,6 +27,7 @@ export default function FilterBox({
   const [isPending, startTransition] = useTransition();
 
   const [selectedKeys, setSelectedKeys] = useState<any>(new Set(["1"]));
+  const [brandKeys, setBrandKeys] = useState<any>(new Set(["1"]));
   const [selectedKeys2, setSelectedKeys2] = useState<any>(new Set(["1"]));
   const [value, setValue] = useState<SliderValue>([
     Number(searchParams?.get("min_price")) || minPrice,
@@ -33,6 +36,7 @@ export default function FilterBox({
   const [minInput, setMinInput] = useState(minPrice);
   const [maxInput, setMaxInput] = useState(maxPrice);
   const [searchCategory, setSearchCategory] = useState<string>("");
+  const [searchBrand, setSearchBrand] = useState<string>("");
 
   useEffect(() => {
     if (Array.isArray(value)) {
@@ -67,6 +71,13 @@ export default function FilterBox({
       const query = new URLSearchParams(searchParams);
       if (params.category_id !== undefined)
         query.set("category_id", params.category_id.toString());
+      if (params.brand_id !== undefined) {
+        if (params.brand_id === "") {
+          query.delete("brand_id");
+        } else {
+          query.set("brand_id", params.brand_id.toString());
+        }
+      }
       if (params.min_price !== undefined)
         query.set("min_price", params.min_price.toString());
       if (params.max_price !== undefined)
@@ -91,11 +102,16 @@ export default function FilterBox({
     });
   };
 
+  const searchedBrands = brands?.filter((i: any) =>
+    i.name.toLowerCase().includes(searchBrand.toLowerCase())
+  );
+
   const searchedCategories = categories?.filter((i) =>
     i.name.toLowerCase().includes(searchCategory.toLowerCase())
   );
 
   const activeFilters = {
+    brand_id: searchParams.get("brand_id"),
     category_id: searchParams.get("category_id"),
     min_price: searchParams.get("min_price"),
     max_price: searchParams.get("max_price"),
@@ -105,13 +121,18 @@ export default function FilterBox({
   const hasActiveFilter = Object.values(activeFilters).some(Boolean);
   const [isClearing, setIsClearing] = useState(false);
   const listRef = useRef<HTMLUListElement>(null);
+  const brandListRef = useRef<HTMLUListElement>(null);
   const [hasScroll, setHasScroll] = useState(false);
+  const [brandHasScroll, setBrandHasScroll] = useState(false);
 
   useEffect(() => {
     if (listRef.current) {
       setHasScroll(listRef.current.scrollHeight > listRef.current.clientHeight);
     }
-  }, [searchedCategories]);
+    if (brandListRef.current) {
+      setBrandHasScroll(brandListRef.current.scrollHeight > brandListRef.current.clientHeight);
+    }
+  }, [searchedCategories, searchedBrands]);
   return (
     <div
       className={`h-full ${isShow ? "space-y-4" : "hidden lg:flex w-1/3"} flex-col gap-2 sticky`}
@@ -141,6 +162,18 @@ export default function FilterBox({
                 <span className="text-zinc-500">•</span>
                 <span className="text-zinc-800 font-medium">
                   فقط کالاهای موجود
+                </span>
+              </li>
+            )}
+            {activeFilters.brand_id && (
+              <li className="flex items-center gap-1">
+                <span className="text-zinc-500">▪ برند:</span>
+                <span className="text-zinc-800 font-medium">
+                  {
+                    brands?.find(
+                      (b: any) => b.id.toString() === activeFilters.brand_id
+                    )?.name
+                  }
                 </span>
               </li>
             )}
@@ -275,6 +308,66 @@ export default function FilterBox({
           </AccordionItem>
         </Accordion>
       </div>
+
+      {/* Brand Accordion */}
+      <div className="bg-white shadow rounded-sm px-3 py-0 text-zinc-700 relative">
+        <GoChevronUp
+          className={`size-5 absolute top-5 left-5 transition-transform duration-300 ${
+            brandKeys.size === 1 ? "-rotate-180" : "rotate-0"
+          }`}
+        />
+        <Accordion
+          selectedKeys={brandKeys}
+          onSelectionChange={setBrandKeys}
+          showDivider={false}
+          hideIndicator
+        >
+          <AccordionItem key="1" title="برند">
+            <div className="relative w-full flex items-center">
+              <input
+                value={searchBrand}
+                onChange={(e) => setSearchBrand(e.target.value)}
+                autoComplete="off"
+                type="search"
+                placeholder="جستجو ..."
+                className="p-2 pr-10 border border-zinc-300 rounded-xs w-full outline-none"
+              />
+              <BiSearch className="size-6 absolute top-3 right-2 text-zinc-400" />
+            </div>
+            {brandHasScroll && (
+              <div className="absolute bg-gradient-to-t from-black/10 to-transparent w-full h-10 bottom-0 left-0 pointer-events-none"></div>
+            )}
+            <ul
+              className="overflow-y-auto max-h-64 text-zinc-500 pt-4 relative rounded-2xl mb-2 xl:mb-4"
+              ref={brandListRef}
+            >
+              {Array.isArray(searchedBrands) && searchedBrands.length > 0 ? (
+                searchedBrands.map((brand: any) => {
+                  const selectedId = searchParams.get("brand_id");
+                  const isSelected = selectedId === brand.id.toString();
+
+                  return (
+                    <li key={brand.id} className="mb-1">
+                      <button
+                        onClick={() => applyFilters({ brand_id: isSelected ? "" : brand.id })}
+                        className={`py-2 flex items-center gap-1 ${
+                          isSelected ? "text-primary-500 font-bold" : ""
+                        }`}
+                      >
+                        <MdChevronLeft className="size-5" />
+                        <span>{brand.name}</span>
+                      </button>
+                    </li>
+                  );
+                })
+              ) : (
+                <li className="text-sm text-zinc-400 text-center py-2">برندی موجود نیست</li>
+              )}
+            </ul>
+          </AccordionItem>
+        </Accordion>
+      </div>
+
       <div className="relative bg-white shadow rounded-sm py-0 text-zinc-700">
         <GoChevronUp
           className={`size-5 absolute top-5 left-5 transition-transform duration-300 ${

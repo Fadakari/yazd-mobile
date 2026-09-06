@@ -1,7 +1,7 @@
 export const revalidate = 30;
 
 import LayoutShell from "@/components/Products/LayoutShell";
-import { GetProducts, GetShopCategoriesTreeList } from "@/services/shopActions";
+import { GetProducts, GetShopCategoriesTreeList, GetBrands } from "@/services/shopActions";
 import { breadcrumbSchema, productsSchema } from "@/components/Schema";
 import Script from "next/script";
 import { cache } from "react";
@@ -20,6 +20,10 @@ const defaultFetchOptions = {
 
 const getProductList = cache(async (params: any) => {
   return await GetProducts(params);
+});
+
+const getBrandsCached = cache(async () => {
+  return await GetBrands();
 });
 
 const getCategories = cache(async () => {
@@ -87,6 +91,7 @@ export default async function ProductsPage({ searchParams }: any) {
   }
 
   const categoryRes = await getCategories();
+  const brands = await getBrandsCached();
   const categories = Array.isArray(categoryRes) ? categoryRes : (categoryRes?.data || categoryRes?.results || []);
 
   const breadcrumbs = [
@@ -110,6 +115,7 @@ export default async function ProductsPage({ searchParams }: any) {
       />
 
       <LayoutShell
+        brands={brands}
         categories={categories}
         products={data.results || []}
         pagination={{
@@ -198,3 +204,4 @@ export async function generateMetadata({
     },
   };
 }
+
