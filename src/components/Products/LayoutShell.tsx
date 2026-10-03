@@ -74,7 +74,7 @@ export default function LayoutShell({
       <section className="flex gap-4 w-full h-full ">
         <FilterBox selected={selected} brands={brands} />
         <div className="size-full space-y-5">
-          <SortBox />
+          <SortBox brands={brands} />
           <Products
             href={href}
             pagination={pagination}

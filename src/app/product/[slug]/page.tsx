@@ -362,7 +362,7 @@ export default async function Page({
           </div>
           {/* --- پایان تغییر موبایل --- */}
 
-          <div className="fixed bottom-0 z-30 right-0 w-full space-y-3 bg-white shadow-2xl sm:hidden p-2 flex items-center gap-3 border-t border-zinc-200">
+          <div className="fixed bottom-0 z-55 right-0 w-full space-y-3 bg-white shadow-2xl sm:hidden p-2 flex items-center gap-3 border-t border-zinc-200">
             <ProductPriceBox product={data} />
             <AddToCart
               is_available={data.is_available && data.stock > 0}

@@ -12,6 +12,8 @@ import {
 import Link from "next/link";
 import { convertNumberToPersian } from "@/utils/converNumbers";
 import ShippingMethodSelector from "./ShippingMethodSelector";
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
+import { HiXMark } from "react-icons/hi2";
 
 interface FormData {
   discount_code: string;
@@ -22,6 +24,7 @@ const CreateOrder = () => {
   const { cart } = useCart();
   const [formData, setFormData] = useState<FormData>({ discount_code: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isWarningOpen, setIsWarningOpen] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [checkingDiscount, setCheckingDiscount] = useState(false);
@@ -116,10 +119,14 @@ const CreateOrder = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const createOrder = async (e: FormEvent<HTMLFormElement>) => {
+  const handlePreSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateFields()) return;
+    setIsWarningOpen(true);
+  };
 
+  const createOrder = async () => {
+    setIsWarningOpen(false);
     setIsSubmitting(true);
 
     const discountedItems = cart.items.filter((item) => item.final_price);
@@ -165,7 +172,7 @@ const CreateOrder = () => {
   return (
     <>
       <form
-        onSubmit={createOrder}
+        onSubmit={handlePreSubmit}
         className="grid md:grid-cols-5 gap-6 p-5 rounded max-w-7xl mx-auto"
       >
         <div className="col-span-3 flex flex-col gap-4">
@@ -329,6 +336,54 @@ const CreateOrder = () => {
           </button>
         </div>
       </form>
+
+      <Modal
+        isOpen={isWarningOpen}
+        onOpenChange={setIsWarningOpen}
+        placement="center"
+        hideCloseButton
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 text-orange-600">
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl">📌</div>
+                  <span>توجه مهم قبل از پرداخت</span>
+                </div>
+              </ModalHeader>
+              <ModalBody>
+                <div className="text-gray-700 leading-relaxed text-justify space-y-4">
+                  <p>کاربر عزیز و گرامی،</p>
+                  <p>
+                    به دلیل نوسان قیمت‌ها، لطفاً پیش از انجام پرداخت نهایی، حتماً با پشتیبانی هماهنگ کنید و پس از دریافت مبلغ قطعی و تأیید، پرداخت را انجام دهید.
+                  </p>
+                  <p>
+                    این کار به شما کمک می‌کند خرید خود را با دقیق‌ترین قیمت و بدون نگرانی از اختلاف قیمت نهایی کنید.
+                  </p>
+                  <p className="font-semibold text-gray-900 pt-2 border-t">
+                    🙏 با سپاس از اعتماد و همراهی شما
+                  </p>
+                </div>
+                <div className="flex gap-3 mt-6 mb-2">
+                  <button
+                    className="btn btn-primary flex-1 py-2 font-semibold"
+                    onClick={createOrder}
+                  >
+                    متوجه شدم و پرداخت
+                  </button>
+                  <button
+                    className="btn bg-gray-200 text-gray-800 flex-1 py-2 font-semibold"
+                    onClick={onClose}
+                  >
+                    انصراف
+                  </button>
+                </div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 };

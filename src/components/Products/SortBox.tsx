@@ -12,7 +12,7 @@ import {
 } from "@heroui/react";
 import { HiXMark } from "react-icons/hi2";
 
-function SortBox() {
+function SortBox({ brands }: { brands?: any }) {
   const sortOptions = [
     { label: "جدیدترین", value: "newest" },
     { label: "محبوب ترین", value: "popularity" },
@@ -83,8 +83,8 @@ function SortBox() {
                   </div>
                 </DrawerHeader>
 
-                <DrawerBody className="relative overflow-hidden px-0 w-full">
-                  <FilterBox isShow />
+                <DrawerBody className="relative overflow-y-auto overflow-x-hidden px-0 w-full pb-10">
+                  <FilterBox isShow brands={brands} />
                 </DrawerBody>
               </>
             )}
