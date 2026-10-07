@@ -19,7 +19,7 @@ import { imageSchema } from "@/components/Schema/imageSchema";
 import Script from "next/script";
 import { GetSiteSettings } from "@/services/siteActions";
 
-export const revalidate = 3600;
+export const revalidate = 30;
 
 moment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
 
