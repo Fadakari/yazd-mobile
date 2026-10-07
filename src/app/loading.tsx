@@ -15,6 +15,13 @@ export default function Loading() {
           {/* حلقه میانی (اصلی) */}
           <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-[#ff5722] border-l-[#ff5722] animate-spin"></div>
           
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={64}
+            height={64}
+            className="object-contain"
+          />
         </div>
 
         {/* --- متن لودینگ --- */}
