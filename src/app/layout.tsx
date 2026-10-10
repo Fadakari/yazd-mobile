@@ -17,6 +17,7 @@ import NextTopLoader from 'nextjs-toploader';
 import { GetActiveLogo } from "@/services/siteActions";
 import { GetSiteSettings } from "@/services/siteActions";
 import { SiteProvider } from "@/context/SiteContext";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 // ۲. این تابع را جایگزین بلاک metadata استاتیک قبلی کن:
 export async function generateMetadata(): Promise<Metadata> {
@@ -116,6 +117,7 @@ export default async function RootLayout({
           zIndex={1600}
         />
         <ConsoleLog />
+        <AnalyticsTracker />
         <UserProvider initialUser={user}>
           <AuthModalProvider>
             <CartProvider>
