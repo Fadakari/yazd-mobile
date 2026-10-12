@@ -34,7 +34,7 @@ function AddToCart({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { selectedColor, selectedMaterial } = useProductOptions();
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
@@ -45,10 +45,12 @@ function AddToCart({
 
     if (dropDownOpen) {
       document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [dropDownOpen]);
   const handleAddToCart = async () => {
@@ -141,42 +143,61 @@ function AddToCart({
         >
           {quantity} عدد
           <span>
-            <MdChevronLeft className="w-5 h-5 text-zinc-500 -rotate-90" />
+            <MdChevronLeft className={`w-5 h-5 text-zinc-500 transition-transform duration-200 ${dropDownOpen ? "rotate-90" : "-rotate-90"}`} />
           </span>
         </button>
         {dropDownOpen && (
-          <div className="animate-fade-up animate-duration-300 animate-ease-linear animate-normal bottom-0 sm:bottom-auto right-0 sm:top-11 fixed sm:absolute bg-white w-full z-10 border-t border-zinc-300 text-zinc-700 sm:shadow-lg shadow-2xl rounded-t-2xl sm:rounded-none transition-all ease-linear">
-            <div className="sm:hidden flex items-center justify-between p-5">
-              <p className="font-semibold">انتخاب مقدار</p>
-              <button type="button" onClick={() => setDropDownOpen(false)}>
-                <HiXMark className="size-6" />
-              </button>
-            </div>
-            {[1, 2, 3, ...customQuantities.filter((q) => q > 3)].map((num) => (
-              <button
-                key={num}
-                className={`w-full p-3 flex items-center justify-between font-bold hover:bg-primary-200 font-dana ${
-                  num === quantity ? "bg-primary-200" : ""
-                }`}
-                onClick={() => {
-                  setQuantity(num);
-                  setDropDownOpen(false);
-                }}
-              >
-                {num} عدد
-              </button>
-            ))}
+          <>
+            {/* لایه شفاف پس‌زمینه برای بستن سریع با کلیک بیرون در موبایل */}
+            <div
+              className="sm:hidden fixed inset-0 z-40 bg-black/25 backdrop-blur-[1px]"
+              onClick={() => setDropDownOpen(false)}
+            />
+            <div className="animate-fade-up animate-duration-200 bottom-full mb-2 sm:bottom-auto sm:top-11 sm:mb-0 right-0 absolute bg-white min-w-[170px] w-full z-50 border border-zinc-200 text-zinc-700 shadow-2xl rounded-2xl sm:rounded-xl overflow-hidden transition-all">
+              <div className="sm:hidden flex items-center justify-between p-3 border-b border-zinc-100 bg-zinc-50">
+                <p className="font-bold text-xs text-zinc-700">انتخاب تعداد</p>
+                <button
+                  type="button"
+                  onClick={() => setDropDownOpen(false)}
+                  className="text-zinc-400 hover:text-zinc-600 p-1"
+                >
+                  <HiXMark className="size-5" />
+                </button>
+              </div>
+              <div className="max-h-60 overflow-y-auto divide-y divide-zinc-100">
+                {[1, 2, 3, ...customQuantities.filter((q) => q > 3)].map((num) => (
+                  <button
+                    key={num}
+                    className={`w-full p-3 flex items-center justify-between font-bold hover:bg-primary-50 text-sm font-dana transition-colors ${
+                      num === quantity
+                        ? "bg-primary-100 text-primary-700 font-black"
+                        : "text-zinc-700"
+                    }`}
+                    onClick={() => {
+                      setQuantity(num);
+                      setDropDownOpen(false);
+                    }}
+                  >
+                    <span>{num} عدد</span>
+                    {num === quantity && (
+                      <span className="text-primary-600 text-xs">✓</span>
+                    )}
+                  </button>
+                ))}
 
-            <button
-              onClick={() => {
-                onOpen();
-                setDropDownOpen(false);
-              }}
-              className="w-full p-3 flex items-center justify-between font-bold hover:bg-primary-200"
-            >
-              وارد کردن مقدار دلخواه
-            </button>
-          </div>
+                <button
+                  onClick={() => {
+                    onOpen();
+                    setDropDownOpen(false);
+                  }}
+                  className="w-full p-3 flex items-center justify-between font-bold text-sm text-primary-600 hover:bg-primary-50 transition-colors"
+                >
+                  <span>وارد کردن مقدار دلخواه</span>
+                  <span className="text-xs">←</span>
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </div>
       <ProductButton
@@ -201,32 +222,16 @@ function AddToCart({
         backdrop="opaque"
         isOpen={isOpen}
         hideCloseButton
-        motionProps={{
-          variants: {
-            enter: {
-              opacity: 1,
-              y: 0,
-              transition: {
-                duration: 0.2,
-                ease: "easeOut",
-              },
-            },
-            exit: {
-              opacity: 0,
-              y: 100,
-              transition: {
-                duration: 0.1,
-                ease: "easeIn",
-              },
-            },
-          },
-        }}
         onOpenChange={onOpenChange}
-        size="lg"
-        placement="bottom-center"
-        className="max-w-full m-0 sm:max-w-lg animate-fade-up animate-duration-300 animate-ease-linear animate-normal"
+        size="md"
+        placement="center"
+        classNames={{
+          wrapper: "z-[99999]",
+          backdrop: "z-[99998]",
+          base: "max-w-[92vw] sm:max-w-md mx-auto my-auto rounded-2xl shadow-2xl overflow-hidden",
+        }}
       >
-        <ModalContent className="text-sm rounded-sm">
+        <ModalContent className="text-sm rounded-2xl">
           {(onClose) => (
             <form
               onSubmit={(e) => {
@@ -237,29 +242,30 @@ function AddToCart({
                 }
               }}
             >
-              <ModalHeader className="flex items-center justify-between gap-1">
+              <ModalHeader className="flex items-center justify-between gap-1 p-4 border-b border-zinc-100">
                 <div className="flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={() => {
                       setDropDownOpen(true);
                       onClose();
                     }}
-                    className="flex sm:hidden"
+                    className="flex sm:hidden text-zinc-500 hover:text-zinc-700"
                   >
                     <MdChevronRight className="size-6" />
                   </button>
-                  <p>وارد کردن مقدار دلخواه</p>
+                  <p className="font-bold text-base text-zinc-800">وارد کردن مقدار دلخواه</p>
                 </div>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="hidden sm:block"
+                  className="p-1 rounded-lg text-zinc-400 hover:text-zinc-600"
                 >
                   <HiXMark className="size-6" />
                 </button>
               </ModalHeader>
-              <ModalBody>
-                <p className="font-semibold sm:mt-4">
+              <ModalBody className="p-5 space-y-3">
+                <p className="font-semibold text-zinc-700 text-sm">
                   لطفا مقدار مورد نیاز را وارد کنید
                 </p>
                 <div className="relative">
@@ -269,8 +275,8 @@ function AddToCart({
                     hideStepper
                     size="sm"
                     classNames={{
-                      inputWrapper: "input !rounded-full",
-                      input: "input font-dana  border-none",
+                      inputWrapper: "input !rounded-xl border border-zinc-300 focus-within:border-primary",
+                      input: "input font-dana border-none text-base",
                     }}
                     minValue={1}
                     aria-label="مقدار سبد خرید"
@@ -279,15 +285,15 @@ function AddToCart({
                   />
                   <label
                     htmlFor="quantity"
-                    className="absolute top-3.5 left-4 text-zinc-600"
+                    className="absolute top-3.5 left-4 text-zinc-500 font-medium text-sm"
                   >
                     عدد
                   </label>
                 </div>
-                <p className="text-xs">*واحد شمارش بر اساس عدد است.</p>
+                <p className="text-xs text-zinc-400">*واحد شمارش بر اساس عدد است.</p>
               </ModalBody>
-              <ModalFooter>
-                <button className="w-full btn-primary" type="submit">
+              <ModalFooter className="p-4 border-t border-zinc-100">
+                <button className="w-full btn-primary py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all" type="submit">
                   اعمال مقدار
                 </button>
               </ModalFooter>
