@@ -4,7 +4,7 @@ const FixedSocialLinks = () => {
   return (
     <div className="fixed left-4 bottom-24 md:bottom-5 md:left-5 flex flex-col items-center gap-3 z-40 md:z-50">
       <a
-        href="https://www.instagram.com/_yazdmobile_"
+        href="https://www.instagram.com/valiasrstore.site"
         target="_blank"
         rel="noopener noreferrer"
         className="group relative flex items-center justify-center bg-white text-[#dd2a7b] w-10 h-10 md:w-12 md:h-12 rounded-full shadow-md hover:shadow-xl transition-all duration-300"
@@ -16,7 +16,7 @@ const FixedSocialLinks = () => {
       </a>
 
       <a
-        href="https://wa.me/09011517606"
+        href="https://wa.me/valiasrstore"
         target="_blank"
         rel="noopener noreferrer"
         className="group relative flex items-center justify-center bg-white text-green-500 w-10 h-10 md:w-12 md:h-12 rounded-full shadow-md hover:shadow-xl transition-all duration-300"

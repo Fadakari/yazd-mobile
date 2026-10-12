@@ -7,6 +7,7 @@ import CategorySection, { CategoryItem } from "@/components/CategorySection";
 import ShegeftAngizSlider, { ProductCardType } from "@/components/ShegeftAngizSlider";
 import LatestBlogSection, { BlogPostItem } from "@/components/LatestBlogSection";
 import NewProductsSlider, { NewProductItem } from "@/components/NewProductsSlider";
+import TrustBadgesBar from "@/components/TrustBadgesBar";
 import { GetShopCategoriesTreeList } from "@/services/shopActions"; // <--- ایمپورت جدید
 
 export const revalidate = 300;
@@ -241,14 +242,14 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
   const nonBannerSections = apiData.filter((item) => item.item_type !== "banner" && item.item_type !== "static_banner");
 
   return (
-    <main className="w-full bg-[#f9f9f9] min-h-screen pb-10">
+    <main className="w-full bg-[#f1f5f9] min-h-screen pb-14">
 
-      {/* 1. بنر (اول، بدون عنوان پایینی) */}
-      <section className="container mx-auto px-4 py-6">
+      {/* 1. بنر هیرو و پیشنهادات کناری (با تطبیق خودکار ستون‌ها در صورت خالی بودن پیشنهادات) */}
+      <section className="container mx-auto px-3 sm:px-4 pt-3 sm:pt-6 pb-2">
         {bannerSectionToRender ? (
           <div>
-            <div className="grid grid-cols-12 gap-4 lg:h-[350px]">
-              <div className="col-span-12 lg:col-span-9 h-[300px] md:h-[420px] lg:h-full">
+            <div className={`grid grid-cols-12 gap-3 sm:gap-4 lg:gap-5 ${verticalOffers.length > 0 ? "lg:h-[390px]" : ""}`}>
+              <div className={`${verticalOffers.length > 0 ? "col-span-12 lg:col-span-9" : "col-span-12"} h-full`}>
                 {(() => {
                   const slides: SliderItem[] = (bannerSectionToRender.banner_image || []).map((b: any) => ({
                     id: b.id,
@@ -261,48 +262,71 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
                   return slides.length > 0 ? (
                     <MainHeroSlider slides={slides} />
                   ) : (
-                    <div className="w-full h-64 bg-gray-200 rounded-2xl flex items-center justify-center text-gray-400">بنری یافت نشد</div>
+                    <div className="w-full h-64 bg-white rounded-3xl flex items-center justify-center text-slate-400 border border-slate-100">بنری یافت نشد</div>
                   );
                 })()}
               </div>
-              <div className="hidden lg:block lg:col-span-3 h-full overflow-hidden">
-                {verticalOffers.length > 0 && <AmazingOfferSlider offers={verticalOffers} />}
-              </div>
+              {verticalOffers.length > 0 && (
+                <div className="hidden lg:block lg:col-span-3 h-full overflow-hidden">
+                  <AmazingOfferSlider offers={verticalOffers} />
+                </div>
+              )}
             </div>
           </div>
         ) : null}
       </section>
 
-      {/* 2. دسته‌بندی‌های ثابت سایت */}
-      <CategorySection categories={allCategories} />
+      {/* نوار مزایای فروشگاه */}
+      <div className="scroll-reveal">
+        <TrustBadgesBar />
+      </div>
 
-      {/* 3. اسلایدرها و بنرهای ایستا (یکی در میون) */}
-      <section className="container mx-auto px-4 py-6 space-y-8">
+      {/* ۲. پیشنهاد شگفت‌انگیز روز (در صورت موجود بودن) */}
+      {shegeftAngizData.length > 0 && (
+        <div className="scroll-reveal">
+          <ShegeftAngizSlider products={shegeftAngizData} />
+        </div>
+      )}
+
+      {/* ۳. دسته‌بندی‌های ثابت سایت */}
+      <div className="scroll-reveal">
+        <CategorySection categories={allCategories} />
+      </div>
+
+      {/* ۴. اسلایدرها و بنرهای ایستا (یکی در میان با چیدمان گرید متقارن) */}
+      <section className="container mx-auto px-3 sm:px-4 py-3 sm:py-5 space-y-6 sm:space-y-8">
         {(() => {
           const sliders = nonBannerSections;
-          const banners: ApiBanner[] = []; // هر عکس بنر جداگانه
+          const bannerGroups: ApiBanner[][] = [];
           
-          // تمام عکس‌های تمام static_banner ها را جمع کن
+          // گروه‌بندی عکس‌های هر بخش static_banner
           staticBannerSections.forEach((section) => {
             if (section.banner_image && section.banner_image.length > 0) {
-              banners.push(...section.banner_image);
+              bannerGroups.push(section.banner_image);
             }
           });
           
-          const combined = [];
+          type CombinedItem = 
+            | { type: 'slider'; data: ApiSection }
+            | { type: 'banner_group'; data: ApiBanner[] };
+
+          const combined: CombinedItem[] = [];
           
-          // ادغام اسلایدرها و بنرها یکی در میان
-          for (let i = 0; i < Math.max(sliders.length, banners.length); i++) {
+          // ادغام اسلایدرها و دسته‌های بنر یکی در میان
+          for (let i = 0; i < Math.max(sliders.length, bannerGroups.length); i++) {
             if (i < sliders.length) {
               combined.push({ type: 'slider', data: sliders[i] });
             }
-            if (i < banners.length) {
-              combined.push({ type: 'banner', data: banners[i] });
+            if (i < bannerGroups.length) {
+              combined.push({ type: 'banner_group', data: bannerGroups[i] });
             }
           }
           
+          let sliderCounter = 0;
+
           return combined.map((item, index) => {
             if (item.type === 'slider') {
+              const currentThemeIndex = sliderCounter++;
               const section: ApiSection = item.data;
               
               // product -> horizontal product slider
@@ -319,6 +343,7 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
                       viewAllLink="/products"
                       sectionId={section.id}
                       sectionType="product"
+                      themeIndex={currentThemeIndex}
                     />
                   </div>
                 );
@@ -345,28 +370,49 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
                       sort="newest"
                       sectionId={section.id}
                       sectionType="category"
+                      themeIndex={currentThemeIndex}
                     />
                   </div>
                 );
               }
             }
             
-            if (item.type === 'banner') {
-              const banner: ApiBanner = item.data;
+            if (item.type === 'banner_group') {
+              const group: ApiBanner[] = item.data;
+              if (!group || group.length === 0) return null;
+
+              // انتخاب ستون‌بندی هوشمند و واکنش‌گرا بر اساس تعداد بنرها
+              let gridColsClass = "grid-cols-1";
+              let heightClass = "h-[160px] sm:h-[220px] md:h-[290px]";
+
+              if (group.length === 2) {
+                gridColsClass = "grid-cols-1 md:grid-cols-2";
+                heightClass = "h-[150px] sm:h-[190px] md:h-[240px]";
+              } else if (group.length === 3) {
+                gridColsClass = "grid-cols-1 sm:grid-cols-2 md:grid-cols-3";
+                heightClass = "h-[140px] sm:h-[180px] md:h-[220px]";
+              } else if (group.length >= 4) {
+                gridColsClass = "grid-cols-2 lg:grid-cols-4";
+                heightClass = "h-[130px] sm:h-[160px] md:h-[190px]";
+              }
+
               return (
-                <div key={`banner-${banner.id}`}>
-                  <Link 
-                    href={banner.link || "#"}
-                    className="block relative w-full h-[200px] md:h-[300px] rounded-[20px] overflow-hidden group"
-                  >
-                    <Image
-                      src={banner.banner_image}
-                      alt={banner.alt || "بنر"}
-                      fill
-                      className="object-contain transition-transform duration-500 group-hover:scale-105"
-                      priority
-                    />
-                  </Link>
+                <div key={`banner-group-${index}`} className={`grid ${gridColsClass} gap-3 sm:gap-4 md:gap-5 my-3 sm:my-5 scroll-reveal`}>
+                  {group.map((banner) => (
+                    <Link 
+                      key={`banner-${banner.id}`}
+                      href={banner.link || "#"}
+                      className={`block relative w-full ${heightClass} rounded-2xl sm:rounded-3xl overflow-hidden group shadow-[0_6px_24px_rgba(15,23,42,0.06)] hover:shadow-[0_16px_36px_rgba(15,23,42,0.14)] transition-all duration-300 border-2 border-white/80 hover:-translate-y-1`}
+                    >
+                      <Image
+                        src={banner.banner_image}
+                        alt={banner.alt || "بنر تبلیغاتی"}
+                        fill
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </Link>
+                  ))}
                 </div>
               );
             }
@@ -375,13 +421,11 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
           });
         })()}
       </section>
-      
 
-      {/* شگفت‌انگیز */}
-      {shegeftAngizData.length > 0 && <ShegeftAngizSlider products={shegeftAngizData} />}
-
-      {/* بلاگ */}
-      <LatestBlogSection posts={blogPosts} />
+      {/* ۵. آخرین مقالات بلاگ */}
+      <div className="scroll-reveal">
+        <LatestBlogSection posts={blogPosts} />
+      </div>
     </main>
   );
 }
