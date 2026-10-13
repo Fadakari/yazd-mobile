@@ -37,12 +37,23 @@ export default function BackToTopButton({ mode = "inline" }: { mode?: "inline" |
   return (
     <button
       onClick={scrollToTop}
-      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-blue-600 text-slate-700 hover:text-white text-xs sm:text-sm font-black transition-all duration-300 shadow-xs cursor-pointer border border-slate-200 hover:border-blue-600 active:scale-95"
+      className="inline-flex items-center gap-2.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-slate-50 hover:bg-blue-600 text-slate-800 hover:text-white text-xs sm:text-sm font-black transition-all duration-300 shadow-2xs hover:shadow-md cursor-pointer border border-slate-200/90 hover:border-blue-600 active:scale-95 group"
       aria-label="بازگشت به بالای صفحه"
     >
       <span>بازگشت به بالا</span>
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m18 15-6-6-6 6"/>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="transition-transform group-hover:-translate-y-0.5"
+      >
+        <path d="m18 15-6-6-6 6" />
       </svg>
     </button>
   );

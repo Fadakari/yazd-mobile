@@ -137,10 +137,10 @@ export default function NewProductsSlider({
                 <span className="transition-transform duration-300 group-hover/all:-translate-x-1">←</span>
               </Link>
               <button onClick={() => scroll("right")} aria-label="محصولات بعدی" className="w-10 h-10 rounded-xl bg-white/95 hover:bg-white text-slate-800 hover:text-blue-600 transition-all shadow-md active:scale-95 flex items-center justify-center cursor-pointer border border-white">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m15 18-6-6 6-6" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" /></svg>
               </button>
               <button onClick={() => scroll("left")} aria-label="محصولات قبلی" className="w-10 h-10 rounded-xl bg-white/95 hover:bg-white text-slate-800 hover:text-blue-600 transition-all shadow-md active:scale-95 flex items-center justify-center cursor-pointer border border-white">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m15 18-6-6 6-6" /></svg>
               </button>
             </div>
           </div>
