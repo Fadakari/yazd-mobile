@@ -76,10 +76,10 @@ export default function AmazingOfferSlider({
 
 
   return (
-    <div className="relative w-full h-full min-h-[360px] lg:h-[400px] rounded-3xl bg-white border-2 border-red-500/80 shadow-[0_10px_35px_rgba(239,57,78,0.18)] overflow-hidden flex flex-col justify-between" dir="rtl">
+    <div className="relative w-full h-full rounded-3xl bg-white border-2 border-blue-500/80 shadow-[0_10px_35px_rgba(239,57,78,0.18)] overflow-hidden flex flex-col justify-between" dir="rtl">
       
       {/* 1. Header with Vibrant Flame & Timer */}
-      <div className="bg-gradient-to-r from-red-600 via-rose-600 to-red-600 px-4 py-3 shrink-0 flex items-center justify-between text-white shadow-sm">
+      <div className="bg-gradient-to-r from-blue-500 via-cyan-500 to-green-500 px-4 py-3 shrink-0 flex items-center justify-between text-white shadow-sm">
         <div className="flex items-center gap-2">
           <span className="text-xl animate-bounce">⚡</span>
           <div>
@@ -126,7 +126,7 @@ export default function AmazingOfferSlider({
                 <div className="w-full text-center my-2 overflow-hidden">
                   <Link 
                     href={offer.link} 
-                    className="text-xs sm:text-sm font-extrabold text-slate-900 line-clamp-2 hover:text-red-600 transition-colors leading-relaxed block"
+                    className="text-xs sm:text-sm font-extrabold text-slate-900 line-clamp-2 hover:text-blue-600 transition-colors leading-relaxed block"
                   >
                     {offer.title}
                   </Link>
@@ -134,8 +134,8 @@ export default function AmazingOfferSlider({
 
                 {/* Price Display */}
                 <div className="w-full bg-slate-50 border border-slate-200/80 rounded-2xl p-2.5 flex items-center justify-between mt-auto mb-2.5">
-                   <span className="bg-red-600 text-white text-[11px] font-black px-2 py-0.5 rounded-lg">تخفیف ویژه</span>
-                   <div className="flex items-baseline gap-1 text-red-600 font-black">
+                   <span className="bg-blue-500 text-white text-[11px] font-black px-2 py-0.5 rounded-lg">تخفیف ویژه</span>
+                   <div className="flex items-baseline gap-1 text-blue-600 font-black">
                      <span className="text-base sm:text-lg tracking-tight">{offer.price}</span>
                      <span className="text-[10px] text-slate-500 font-bold">تومان</span>
                    </div>
@@ -144,7 +144,7 @@ export default function AmazingOfferSlider({
                 {/* Full-width CTA Button */}
                 <Link
                   href={offer.link}
-                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-md shadow-red-600/20 active:scale-98 transition-all"
+                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-98 transition-all"
                 >
                   <span>مشاهده و خرید فوری</span>
                   <span>←</span>

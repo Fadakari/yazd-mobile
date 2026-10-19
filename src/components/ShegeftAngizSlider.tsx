@@ -84,7 +84,7 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
   return (
     <section className="container mx-auto px-3 sm:px-4 my-6 sm:my-8" dir="rtl">
       {/* کانتینر اصلی با گرادینت قرمز شگفت‌انگیز */}
-      <div className="relative w-full rounded-[24px] sm:rounded-[32px] md:rounded-[36px] overflow-hidden shadow-[0_18px_50px_rgba(239,57,78,0.25)] bg-gradient-to-l from-[#d9183b] via-[#ef394e] to-[#c70024] p-3 sm:p-5">
+      <div className="relative w-full rounded-[24px] sm:rounded-[32px] md:rounded-[36px] overflow-hidden shadow-[0_18px_50px_rgba(239,57,78,0.25)] bg-gradient-to-l from-[#00b4d8] via-[#39efe9] to-[#00c79f] p-3 sm:p-5">
         
         {/* افکت نور ملایم شیشه‌ای */}
         <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none" />
@@ -112,7 +112,7 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
             {/* لینک مشاهده همه محصولات شگفت‌انگیز */}
             <Link 
               href="/products/offers" 
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white text-[#ef394e] hover:bg-slate-100 text-xs sm:text-sm font-black transition-all duration-300 shadow-md active:scale-95 group/link mt-1"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white text-[#0083b7] hover:bg-slate-100 text-xs sm:text-sm font-black transition-all duration-300 shadow-md active:scale-95 group/link mt-1"
             >
               <span>مشاهده همه</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="rotate-180 transition-transform group-hover/link:-translate-x-1"><path d="m9 18 6-6-6-6"/></svg>

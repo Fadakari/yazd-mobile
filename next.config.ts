@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'api.valiasrstore.com' },
       {
         protocol: 'https',
-        hostname: 'api.valiasrstore.com',
+        hostname: 'api.akhoondigroup.com',
       },
       { protocol: 'https', hostname: 'valiasrstore.com' },
       // --- موارد جدید اضافه شده ---
@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'api.dicebear.com' },   // برای آواتار نویسنده‌ها
       {
         protocol: "https",
-        hostname: "api.valiasrstore.com", 
+        hostname: "api.hafezdaroo.com",
       },
     ],
   },
