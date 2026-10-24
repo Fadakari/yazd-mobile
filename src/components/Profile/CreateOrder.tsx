@@ -25,6 +25,8 @@ const CreateOrder = () => {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [checkingDiscount, setCheckingDiscount] = useState(false);
+  const [selectedShippingId, setSelectedShippingId] = useState<number | null>(null);
+  const [shippingError, setShippingError] = useState<string>("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
