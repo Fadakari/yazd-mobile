@@ -10,6 +10,8 @@ import {
 import { CategoryNode } from "@/types/categories";
 import ProductType from "@/types/product";
 import TabsBox from "@/components/Products/Product/TabsBox";
+import { extractNewProductDetails } from "@/utils/productDetailsParser";
+import { FaCalendarAlt } from "react-icons/fa";
 import { Metadata } from "next";
 import { breadcrumbSchema, productSchema } from "@/components/Schema";
 import { imageSchema } from "@/components/Schema/imageSchema";
@@ -139,6 +141,8 @@ export default async function Page({
   if (!res) return notFound();
 
   const data: ProductType = res;
+  const newDetails = extractNewProductDetails(data);
+  const expirationDate = newDetails?.expiration_date || data.expiration_date || (data as any).expire_date || (data as any).expiry_date;
   const categories: CategoryNode[] = (await GetShopCategoriesTreeList()) || [];
   const shippingMethods = await getShippingServices(); // دریافت روش‌های ارسال
 

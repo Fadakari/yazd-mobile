@@ -6,17 +6,30 @@ import Comments from "./Comments";
 import parse, { DOMNode, Element } from "html-react-parser";
 import sanitizeHtml from "sanitize-html";
 import Image from "next/image";
+import NewProductTabs from "./NewProductTabs";
+import { extractNewProductDetails } from "@/utils/productDetailsParser";
 
 export default function TabsBox({
   description_2,
   productId,
   comments,
+  product,
 }: {
   description_2: string;
   productId: number;
   comments: any;
+  product?: any;
 }) {
-  const sanitizedHtml = sanitizeHtml(description_2, {
+  // بررسی اینکه آیا اطلاعات مدل جدید از بک‌اند آمده است یا خیر
+  const newDetails = product ? extractNewProductDetails(product) : null;
+
+  // اگر مدل جدید وجود داشت، بخش قبلی (توضیحات کالا و نظرات) پنهان شده و مدل جدید ۷ تب نمایش داده می‌شود
+  if (newDetails) {
+    return <NewProductTabs details={newDetails} />;
+  }
+
+  // در غیر این صورت، مدل فعلی و قبلی حفظ و نمایش داده می‌شود
+  const sanitizedHtml = sanitizeHtml(description_2 || "", {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
@@ -84,7 +97,7 @@ export default function TabsBox({
               <FaFileAlt className="size-7 !text-zinc-500" />
               <i className="fad fa-comments-alt"></i>
 
-              <span className="text-zinc-500 text-base">توضیات کالا</span>
+              <span className="text-zinc-500 text-base">توضیحات کالا</span>
             </div>
           }
           className="w-full h-full"
