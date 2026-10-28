@@ -34,6 +34,7 @@ export default function NewProductTabs({ details }: NewProductTabsProps) {
   // ۱. فیلتر و آماده‌سازی آیتم‌های بخش مشخصات
   const specItems = useMemo(() => {
     const rawList = [
+      { label: "تاریخ انقضا", value: details.expiration_date },
       { label: "وزن", value: specifications.weight },
       { label: "ابعاد", value: specifications.dimensions },
       { label: "تعداد در بسته", value: specifications.package_count },
@@ -53,7 +54,7 @@ export default function NewProductTabs({ details }: NewProductTabsProps) {
         item.value !== null &&
         String(item.value).trim() !== ""
     );
-  }, [specifications]);
+  }, [specifications, details.expiration_date]);
 
   // ۲. تابع کمکی برای رندر امن محتوای ادیتور WYSIWYG
   const renderWysiwygHtml = (htmlContent?: string | null, emptyMessage = "توضیحاتی برای این بخش ثبت نشده است.") => {
@@ -185,7 +186,7 @@ export default function NewProductTabs({ details }: NewProductTabsProps) {
                     <span className="text-xs sm:text-sm font-medium text-zinc-500">
                       {spec.label}
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-zinc-800 font-dana text-left">
+                    <span dir="ltr" className="text-xs sm:text-sm font-bold text-zinc-800 font-dana text-left inline-block">
                       {String(spec.value)}
                     </span>
                   </div>

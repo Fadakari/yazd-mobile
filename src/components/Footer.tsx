@@ -81,14 +81,14 @@ const getItemStyle = (type: string, value: string) => {
   }
   if (type === "url") {
     const val = (value || "").toLowerCase();
-    if (val.includes("instagram")) {
+    if (val.includes("instagram") || val.includes("khooshtam")) {
       return {
         icon: <FaInstagram className="text-base sm:text-lg" />,
         badgeClass:
           "bg-pink-50 text-pink-600 group-hover/item:bg-gradient-to-tr group-hover/item:from-amber-500 group-hover/item:via-rose-500 group-hover/item:to-purple-600 group-hover/item:text-white",
       };
     }
-    if (val.includes("whatsapp")) {
+    if (val.includes("whatsapp") || val.includes("09395798858")) {
       return {
         icon: <FaWhatsapp className="text-base sm:text-lg" />,
         badgeClass:
@@ -115,8 +115,11 @@ const getHref = (item: FooterItem) => {
     const isWhatsapp =
       item.value?.toLowerCase().includes("whatsapp") ||
       item.label?.toLowerCase().includes("whatsapp") ||
-      item.label?.includes("واتساپ");
-    if (isWhatsapp) return "https://wa.me/valiasrstore";
+      item.label?.includes("واتساپ") ||
+      item.value?.includes("09395798858");
+    if (isWhatsapp) return "https://wa.me/989395798858";
+    if (item.value?.includes("khooshtam") || item.label?.includes("اینستاگرام"))
+      return "https://instagram.com/khooshtam.co";
     return item.value || "#";
   }
   return "#";
@@ -149,8 +152,8 @@ const FooterSection = ({
               {isClickable ? (
                 <Link
                   href={href}
-                  target={item.item_type === "url" ? "_blank" : undefined}
-                  rel={item.item_type === "url" ? "noopener noreferrer" : undefined}
+                  target={item.item_type === "url" && !href.startsWith("/") ? "_blank" : undefined}
+                  rel={item.item_type === "url" && !href.startsWith("/") ? "noopener noreferrer" : undefined}
                   className="flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100/90 transition-all group/item text-right"
                 >
                   <span
@@ -208,14 +211,60 @@ async function Footer() {
   const footerSections = await getFooterData();
   const settings = await GetSiteSettings();
   const logo = await GetActiveLogo();
-  const siteTitle = settings?.site_title || "فروشگاه آنلاین";
+  const siteTitle = settings?.site_title || "داروخانه حافظ";
   const mapUrl = settings?.map_url;
   const enamadLink = settings?.enamad_link;
   const enamadImage = settings?.enamad_image;
   const gatewayImage = settings?.payment_gateway_image;
   const siteDescription =
     settings?.site_description ||
-    "مرجع تخصصی خرید آنلاین، ضمانت کیفیت کالا، بهترین قیمت و ارسال مطمئن به سراسر کشور";
+    "داروخانه آنلاین حافظ؛ مرجع تخصصی عرضه محصولات سلامت‌محور، مکمل‌ها، اقلام آرایشی و بهداشتی اصل با ضمانت اصالت کالا و ارسال سریع به سراسر کشور.";
+
+  // بخش‌های پیش‌فرض در صورت خالی بودن دیتای فوتر بک‌اند
+  const defaultSections: FooterSectionData[] = [
+    {
+      id: 1,
+      title: "دسترسی سریع",
+      is_active: true,
+      items: [
+        { id: 101, label: "صفحه اصلی", value: "/", item_type: "url", is_active: true },
+        { id: 102, label: "فهرست محصولات", value: "/products", item_type: "url", is_active: true },
+        { id: 103, label: "مقالات و دانستنی‌ها", value: "/articles", item_type: "url", is_active: true },
+        { id: 104, label: "درباره داروخانه", value: "/about-us", item_type: "url", is_active: true },
+      ],
+    },
+    {
+      id: 2,
+      title: "ارتباط با ما",
+      is_active: true,
+      items: [
+        { id: 201, label: "پشتیبانی واتساپ", value: "09395798858", item_type: "url", is_active: true },
+        { id: 202, label: "اینستاگرام خوش‌طعم", value: "khooshtam.co", item_type: "url", is_active: true },
+        { id: 203, label: "تماس و نشانی", value: "/contact-info", item_type: "url", is_active: true },
+      ],
+    },
+    {
+      id: 3,
+      title: "رسیدگی به شکایات",
+      is_active: true,
+      items: [
+        { id: 301, label: "سامانه ملی وزارت بهداشت", value: "190", item_type: "phone", is_active: true },
+        { id: 302, label: "معاونت غذا و دارو یزد", value: "03531792020", item_type: "phone", is_active: true },
+      ],
+    },
+    {
+      id: 4,
+      title: "خدمات مشتریان",
+      is_active: true,
+      items: [
+        { id: 401, label: "قوانین و مقررات خرید", value: "/terms", item_type: "url", is_active: true },
+        { id: 402, label: "پیگیری سفارشات", value: "/profile", item_type: "url", is_active: true },
+        { id: 403, label: "سبد خرید", value: "/profile/cart", item_type: "url", is_active: true },
+      ],
+    },
+  ];
+
+  const activeSections = footerSections && footerSections.length > 0 ? footerSections : defaultSections;
 
   return (
     <footer
@@ -245,10 +294,10 @@ async function Footer() {
             </div>
             <div className="min-w-0">
               <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-emerald-900 transition-colors">
-                ضمانت اصالت کالا
+                ضمانت اصالت دارو و کالا
               </h5>
               <p className="text-[11px] sm:text-xs text-slate-500 font-semibold mt-0.5 truncate">
-                تضمین کیفیت ۱۰۰٪ محصولات
+                محصولات اورجینال و دارای برچسب اصالت
               </p>
             </div>
           </div>
@@ -259,10 +308,10 @@ async function Footer() {
             </div>
             <div className="min-w-0">
               <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-indigo-900 transition-colors">
-                پشتیبانی و مشاوره
+                مشاوره تخصصی دارویی
               </h5>
               <p className="text-[11px] sm:text-xs text-slate-500 font-semibold mt-0.5 truncate">
-                پاسخگویی سریع و حرفه‌ای
+                پاسخگویی سریع توسط کارشناسان
               </p>
             </div>
           </div>
@@ -309,97 +358,165 @@ async function Footer() {
 
         {/* ۳. ستون‌های محتوایی و لینک‌های فوتر */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 xl:gap-10 mb-10">
-          {footerSections.length > 0 ? (
-            footerSections.map((section) => (
-              <FooterSection
-                key={section.id}
-                title={section.title}
-                items={section.items}
-              />
-            ))
-          ) : (
-            <div className="col-span-full text-center text-slate-400 py-6 font-semibold">
-              در حال بارگذاری اطلاعات ارتباطی...
-            </div>
-          )}
+          {activeSections.map((section) => (
+            <FooterSection
+              key={section.id}
+              title={section.title}
+              items={section.items}
+            />
+          ))}
         </div>
 
-        {/* ۴. بخش نمادهای اعتماد و مجوزهای رسمی (بزرگ، منظم و چشم‌گیر) */}
-        {(enamadImage || gatewayImage || mapUrl) && (
-          <div className="my-10 p-6 sm:p-8 rounded-3xl bg-slate-50/90 border border-slate-200/90 shadow-2xs">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8">
-              {/* متن توضیحی و تضمین امنیت */}
-              <div className="text-center lg:text-right max-w-xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/70 text-blue-800 text-xs font-black mb-2.5">
-                  <FaShieldAlt className="text-blue-600 text-sm" />
-                  <span>تضمین امنیت و اصالت خرید</span>
-                </div>
-                <h4 className="text-lg sm:text-xl font-black text-slate-900">
-                  مجوزها و نمادهای اعتماد الکترونیکی
-                </h4>
-                <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1.5 leading-relaxed">
-                  {siteTitle} دارای کلیه مجوزهای رسمی، درگاه پرداخت امن شاپرک و نماد اعتماد الکترونیکی جهت خریدی مطمئن، امن و با آسودگی خاطر می‌باشد.
-                </p>
+        {/* ۴. بخش نمادهای رسمی، نظارت سلامت و شماره رسیدگی به شکایات */}
+        <div className="my-8 sm:my-10 p-6 sm:p-8 rounded-3xl bg-slate-50/90 border border-slate-200/90 shadow-2xs">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8">
+            {/* متن توضیحی، ضمانت اصالت و باکس شماره رسیدگی به شکایات */}
+            <div className="text-center lg:text-right max-w-xl w-full">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/70 text-blue-800 text-xs font-black mb-2.5">
+                <FaShieldAlt className="text-blue-600 text-sm" />
+                <span>نظارت رسمی و اصالت سلامت</span>
               </div>
+              <h4 className="text-lg sm:text-xl font-black text-slate-900">
+                مجوزها و نظارت سازمان غذا و دارو
+              </h4>
+              <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1.5 leading-relaxed">
+                فعالیت {siteTitle} تحت نظارت مستقیم معاونت غذا و داروی دانشگاه علوم پزشکی شهید صدوقی یزد و سازمان غذا و دارو جمهوری اسلامی ایران می‌باشد.
+              </p>
 
-              {/* کارت‌های درشت و منظم نمادها */}
-              <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
-                {enamadLink && enamadImage && (
-                  <a
-                    referrerPolicy="origin"
-                    target="_blank"
-                    href={enamadLink}
-                    title="مشاهده نماد اعتماد الکترونیکی"
-                    className="group/enamad p-4 bg-white rounded-2xl border-2 border-slate-200/90 hover:border-blue-500 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2.5 text-center hover:-translate-y-1 min-w-[125px] sm:min-w-[135px]"
-                  >
-                    <img
-                      referrerPolicy="origin"
-                      src={enamadImage}
-                      alt="نماد اعتماد الکترونیکی"
-                      className="h-20 sm:h-24 w-auto object-contain transition-transform group-hover/enamad:scale-105"
-                    />
-                    <span className="text-xs font-black text-slate-800 group-hover/enamad:text-blue-600 transition-colors">
-                      اینماد الکترونیکی
+              {/* باکس شماره رسیدگی به شکایات (بسیار خوانا، زیبا و تعاملی) */}
+              <div className="mt-4 p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3 text-right">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 text-base shadow-2xs">
+                    <FaHeadset />
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs sm:text-sm font-black text-slate-800 block">
+                      شماره رسیدگی به شکایات
                     </span>
-                  </a>
-                )}
-
-                {gatewayImage && (
-                  <div className="p-4 bg-white rounded-2xl border-2 border-slate-200/90 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2.5 text-center min-w-[125px] sm:min-w-[135px]">
-                    <img
-                      src={gatewayImage}
-                      alt="درگاه پرداخت امن شاپرک"
-                      className="h-20 sm:h-24 w-auto object-contain"
-                    />
-                    <span className="text-xs font-black text-slate-800">
-                      پرداخت امن بانکی
+                    <span className="text-[11px] text-slate-500 font-semibold">
+                      سامانه پاسخگویی و بازرسی امور دارویی
                     </span>
                   </div>
-                )}
+                </div>
 
-                {mapUrl && (
+                <div className="flex items-center gap-2 font-dana font-bold text-xs sm:text-sm dir-ltr">
                   <a
-                    referrerPolicy="origin"
-                    target="_blank"
-                    href={mapUrl}
-                    title="موقعیت فروشگاه در گوگل مپ"
-                    className="group/map p-4 bg-white rounded-2xl border-2 border-slate-200/90 hover:border-rose-400 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2.5 text-center hover:-translate-y-1 min-w-[125px] sm:min-w-[135px]"
+                    href="tel:190"
+                    className="px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200/80 transition-all flex items-center gap-2 group shadow-2xs hover:shadow-xs"
+                    title="تماس با سامانه ۱۹۰ رسیدگی به شکایات وزارت بهداشت"
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl group-hover/map:bg-rose-600 group-hover/map:text-white transition-all shadow-xs">
-                      <FaMapMarkerAlt />
-                    </div>
-                    <span className="text-xs font-black text-slate-800">
-                      مسیریابی حضوری
-                    </span>
-                    <span className="text-[11px] font-bold text-rose-600 group-hover/map:underline">
-                      مشاهده روی نقشه
-                    </span>
+                    <FaPhoneAlt className="text-xs text-slate-400 group-hover:text-emerald-600 transition-colors" />
+                    <span className="tracking-wider text-slate-800 group-hover:text-emerald-700">190</span>
                   </a>
-                )}
+                  <span className="text-slate-400 text-xs font-normal">و</span>
+                  <a
+                    href="tel:03531792020"
+                    className="px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200/80 transition-all flex items-center gap-2 group shadow-2xs hover:shadow-xs"
+                    title="تماس با شماره ۰۳۵۳۱۷۹۲۰۲۰ رسیدگی به شکایات"
+                  >
+                    <FaPhoneAlt className="text-xs text-slate-400 group-hover:text-emerald-600 transition-colors" />
+                    <span className="tracking-wider text-slate-800 group-hover:text-emerald-700">03531792020</span>
+                  </a>
+                </div>
               </div>
             </div>
+
+            {/* کارت‌های شکیل و منظم لوگوهای رسمی */}
+            <div className="flex items-center gap-3.5 sm:gap-4 flex-wrap justify-center">
+              {/* لوگوی دانشگاه علوم پزشکی شهید صدوقی یزد */}
+              <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2 text-center min-w-[130px] sm:min-w-[145px] hover:-translate-y-1">
+                <img
+                  src="/assets/yazd-medical-university-logo.png"
+                  alt="دانشگاه علوم پزشکی شهید صدوقی یزد"
+                  className="h-16 sm:h-20 w-auto object-contain"
+                />
+                <span className="text-xs font-black text-slate-800">
+                  علوم پزشکی یزد
+                </span>
+                <span className="text-[10px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                  نظارت دارویی
+                </span>
+              </div>
+
+              {/* لوگوی سازمان غذا و دارو (سیب سلامت) */}
+              <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2 text-center min-w-[130px] sm:min-w-[145px] hover:-translate-y-1">
+                <img
+                  src="/assets/food-and-drug-logo.png"
+                  alt="سازمان غذا و دارو"
+                  className="h-16 sm:h-20 w-auto object-contain"
+                />
+                <span className="text-xs font-black text-slate-800">
+                  سازمان غذا و دارو
+                </span>
+                <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                  سیب سلامت
+                </span>
+              </div>
+
+              {/* اینماد در صورت وجود */}
+              {enamadLink && enamadImage && (
+                <a
+                  referrerPolicy="origin"
+                  target="_blank"
+                  href={enamadLink}
+                  title="مشاهده نماد اعتماد الکترونیکی"
+                  className="group/enamad p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 hover:border-blue-500 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2 text-center hover:-translate-y-1 min-w-[130px] sm:min-w-[145px]"
+                >
+                  <img
+                    referrerPolicy="origin"
+                    src={enamadImage}
+                    alt="نماد اعتماد الکترونیکی"
+                    className="h-16 sm:h-20 w-auto object-contain transition-transform group-hover/enamad:scale-105"
+                  />
+                  <span className="text-xs font-black text-slate-800 group-hover/enamad:text-blue-600 transition-colors">
+                    اینماد الکترونیکی
+                  </span>
+                  <span className="text-[10px] font-semibold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-full">
+                    اعتماد کسب‌وکار
+                  </span>
+                </a>
+              )}
+
+              {/* درگاه پرداخت در صورت وجود */}
+              {gatewayImage && (
+                <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2 text-center min-w-[130px] sm:min-w-[145px]">
+                  <img
+                    src={gatewayImage}
+                    alt="درگاه پرداخت امن شاپرک"
+                    className="h-16 sm:h-20 w-auto object-contain"
+                  />
+                  <span className="text-xs font-black text-slate-800">
+                    پرداخت امن بانکی
+                  </span>
+                  <span className="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                    شبکه شاپرک
+                  </span>
+                </div>
+              )}
+
+              {/* نقشه در صورت وجود */}
+              {mapUrl && (
+                <a
+                  referrerPolicy="origin"
+                  target="_blank"
+                  href={mapUrl}
+                  title="موقعیت فروشگاه در گوگل مپ"
+                  className="group/map p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 hover:border-rose-400 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2 text-center hover:-translate-y-1 min-w-[130px] sm:min-w-[145px]"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl group-hover/map:bg-rose-600 group-hover/map:text-white transition-all shadow-xs">
+                    <FaMapMarkerAlt />
+                  </div>
+                  <span className="text-xs font-black text-slate-800">
+                    مسیریابی حضوری
+                  </span>
+                  <span className="text-[11px] font-bold text-rose-600 group-hover/map:underline">
+                    مشاهده روی نقشه
+                  </span>
+                </a>
+              )}
+            </div>
           </div>
-        )}
+        </div>
 
         {/* ۵. پاورقی نهایی و متن کپی‌رایت */}
         <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-500 font-semibold text-center md:text-right">

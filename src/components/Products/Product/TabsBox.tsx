@@ -14,14 +14,16 @@ export default function TabsBox({
   productId,
   comments,
   product,
+  newDetails: directNewDetails,
 }: {
   description_2: string;
   productId: number;
   comments: any;
   product?: any;
+  newDetails?: any;
 }) {
   // بررسی اینکه آیا اطلاعات مدل جدید از بک‌اند آمده است یا خیر
-  const newDetails = product ? extractNewProductDetails(product) : null;
+  const newDetails = directNewDetails || (product ? extractNewProductDetails(product) : null);
 
   // اگر مدل جدید وجود داشت، بخش قبلی (توضیحات کالا و نظرات) پنهان شده و مدل جدید ۷ تب نمایش داده می‌شود
   if (newDetails) {

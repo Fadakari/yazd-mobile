@@ -10,7 +10,7 @@ import {
 import { CategoryNode } from "@/types/categories";
 import ProductType from "@/types/product";
 import TabsBox from "@/components/Products/Product/TabsBox";
-import { extractNewProductDetails } from "@/utils/productDetailsParser";
+import { extractNewProductDetails, formatExpirationDate } from "@/utils/productDetailsParser";
 import { FaCalendarAlt } from "react-icons/fa";
 import { Metadata } from "next";
 import { breadcrumbSchema, productSchema } from "@/components/Schema";
@@ -142,7 +142,7 @@ export default async function Page({
 
   const data: ProductType = res;
   const newDetails = extractNewProductDetails(data);
-  const expirationDate = newDetails?.expiration_date || data.expiration_date || (data as any).expire_date || (data as any).expiry_date;
+  const expirationDate = formatExpirationDate(newDetails?.expiration_date || data.expiration_date || (data as any).expire_date || (data as any).expiry_date);
   const categories: CategoryNode[] = (await GetShopCategoriesTreeList()) || [];
   const shippingMethods = await getShippingServices(); // دریافت روش‌های ارسال
 
@@ -262,6 +262,14 @@ export default async function Page({
                       {data.category}
                     </Link>
                   </div>
+
+                  {expirationDate && (
+                    <div className="flex items-center gap-2 mt-2 px-3.5 py-2 bg-amber-50 border border-amber-200/90 rounded-xl text-amber-900 text-xs sm:text-sm font-medium shadow-sm">
+                      <FaCalendarAlt className="text-amber-600 text-sm shrink-0" />
+                      <span>تاریخ انقضا:</span>
+                      <span dir="ltr" className="font-bold font-dana inline-block">{expirationDate}</span>
+                    </div>
+                  )}
                 </div>
                 <ProductOptions product={data} />
                 <div>
@@ -274,6 +282,16 @@ export default async function Page({
               <div className="w-5/12 h-full space-y-3 lg:block hidden">
                 <div className="bg-zinc-100 border border-zinc-200 p-5 text-center space-y-4 rounded-md">
                   <ProductPriceBox product={data} />
+
+                  {expirationDate && (
+                    <div className="flex items-center justify-between px-3 py-2 bg-white border border-amber-200 rounded-md text-amber-900 text-xs font-medium">
+                      <span className="flex items-center gap-1.5">
+                        <FaCalendarAlt className="text-amber-600 text-sm" />
+                        <span>تاریخ انقضا:</span>
+                      </span>
+                      <span dir="ltr" className="font-bold font-dana inline-block">{expirationDate}</span>
+                    </div>
+                  )}
 
                   {data.stock <= 5 && data.stock > 0 && (
                     <p
@@ -331,6 +349,16 @@ export default async function Page({
 
           <div className="hidden sm:block lg:hidden bg-zinc-100 border border-zinc-200 p-5 my-5 text-center space-y-4 rounded-md">
             <ProductPriceBox product={data} />
+
+            {expirationDate && (
+              <div className="flex items-center justify-between px-3 py-2 bg-white border border-amber-200 rounded-md text-amber-900 text-xs font-medium mb-3">
+                <span className="flex items-center gap-1.5">
+                  <FaCalendarAlt className="text-amber-600 text-sm" />
+                  <span>تاریخ انقضا:</span>
+                </span>
+                <span dir="ltr" className="font-bold font-dana inline-block">{expirationDate}</span>
+              </div>
+            )}
             <AddToCart
               is_available={data.is_available && data.stock > 0}
               product={data}
@@ -379,6 +407,8 @@ export default async function Page({
               comments={comments}
               productId={data.id}
               description_2={data.description_2}
+              product={data}
+              newDetails={newDetails}
             />
           </div>
         </div>

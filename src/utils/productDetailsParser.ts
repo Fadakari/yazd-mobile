@@ -1,4 +1,44 @@
 import type { NewProductDetails, ProductSpecifications } from "@/types/product";
+/**
+ * فرمت‌دهی هوشمند و استاندارد تاریخ انقضا (برای حل مشکل برعکس نمایش داده شدن)
+ * ورودی‌هایی مانند 14/10/1404 را به فرمت استاندارد 1404/10/14 تبدیل می‌کند.
+ */
+export function formatExpirationDate(dateStr: string | null | undefined): string {
+  if (!dateStr || typeof dateStr !== "string") return "";
+
+  const trimmed = dateStr.trim();
+  if (!trimmed) return "";
+
+  // تبدیل ارقام فارسی به انگلیسی
+  const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+  const englishStr = trimmed.replace(/[۰-۹]/g, (d) => persianDigits.indexOf(d).toString());
+
+  // جدا کردن بخش‌ها بر اساس اسلش، خط تیره یا نقطه
+  const parts = englishStr.split(/[/.-]/).map((p) => p.trim()).filter(Boolean);
+
+  if (parts.length === 3) {
+    // اگر بخش آخر ۴ رقمی است (مانند روز/ماه/سال: 14/10/1404) -> به سال/ماه/روز تبدیل شود
+    if (parts[2].length === 4) {
+      return `${parts[2]}/${parts[1].padStart(2, "0")}/${parts[0].padStart(2, "0")}`;
+    }
+    // اگر بخش اول ۴ رقمی است (مانند سال/ماه/روز: 1404/10/14) -> ترتیب استاندارد حفظ شود
+    if (parts[0].length === 4) {
+      return `${parts[0]}/${parts[1].padStart(2, "0")}/${parts[2].padStart(2, "0")}`;
+    }
+  }
+
+  if (parts.length === 2) {
+    if (parts[1].length === 4) {
+      return `${parts[1]}/${parts[0].padStart(2, "0")}`;
+    }
+    if (parts[0].length === 4) {
+      return `${parts[0]}/${parts[1].padStart(2, "0")}`;
+    }
+  }
+
+  return trimmed;
+}
+
 
 /**
  * تابعی هوشمند برای تشخیص و استخراج اطلاعات مدل جدید توضیحات محصول
@@ -46,7 +86,7 @@ export function extractNewProductDetails(product: any): NewProductDetails | null
   };
 
   // ۱. تاریخ انقضا
-  const expiration_date = getField(
+  const raw_expiration_date = getField(
     "expiration_date",
     "expire_date",
     "expiry_date",
@@ -54,6 +94,7 @@ export function extractNewProductDetails(product: any): NewProductDetails | null
     "expiration",
     "tarikh_engheza"
   );
+  const expiration_date = formatExpirationDate(raw_expiration_date);
 
   // ۲. بخش مشخصات
   const specifications: ProductSpecifications = {
