@@ -3,6 +3,7 @@ import React from "react";
 import {
   FaPhoneAlt,
     FaInstagram,
+  FaWhatsapp,
   FaMapMarkerAlt,
   FaLink,
   FaEnvelope,
@@ -87,6 +88,13 @@ const getItemStyle = (type: string, value: string) => {
           "bg-pink-50 text-pink-600 group-hover/item:bg-gradient-to-tr group-hover/item:from-amber-500 group-hover/item:via-rose-500 group-hover/item:to-purple-600 group-hover/item:text-white",
       };
     }
+    if (val.includes("whatsapp") || val.includes("wa.me")) {
+      return {
+        icon: <FaWhatsapp className="text-base sm:text-lg" />,
+        badgeClass:
+          "bg-emerald-50 text-emerald-600 group-hover/item:bg-emerald-600 group-hover/item:text-white",
+      };
+    }
     return {
       icon: <FaLink className="text-sm sm:text-base" />,
       badgeClass:
@@ -110,6 +118,13 @@ const getHref = (item: FooterItem) => {
       item.value?.toLowerCase().includes("instagram")
     ) {
       return "https://www.instagram.com/de.hafezimoghadam";
+    }
+    if (
+      item.value?.includes("whatsapp") ||
+      item.label?.includes("واتساپ") ||
+      item.value?.includes("wa.me")
+    ) {
+      return "https://wa.me/989387758146";
     }
     return item.value || "#";
   }
@@ -229,8 +244,9 @@ async function Footer() {
       is_active: true,
       items: [
         { id: 201, label: "اینستاگرام حافظ دارو", value: "de.hafezimoghadam", item_type: "url", is_active: true },
-        { id: 202, label: "پشتیبانی و مشاوره", value: "09387758146", item_type: "phone", is_active: true },
-        { id: 203, label: "تماس و نشانی", value: "/contact-info", item_type: "url", is_active: true },
+        { id: 202, label: "واتساپ پشتیبانی", value: "https://wa.me/989387758146", item_type: "url", is_active: true },
+        { id: 203, label: "پشتیبانی و مشاوره", value: "09387758146", item_type: "phone", is_active: true },
+        { id: 204, label: "تماس و نشانی", value: "/contact-info", item_type: "url", is_active: true },
       ],
     },
     {

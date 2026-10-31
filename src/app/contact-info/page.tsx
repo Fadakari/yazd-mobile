@@ -3,7 +3,7 @@ import { homeContactInfoList } from "@/services/homeActions";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { BsFillTelephonePlusFill } from "react-icons/bs";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaWhatsapp } from "react-icons/fa";
 import { GetSiteSettings } from "@/services/siteActions";
 
 interface Contact {
@@ -89,6 +89,15 @@ async function page() {
 
                 <p className="text-light font-dana text-sm pr-5">
                   شماره تماس : <a href={`tel:${c.phone_number || '09387758146'}`} className="hover:text-blue-600 font-bold transition-colors">{c.phone_number || "09387758146"}</a>
+                </p>
+              </li>
+              <li className="flex items-center px-5">
+                <div className="border-l border-zinc-300 pl-5">
+                  <FaWhatsapp className="text-[#25D366] fill-[#25D366] size-5" />
+                </div>
+
+                <p className="text-light font-dana text-sm pr-5">
+                  واتساپ : <a href="https://wa.me/989387758146" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 font-bold transition-colors dir-ltr">09387758146</a>
                 </p>
               </li>
             </ul>
