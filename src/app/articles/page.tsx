@@ -22,7 +22,7 @@ export async function generateMetadata({
   searchParams,
 }: PageProps): Promise<Metadata> {
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title
+  const siteTitle = "حافظ دارو";
   const category = (await searchParams).category;
 
   let title = `مقالات ${siteTitle}`;

@@ -75,7 +75,7 @@ export async function generateMetadata(props: {
   const searchParams = await props.searchParams;
   const categoryId = searchParams?.category_id;
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title
+  const siteTitle = "حافظ دارو";
 
   if (categoryId) {
     const categoryRes = await GetShopCategoriesTreeList();
@@ -120,12 +120,12 @@ export async function generateMetadata(props: {
   }
 
   return {
-    title: "خرید محصولات | فروشگاه",
+    title: "خرید محصولات | حافظ دارو",
     description:
       `مشاهده و خرید جدیدترین محصولات با بهترین قیمت از فروشگاه ${siteTitle}. فیلتر بر اساس قیمت، موجودی، ویژگی و ...`,
     keywords: [`فروشگاه ${siteTitle}`, "خرید آنلاین", "محصولات", "قیمت مناسب"],
     openGraph: {
-      title: "خرید محصولات | فروشگاه",
+      title: "خرید محصولات | حافظ دارو",
       description:
         `فروشگاه ${siteTitle} ارائه‌دهنده انواع محصولات با بهترین قیمت و تضمین کیفیت. خرید آنلاین آسان و سریع.`,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/products`,

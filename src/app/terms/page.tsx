@@ -7,7 +7,7 @@ import { GetSiteSettings } from "@/services/siteActions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title || "فروشگاه";
+  const siteTitle = "حافظ دارو";
   return {
     title: `قوانین و مقررات | ${siteTitle}`,
     description: `متن کامل قوانین و مقررات فروشگاه ${siteTitle}.`,

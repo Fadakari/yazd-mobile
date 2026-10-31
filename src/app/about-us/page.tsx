@@ -18,7 +18,7 @@ interface aboutT {
 }
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title
+  const siteTitle = "حافظ دارو";
   return {
     title: `درباره ما | ${siteTitle}`,
     description:

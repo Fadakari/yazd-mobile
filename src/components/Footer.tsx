@@ -2,8 +2,7 @@ import Link from "next/link";
 import React from "react";
 import {
   FaPhoneAlt,
-  FaWhatsapp,
-  FaInstagram,
+    FaInstagram,
   FaMapMarkerAlt,
   FaLink,
   FaEnvelope,
@@ -81,18 +80,11 @@ const getItemStyle = (type: string, value: string) => {
   }
   if (type === "url") {
     const val = (value || "").toLowerCase();
-    if (val.includes("instagram") || val.includes("khooshtam")) {
+    if (val.includes("instagram") || val.includes("hafezimoghadam")) {
       return {
         icon: <FaInstagram className="text-base sm:text-lg" />,
         badgeClass:
           "bg-pink-50 text-pink-600 group-hover/item:bg-gradient-to-tr group-hover/item:from-amber-500 group-hover/item:via-rose-500 group-hover/item:to-purple-600 group-hover/item:text-white",
-      };
-    }
-    if (val.includes("whatsapp") || val.includes("09395798858")) {
-      return {
-        icon: <FaWhatsapp className="text-base sm:text-lg" />,
-        badgeClass:
-          "bg-emerald-50 text-emerald-600 group-hover/item:bg-emerald-600 group-hover/item:text-white",
       };
     }
     return {
@@ -112,14 +104,13 @@ const getHref = (item: FooterItem) => {
   if (item.item_type === "phone") return `tel:${item.value}`;
   if (item.item_type === "email") return `mailto:${item.value}`;
   if (item.item_type === "url") {
-    const isWhatsapp =
-      item.value?.toLowerCase().includes("whatsapp") ||
-      item.label?.toLowerCase().includes("whatsapp") ||
-      item.label?.includes("واتساپ") ||
-      item.value?.includes("09395798858");
-    if (isWhatsapp) return "https://wa.me/989395798858";
-    if (item.value?.includes("khooshtam") || item.label?.includes("اینستاگرام"))
-      return "https://instagram.com/khooshtam.co";
+    if (
+      item.value?.includes("hafezimoghadam") ||
+      item.label?.includes("اینستاگرام") ||
+      item.value?.toLowerCase().includes("instagram")
+    ) {
+      return "https://www.instagram.com/de.hafezimoghadam";
+    }
     return item.value || "#";
   }
   return "#";
@@ -211,14 +202,13 @@ async function Footer() {
   const footerSections = await getFooterData();
   const settings = await GetSiteSettings();
   const logo = await GetActiveLogo();
-  const siteTitle = settings?.site_title || "داروخانه حافظ";
+  const siteTitle = "حافظ دارو";
   const mapUrl = settings?.map_url;
   const enamadLink = settings?.enamad_link;
   const enamadImage = settings?.enamad_image;
   const gatewayImage = settings?.payment_gateway_image;
   const siteDescription =
-    settings?.site_description ||
-    "داروخانه آنلاین حافظ؛ مرجع تخصصی عرضه محصولات سلامت‌محور، مکمل‌ها، اقلام آرایشی و بهداشتی اصل با ضمانت اصالت کالا و ارسال سریع به سراسر کشور.";
+    "داروخانه آنلاین حافظ دارو؛ مرجع تخصصی عرضه محصولات سلامت‌محور، دارویی، مکمل‌ها، اقلام آرایشی و بهداشتی اصل با ضمانت اصالت کالا و ارسال سریع به سراسر کشور.";
 
   // بخش‌های پیش‌فرض در صورت خالی بودن دیتای فوتر بک‌اند
   const defaultSections: FooterSectionData[] = [
@@ -238,9 +228,8 @@ async function Footer() {
       title: "ارتباط با ما",
       is_active: true,
       items: [
-        { id: 201, label: "پشتیبانی واتساپ", value: "09395798858", item_type: "url", is_active: true },
-        { id: 202, label: "اینستاگرام خوش‌طعم", value: "khooshtam.co", item_type: "url", is_active: true },
-        { id: 203, label: "تماس و نشانی", value: "/contact-info", item_type: "url", is_active: true },
+        { id: 201, label: "اینستاگرام حافظ دارو", value: "de.hafezimoghadam", item_type: "url", is_active: true },
+        { id: 202, label: "تماس و نشانی", value: "/contact-info", item_type: "url", is_active: true },
       ],
     },
     {
@@ -264,7 +253,41 @@ async function Footer() {
     },
   ];
 
-  const activeSections = footerSections && footerSections.length > 0 ? footerSections : defaultSections;
+  const sanitizeSections = (sections: FooterSectionData[]): FooterSectionData[] => {
+    return sections.map((sec) => ({
+      ...sec,
+      items: (sec.items || [])
+        .filter((item) => {
+          const v = (item.value || "").toLowerCase();
+          const l = (item.label || "").toLowerCase();
+          const isOtherSocial =
+            v.includes("whatsapp") ||
+            l.includes("whatsapp") ||
+            l.includes("واتساپ") ||
+            v.includes("telegram") ||
+            l.includes("تلگرام") ||
+            v.includes("twitter") ||
+            v.includes("x.com");
+          return !isOtherSocial;
+        })
+        .map((item) => {
+          const v = (item.value || "").toLowerCase();
+          const l = (item.label || "").toLowerCase();
+          if (v.includes("instagram") || l.includes("اینستاگرام")) {
+            return {
+              ...item,
+              label: "اینستاگرام حافظ دارو",
+              value: "de.hafezimoghadam",
+            };
+          }
+          return item;
+        }),
+    })).filter((sec) => sec.items.length > 0);
+  };
+
+  const activeSections = sanitizeSections(
+    footerSections && footerSections.length > 0 ? footerSections : defaultSections
+  );
 
   return (
     <footer

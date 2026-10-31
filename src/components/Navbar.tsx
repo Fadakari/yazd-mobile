@@ -291,7 +291,7 @@ export default function Navbar({
               <div className={`${mobileBubbleClass} gap-1 rounded-2xl px-2 py-1.5`}>
                 <MobileDrawer onAuthOpen={onAuthOpen} user={user} links={topLinks} categories={categories} />
                 <Link href="/" className="relative w-24 h-9 flex items-center justify-center ml-1 active:scale-95 transition-transform duration-300">
-                  <Image src={finalLogoUrl} alt="Logo" fill className="object-contain" priority />
+                  <Image src={finalLogoUrl} alt="حافظ دارو" fill className="object-contain" priority />
                 </Link>
               </div>
 
@@ -299,7 +299,7 @@ export default function Navbar({
               <Link href="/" className="hidden lg:flex shrink-0 items-center min-w-[120px] h-[56px]">
                 <Image
                   src={finalLogoUrl}
-                  alt="Logo"
+                  alt="حافظ دارو"
                   width={200}
                   height={80}
                   className="h-auto w-auto max-h-14"

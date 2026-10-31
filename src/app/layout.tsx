@@ -20,22 +20,24 @@ import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title || "سایت ما";
-  const siteDescription = `${siteTitle}، فروشگاه تخصصی با بهترین قیمت و تضمین کیفیت. ارسال سریع، تخفیف‌های ویژه، و مقالات آموزشی تخصصی.`;
+  const siteTitle = "حافظ دارو";
+  const siteDescription = `داروخانه آنلاین ${siteTitle}، مرجع تخصصی خرید آنلاین محصولات سلامت‌محور، دارویی، مکمل‌های تخصصی، اقلام آرایشی و بهداشتی اصل با بهترین قیمت و ضمانت اصالت.`;
   const siteKeywords = [
-    `${siteTitle}`,
-    "فروشگاه آنلاین",
-    "خرید آنلاین",
+    siteTitle,
+    "داروخانه آنلاین حافظ دارو",
+    "داروخانه آنلاین",
+    "خرید دارو و مکمل",
+    "آرایشی و بهداشتی",
     "قیمت مناسب",
-    "تضمین کیفیت",
-    "تخفیف ویژه",
+    "ضمانت اصالت",
   ];
   const faviconUrl = settings?.favicon;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hafezdaroo.com";
 
   return {
-    metadataBase: new URL("https://valiasrstore.com"),
+    metadataBase: new URL(baseUrl),
     title: {
-      default: `${siteTitle} | فروشگاه آنلاین با تضمین کیفیت`,
+      default: `${siteTitle} | داروخانه آنلاین`,
       template: `%s | ${siteTitle}`,
     },
     description: siteDescription,

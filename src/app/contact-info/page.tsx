@@ -13,7 +13,7 @@ interface Contact {
 }
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title
+  const siteTitle = "حافظ دارو";
 
   return {
     title: `ارتباط با ما`,
@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description:
         `راه‌های تماس با فروشگاه ${siteTitle} آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.`,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/contact-info`,
-      siteName: "${siteTitle}",
+      siteName: siteTitle,
       locale: "fa_IR",
       type: "website",
     },

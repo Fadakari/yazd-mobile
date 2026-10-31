@@ -26,9 +26,9 @@ export default async function ProductsPage({ params, searchParams }: any) {
 }
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title
+  const siteTitle = "حافظ دارو";
 
-  const title = "تخفیف‌های شگفت‌انگیز | فروشگاه";
+  const title = "تخفیف‌های شگفت‌انگیز | حافظ دارو";
   const description =
     `جدیدترین پیشنهادهای ویژه و تخفیف‌های شگفت‌انگیز فروشگاه ${siteTitle}! خرید محصولات منتخب با قیمت باورنکردنی و ارسال سریع.`;
   const keywords = [

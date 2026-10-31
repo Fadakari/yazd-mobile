@@ -7,11 +7,11 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     const settings = await GetSiteSettings();
 
     const siteTitle =
-        settings?.site_title?.trim() || "فروشگاه من";
+        "حافظ دارو";
 
     const description =
         settings?.site_description?.trim() ||
-        "فروشگاه اینترنتی";
+        "داروخانه آنلاین حافظ دارو";
 
     const themeColor =
         settings?.theme_color || "#2e2e73";
