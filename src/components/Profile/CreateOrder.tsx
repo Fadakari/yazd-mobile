@@ -385,6 +385,14 @@ const CreateOrder = () => {
                     );
                   }
 
+                  if (selectedShipping?.default_shipping_cost && selectedShipping.default_shipping_cost > 0) {
+                    return (
+                      <span className="text-zinc-800">
+                        {selectedShipping.default_shipping_cost.toLocaleString("fa-IR")} تومان
+                      </span>
+                    );
+                  }
+
                   return <span className="text-emerald-600 font-bold">رایگان</span>;
                 })()}
               </div>
