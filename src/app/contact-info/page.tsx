@@ -49,7 +49,14 @@ export async function generateMetadata(): Promise<Metadata> {
 };
 async function page() {
   const result = await homeContactInfoList();
-  const contactInfo: Contact[] = await homeContactInfoList();
+  const rawList = Array.isArray(result) ? result : (result?.results || []);
+  const contactInfo: Contact[] = rawList.length > 0 ? rawList : [
+    {
+      id: 1,
+      phone_number: "09387758146",
+      address: "یزد، داروخانه دکتر حافظی مقدم (حافظ دارو)",
+    }
+  ];
 
   return (
     <div className="space-y-10">
@@ -81,7 +88,7 @@ async function page() {
                 </div>
 
                 <p className="text-light font-dana text-sm pr-5">
-                  شماره تماس : <span>{c.phone_number}</span>
+                  شماره تماس : <a href={`tel:${c.phone_number || '09387758146'}`} className="hover:text-blue-600 font-bold transition-colors">{c.phone_number || "09387758146"}</a>
                 </p>
               </li>
             </ul>

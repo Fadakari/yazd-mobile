@@ -229,7 +229,8 @@ async function Footer() {
       is_active: true,
       items: [
         { id: 201, label: "اینستاگرام حافظ دارو", value: "de.hafezimoghadam", item_type: "url", is_active: true },
-        { id: 202, label: "تماس و نشانی", value: "/contact-info", item_type: "url", is_active: true },
+        { id: 202, label: "پشتیبانی و مشاوره", value: "09387758146", item_type: "phone", is_active: true },
+        { id: 203, label: "تماس و نشانی", value: "/contact-info", item_type: "url", is_active: true },
       ],
     },
     {

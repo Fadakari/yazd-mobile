@@ -265,9 +265,9 @@ export default function Navbar({
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <a href="tel:03535247891" className="flex items-center gap-1.5 hover:text-[#0053c0] transition-colors">
+            <a href="tel:09387758146" className="flex items-center gap-1.5 hover:text-[#0053c0] transition-colors">
               <FiPhoneCall />
-              <span className="dir-ltr font-mono font-bold tracking-wider">035-35247891</span>
+              <span className="dir-ltr font-mono font-bold tracking-wider">09387758146</span>
             </a>
             <span className="w-[1px] h-3 bg-gray-300"></span>
             <span>پشتیبانی ۷ روز هفته</span>
@@ -589,6 +589,16 @@ export function MobileDrawer({ categories, links, user, onAuthOpen }: { categori
                 {!current && (
                   <div className="mt-4 px-4 pb-8">
                     <div className="text-xs font-bold text-gray-400 mb-3 px-2">دسترسی سریع</div>
+                    <a
+                      href="tel:09387758146"
+                      className="mb-3 flex items-center justify-between p-3 rounded-xl bg-blue-50/80 border border-blue-100 text-[#0053c0] text-xs font-bold hover:bg-blue-100 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <FiPhoneCall className="text-sm" />
+                        <span>تماس با پشتیبانی</span>
+                      </div>
+                      <span className="dir-ltr font-mono font-bold">09387758146</span>
+                    </a>
                     <div className="grid grid-cols-2 gap-2">
                       {links.map((link: any) => (
                         <Link key={link.href} href={link.href} onClick={onClose} className="bg-gray-50 text-gray-600 text-xs font-bold py-3 rounded-xl text-center hover:bg-blue-50 hover:text-[#0053c0] transition-colors">
