@@ -19,7 +19,7 @@ const FixedSocialLinks = () => {
 
       {/* اینستاگرام */}
       <a
-        href="https://www.instagram.com/de.hafezimoghadam"
+        href="https://www.instagram.com/dr.hafezimoghadam"
         target="_blank"
         rel="noopener noreferrer"
         className="group relative flex items-center justify-center bg-white text-[#dd2a7b] w-10 h-10 md:w-12 md:h-12 rounded-full shadow-md hover:shadow-xl hover:bg-[#dd2a7b] hover:text-white transition-all duration-300"
@@ -27,7 +27,7 @@ const FixedSocialLinks = () => {
       >
         <FaInstagram size={22} />
         <span className="absolute left-14 whitespace-nowrap bg-[#dd2a7b] text-white text-sm font-medium px-3 py-1 rounded-lg opacity-0 hidden md:block group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 shadow-sm">
-          اینستاگرام: de.hafezimoghadam
+          اینستاگرام: dr.hafezimoghadam
         </span>
       </a>
     </div>

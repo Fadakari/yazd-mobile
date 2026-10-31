@@ -3,7 +3,7 @@ import { homeContactInfoList } from "@/services/homeActions";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { BsFillTelephonePlusFill } from "react-icons/bs";
-import { FaMapMarkerAlt, FaWhatsapp } from "react-icons/fa";
+import { FaMapMarkerAlt, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { GetSiteSettings } from "@/services/siteActions";
 
 interface Contact {
@@ -98,6 +98,15 @@ async function page() {
 
                 <p className="text-light font-dana text-sm pr-5">
                   واتساپ : <a href="https://wa.me/989387758146" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 font-bold transition-colors dir-ltr">09387758146</a>
+                </p>
+              </li>
+              <li className="flex items-center px-5">
+                <div className="border-l border-zinc-300 pl-5">
+                  <FaInstagram className="text-[#dd2a7b] fill-[#dd2a7b] size-5" />
+                </div>
+
+                <p className="text-light font-dana text-sm pr-5">
+                  اینستاگرام : <a href="https://www.instagram.com/dr.hafezimoghadam" target="_blank" rel="noopener noreferrer" className="hover:text-pink-600 font-bold transition-colors dir-ltr">dr.hafezimoghadam</a>
                 </p>
               </li>
             </ul>

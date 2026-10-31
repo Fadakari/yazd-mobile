@@ -117,7 +117,7 @@ const getHref = (item: FooterItem) => {
       item.label?.includes("اینستاگرام") ||
       item.value?.toLowerCase().includes("instagram")
     ) {
-      return "https://www.instagram.com/de.hafezimoghadam";
+      return "https://www.instagram.com/dr.hafezimoghadam";
     }
     if (
       item.value?.includes("whatsapp") ||
@@ -243,7 +243,7 @@ async function Footer() {
       title: "ارتباط با ما",
       is_active: true,
       items: [
-        { id: 201, label: "اینستاگرام حافظ دارو", value: "de.hafezimoghadam", item_type: "url", is_active: true },
+        { id: 201, label: "اینستاگرام حافظ دارو", value: "dr.hafezimoghadam", item_type: "url", is_active: true },
         { id: 202, label: "واتساپ پشتیبانی", value: "https://wa.me/989387758146", item_type: "url", is_active: true },
         { id: 203, label: "پشتیبانی و مشاوره", value: "09387758146", item_type: "phone", is_active: true },
         { id: 204, label: "تماس و نشانی", value: "/contact-info", item_type: "url", is_active: true },
@@ -294,7 +294,7 @@ async function Footer() {
             return {
               ...item,
               label: "اینستاگرام حافظ دارو",
-              value: "de.hafezimoghadam",
+              value: "dr.hafezimoghadam",
             };
           }
           return item;
