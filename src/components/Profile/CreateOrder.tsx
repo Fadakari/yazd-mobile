@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { useCart } from "@/context/CartContextProvider";
 import { useUser } from "@/context/UserContext";
 import { addToast } from "@heroui/toast";
