@@ -11,7 +11,7 @@ import {
 } from "@/services/shopActions";
 import Link from "next/link";
 import { convertNumberToPersian } from "@/utils/converNumbers";
-import ShippingMethodSelector from "./ShippingMethodSelector";
+import ShippingMethodSelector, { ShippingService } from "./ShippingMethodSelector";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
 import { HiXMark } from "react-icons/hi2";
 
@@ -28,7 +28,19 @@ const CreateOrder = () => {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [checkingDiscount, setCheckingDiscount] = useState(false);
-  const [selectedShippingId, setSelectedShippingId] = useState<number | null>(null);
+  const [selectedShipping, setSelectedShipping] = useState<ShippingService | null>(
+    (cart as any)?.shipping_service || null
+  );
+  const [selectedShippingId, setSelectedShippingId] = useState<number | null>(
+    (cart as any)?.shipping_service?.id || null
+  );
+
+  useEffect(() => {
+    if ((cart as any)?.shipping_service) {
+      setSelectedShipping((cart as any).shipping_service);
+      setSelectedShippingId((cart as any).shipping_service.id);
+    }
+  }, [cart]);
   const [shippingError, setShippingError] = useState<string>("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -198,8 +210,11 @@ const CreateOrder = () => {
           {/* شیوه‌های ارسال */}
           <ShippingMethodSelector
             selectedId={selectedShippingId}
-            onSelect={(id) => {
+            onSelect={(id, service) => {
               setSelectedShippingId(id);
+              if (service) {
+                setSelectedShipping(service);
+              }
               setShippingError("");
             }}
             hasError={!!shippingError}
@@ -325,15 +340,54 @@ const CreateOrder = () => {
                 </p>
               </div>
             )}
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <p>هزینه ارسال</p>
-              <p className="font-semibold">
-                {!cart?.total_delivery || cart?.total_delivery === 0 ? (
-                  <span className="text-red-500">رایگان</span>
-                ) : (
-                  `${cart.total_delivery.toLocaleString("fa-IR")} تومان`
-                )}
-              </p>
+              <div className="font-semibold text-left">
+                {(() => {
+                  if (!selectedShippingId && !selectedShipping) {
+                    return (
+                      <span className="text-zinc-500 text-sm font-medium">
+                        وابسته به شیوه ارسال
+                      </span>
+                    );
+                  }
+
+                  const serviceName = selectedShipping?.name || "";
+                  const isPostPaid =
+                    serviceName.includes("پس کرایه") ||
+                    serviceName.includes("پس‌کرایه") ||
+                    (selectedShipping?.default_shipping_cost === 0 && !serviceName.includes("رایگان")) ||
+                    (cart?.total_delivery === 0 && !serviceName.includes("رایگان"));
+
+                  if (isPostPaid) {
+                    const specificName =
+                      serviceName && serviceName !== "پس کرایه"
+                        ? serviceName.replace(/^پس\s*کرایه\s*/, "").trim()
+                        : "";
+
+                    return (
+                      <div className="flex flex-col items-end">
+                        <span className="text-blue-700 font-bold bg-blue-50 px-2.5 py-0.5 rounded-lg border border-blue-200/80 text-sm">
+                          پس کرایه{specificName ? ` (${specificName})` : ""}
+                        </span>
+                        <span className="text-[11px] text-zinc-500 mt-0.5 font-normal">
+                          (پرداخت در مقصد)
+                        </span>
+                      </div>
+                    );
+                  }
+
+                  if (cart?.total_delivery && cart.total_delivery > 0) {
+                    return (
+                      <span className="text-zinc-800">
+                        {cart.total_delivery.toLocaleString("fa-IR")} تومان
+                      </span>
+                    );
+                  }
+
+                  return <span className="text-emerald-600 font-bold">رایگان</span>;
+                })()}
+              </div>
             </div>
             <div className="flex justify-between text-zinc-700">
               <p>هزینه بسته‌بندی</p>

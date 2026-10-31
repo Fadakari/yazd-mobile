@@ -56,10 +56,18 @@ function Page() {
 
           <div className="flex items-center justify-between">
             <p>هزینه ارسال</p>
-            <p className="font-semibold text-xl">
-              {cart.total_delivery.toLocaleString("fa-IR")}
-              <span className="pr-1 text-sm">تومان</span>
-            </p>
+            <div className="font-semibold text-lg text-left">
+              {cart.total_delivery > 0 ? (
+                <>
+                  {cart.total_delivery.toLocaleString("fa-IR")}
+                  <span className="pr-1 text-sm">تومان</span>
+                </>
+              ) : (
+                <span className="text-sm font-medium text-zinc-500">
+                  وابسته به شیوه ارسال
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center justify-between border-t border-zinc-200 pt-2 mt-2">

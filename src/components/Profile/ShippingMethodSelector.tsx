@@ -5,7 +5,7 @@ import { useCart } from "@/context/CartContextProvider";
 import { addToast } from "@heroui/toast";
 import { FaCheck, FaTruck, FaExclamationTriangle } from "react-icons/fa";
 
-interface ShippingService {
+export interface ShippingService {
   id: number;
   name: string;
   description: string;
@@ -17,7 +17,7 @@ interface ShippingService {
 
 interface ShippingMethodSelectorProps {
   selectedId?: number | null;
-  onSelect?: (serviceId: number) => void;
+  onSelect?: (serviceId: number, service?: ShippingService) => void;
   hasError?: boolean;
 }
 
@@ -45,6 +45,12 @@ const ShippingMethodSelector = ({
         const data: ShippingService[] = await res.json();
         const activeServices = data.filter((s) => s.is_active);
         setShippingServices(activeServices);
+        if (selectedId) {
+          const found = activeServices.find((s) => s.id === selectedId);
+          if (found && onSelect) {
+            onSelect(selectedId, found);
+          }
+        }
 
         // نکته مهم: برای اینکه کاربر مجبور به انتخاب آگاهانه باشد، هیچ گزینه پیش‌فرضی به صورت اتوماتیک ست نمی‌شود
       } catch (error: any) {
@@ -80,15 +86,15 @@ const ShippingMethodSelector = ({
       const responseData = await res.json();
       console.log("SET SHIPPING RESPONSE:", responseData);
 
+      const selectedService = shippingServices.find((s) => s.id === serviceId);
+
       // ثبت شناسه انتخاب‌شده
       setInternalSelectedId(serviceId);
       if (onSelect) {
-        onSelect(serviceId);
+        onSelect(serviceId, selectedService);
       }
 
       await refreshCart();
-
-      const selectedService = shippingServices.find((s) => s.id === serviceId);
 
       addToast({
         title: "شیوه ارسال انتخاب شد",
@@ -232,9 +238,16 @@ const ShippingMethodSelector = ({
                   {/* توضیحات شیوه ارسال */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <h4 className="font-bold text-zinc-900 text-base">
-                        {service.name}
-                      </h4>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-bold text-zinc-900 text-base">
+                          {service.name}
+                        </h4>
+                        {service.name.includes("پس کرایه") && (
+                          <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                            پرداخت در مقصد
+                          </span>
+                        )}
+                      </div>
                       {isSelected && (
                         <span className="text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
                           گزینه انتخابی شما
