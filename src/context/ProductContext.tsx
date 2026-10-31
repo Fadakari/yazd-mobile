@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useMemo } from "react";
 import { ProductColor, ProductMaterial } from "@/types/product";
 
 interface ProductOptionsContextType {
@@ -19,16 +19,24 @@ interface ProviderProps {
   product: { color?: ProductColor[]; material?: ProductMaterial[] };
 }
 
+function findFirstAvailable<T extends { stock?: number }>(
+  items: T[]
+): T | null {
+  if (!items || items.length === 0) return null;
+  return items.find((item) => (item.stock ?? 0) > 0) ?? null;
+}
+
 export const ProductProvider = ({ children, product }: ProviderProps) => {
-  const colors = product.color ?? [];
-  const materials = product.material ?? [];
+  const colors = useMemo(() => product.color ?? [], [product.color]);
+  const materials = useMemo(() => product.material ?? [], [product.material]);
 
   const [selectedColor, setSelectedColor] = useState<ProductColor | null>(
-    colors.length ? colors[0] : null
+    () => findFirstAvailable(colors)
   );
 
-  const [selectedMaterial, setSelectedMaterial] =
-    useState<ProductMaterial | null>(materials.length ? materials[0] : null);
+  const [selectedMaterial, setSelectedMaterial] = useState<ProductMaterial | null>(
+    () => findFirstAvailable(materials)
+  );
 
   return (
     <ProductContext.Provider

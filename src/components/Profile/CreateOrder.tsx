@@ -28,6 +28,8 @@ const CreateOrder = () => {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [checkingDiscount, setCheckingDiscount] = useState(false);
+  const [selectedShippingId, setSelectedShippingId] = useState<number | null>(null);
+  const [shippingError, setShippingError] = useState<string>("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -115,6 +117,16 @@ const CreateOrder = () => {
     if (!user.identity.postal_code)
       newErrors.postal_code = "کد پستی الزامی است";
 
+    if (!selectedShippingId) {
+      setShippingError("لطفاً حتماً یکی از شیوه‌های ارسال زیر را انتخاب فرمایید.");
+      addToast({
+        title: "شیوه ارسال انتخاب نشده",
+        description: "لطفاً ابتدا یکی از گزینه‌های شیوه ارسال را انتخاب کنید.",
+        color: "danger",
+      });
+      return false;
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -184,7 +196,21 @@ const CreateOrder = () => {
           </div>
 
           {/* شیوه‌های ارسال */}
-          <ShippingMethodSelector />
+          <ShippingMethodSelector
+            selectedId={selectedShippingId}
+            onSelect={(id) => {
+              setSelectedShippingId(id);
+              setShippingError("");
+            }}
+            hasError={!!shippingError}
+          />
+
+          {shippingError && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm rounded-xl font-bold flex items-center gap-2">
+              <span>⚠️</span>
+              <span>{shippingError}</span>
+            </div>
+          )}
 
           <div className="p-4 bg-white rounded-md shadow-sm mt-2 space-y-2">
             <label className="block text-sm font-medium">
