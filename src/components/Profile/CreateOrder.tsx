@@ -344,6 +344,7 @@ const CreateOrder = () => {
               <p>هزینه ارسال</p>
               <div className="font-semibold text-left">
                 {(() => {
+                  // اگر هنوز هیچ شیوه‌ای انتخاب نشده باشد
                   if (!selectedShippingId && !selectedShipping) {
                     return (
                       <span className="text-zinc-500 text-sm font-medium">
@@ -352,32 +353,8 @@ const CreateOrder = () => {
                     );
                   }
 
-                  const serviceName = selectedShipping?.name || "";
-                  const isPostPaid =
-                    serviceName.includes("پس کرایه") ||
-                    serviceName.includes("پس‌کرایه") ||
-                    (selectedShipping?.default_shipping_cost === 0 && !serviceName.includes("رایگان")) ||
-                    (cart?.total_delivery === 0 && !serviceName.includes("رایگان"));
-
-                  if (isPostPaid) {
-                    const specificName =
-                      serviceName && serviceName !== "پس کرایه"
-                        ? serviceName.replace(/^پس\s*کرایه\s*/, "").trim()
-                        : "";
-
-                    return (
-                      <div className="flex flex-col items-end">
-                        <span className="text-blue-700 font-bold bg-blue-50 px-2.5 py-0.5 rounded-lg border border-blue-200/80 text-sm">
-                          پس کرایه{specificName ? ` (${specificName})` : ""}
-                        </span>
-                        <span className="text-[11px] text-zinc-500 mt-0.5 font-normal">
-                          (پرداخت در مقصد)
-                        </span>
-                      </div>
-                    );
-                  }
-
-                  if (cart?.total_delivery && cart.total_delivery > 0) {
+                  // ۱. اولویت اول: هزینه مستقیم محاسبه شده در فیلد total_delivery سبد خرید از بک‌اند
+                  if (typeof cart?.total_delivery === "number" && cart.total_delivery > 0) {
                     return (
                       <span className="text-zinc-800">
                         {cart.total_delivery.toLocaleString("fa-IR")} تومان
@@ -385,7 +362,11 @@ const CreateOrder = () => {
                     );
                   }
 
-                  if (selectedShipping?.default_shipping_cost && selectedShipping.default_shipping_cost > 0) {
+                  // ۲. اولویت دوم: هزینه مستقیم فیلد default_shipping_cost شیوه ارسال دریافتی از بک‌اند
+                  if (
+                    typeof selectedShipping?.default_shipping_cost === "number" &&
+                    selectedShipping.default_shipping_cost > 0
+                  ) {
                     return (
                       <span className="text-zinc-800">
                         {selectedShipping.default_shipping_cost.toLocaleString("fa-IR")} تومان
@@ -393,7 +374,38 @@ const CreateOrder = () => {
                     );
                   }
 
-                  return <span className="text-emerald-600 font-bold">رایگان</span>;
+                  // ۳. اولویت سوم: اگر بک‌اند مقدار نمایشی رشته‌ای (غیر از صفر) ارسال کرده باشد
+                  if (
+                    selectedShipping?.default_shipping_cost_display &&
+                    selectedShipping.default_shipping_cost_display !== "۰ تومان" &&
+                    selectedShipping.default_shipping_cost_display !== "0" &&
+                    selectedShipping.default_shipping_cost_display !== "0 تومان"
+                  ) {
+                    return (
+                      <span className="text-zinc-800">
+                        {selectedShipping.default_shipping_cost_display}
+                      </span>
+                    );
+                  }
+
+                  // ۴. اگر هزینه در بک‌اند صفر است:
+                  const serviceName = (selectedShipping?.name || "").trim();
+
+                  // اگر نام شیوه شامل «پس کرایه» باشد (طبق نظر کارفرما کلمه «پس کرایه» درج شود)
+                  if (serviceName.includes("پس کرایه") || serviceName.includes("پس‌کرایه")) {
+                    return (
+                      <span className="text-amber-800 font-bold bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200 text-sm">
+                        پس کرایه
+                      </span>
+                    );
+                  }
+
+                  // اگر ارسال واقعاً رایگان است یا در غیر این صورت
+                  return (
+                    <span className="text-emerald-600 font-bold">
+                      رایگان
+                    </span>
+                  );
                 })()}
               </div>
             </div>

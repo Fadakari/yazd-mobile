@@ -238,16 +238,9 @@ const ShippingMethodSelector = ({
                   {/* توضیحات شیوه ارسال */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-bold text-zinc-900 text-base">
-                          {service.name}
-                        </h4>
-                        {service.name.includes("پس کرایه") && (
-                          <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
-                            پرداخت در مقصد
-                          </span>
-                        )}
-                      </div>
+                      <h4 className="font-bold text-zinc-900 text-base">
+                        {service.name}
+                      </h4>
                       {isSelected && (
                         <span className="text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
                           گزینه انتخابی شما
