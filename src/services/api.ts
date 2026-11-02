@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL}`;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.valiasrstore.com";
 const api = axios.create({
     baseURL: BASE_URL,
     timeout: 20000,

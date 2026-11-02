@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { useCart } from "@/context/CartContextProvider";
 import { useUser } from "@/context/UserContext";
 import { addToast } from "@heroui/toast";
@@ -11,7 +11,9 @@ import {
 } from "@/services/shopActions";
 import Link from "next/link";
 import { convertNumberToPersian } from "@/utils/converNumbers";
-import ShippingMethodSelector from "./ShippingMethodSelector";
+import ShippingMethodSelector, { ShippingService } from "./ShippingMethodSelector";
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
+import { HiXMark } from "react-icons/hi2";
 
 interface FormData {
   discount_code: string;
@@ -22,10 +24,23 @@ const CreateOrder = () => {
   const { cart } = useCart();
   const [formData, setFormData] = useState<FormData>({ discount_code: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isWarningOpen, setIsWarningOpen] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [checkingDiscount, setCheckingDiscount] = useState(false);
-  const [selectedShippingId, setSelectedShippingId] = useState<number | null>(null);
+  const [selectedShipping, setSelectedShipping] = useState<ShippingService | null>(
+    (cart as any)?.shipping_service || null
+  );
+  const [selectedShippingId, setSelectedShippingId] = useState<number | null>(
+    (cart as any)?.shipping_service?.id || null
+  );
+
+  useEffect(() => {
+    if ((cart as any)?.shipping_service) {
+      setSelectedShipping((cart as any).shipping_service);
+      setSelectedShippingId((cart as any).shipping_service.id);
+    }
+  }, [cart]);
   const [shippingError, setShippingError] = useState<string>("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -114,14 +129,28 @@ const CreateOrder = () => {
     if (!user.identity.postal_code)
       newErrors.postal_code = "کد پستی الزامی است";
 
+    if (!selectedShippingId) {
+      setShippingError("لطفاً حتماً یکی از شیوه‌های ارسال زیر را انتخاب فرمایید.");
+      addToast({
+        title: "شیوه ارسال انتخاب نشده",
+        description: "لطفاً ابتدا یکی از گزینه‌های شیوه ارسال را انتخاب کنید.",
+        color: "danger",
+      });
+      return false;
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const createOrder = async (e: FormEvent<HTMLFormElement>) => {
+  const handlePreSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateFields()) return;
+    setIsWarningOpen(true);
+  };
 
+  const createOrder = async () => {
+    setIsWarningOpen(false);
     setIsSubmitting(true);
 
     const discountedItems = cart.items.filter((item) => item.final_price);
@@ -167,7 +196,7 @@ const CreateOrder = () => {
   return (
     <>
       <form
-        onSubmit={createOrder}
+        onSubmit={handlePreSubmit}
         className="grid md:grid-cols-5 gap-6 p-5 rounded max-w-7xl mx-auto"
       >
         <div className="col-span-3 flex flex-col gap-4">
@@ -179,7 +208,24 @@ const CreateOrder = () => {
           </div>
 
           {/* شیوه‌های ارسال */}
-          <ShippingMethodSelector />
+          <ShippingMethodSelector
+            selectedId={selectedShippingId}
+            onSelect={(id, service) => {
+              setSelectedShippingId(id);
+              if (service) {
+                setSelectedShipping(service);
+              }
+              setShippingError("");
+            }}
+            hasError={!!shippingError}
+          />
+
+          {shippingError && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm rounded-xl font-bold flex items-center gap-2">
+              <span>⚠️</span>
+              <span>{shippingError}</span>
+            </div>
+          )}
 
           <div className="p-4 bg-white rounded-md shadow-sm mt-2 space-y-2">
             <label className="block text-sm font-medium">
@@ -294,15 +340,74 @@ const CreateOrder = () => {
                 </p>
               </div>
             )}
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <p>هزینه ارسال</p>
-              <p className="font-semibold">
-                {!cart?.total_delivery || cart?.total_delivery === 0 ? (
-                  <span className="text-red-500">رایگان</span>
-                ) : (
-                  `${cart.total_delivery.toLocaleString("fa-IR")} تومان`
-                )}
-              </p>
+              <div className="font-semibold text-left">
+                {(() => {
+                  // اگر هنوز هیچ شیوه‌ای انتخاب نشده باشد
+                  if (!selectedShippingId && !selectedShipping) {
+                    return (
+                      <span className="text-zinc-500 text-sm font-medium">
+                        وابسته به شیوه ارسال
+                      </span>
+                    );
+                  }
+
+                  // ۱. اولویت اول: هزینه مستقیم محاسبه شده در فیلد total_delivery سبد خرید از بک‌اند
+                  if (typeof cart?.total_delivery === "number" && cart.total_delivery > 0) {
+                    return (
+                      <span className="text-zinc-800">
+                        {cart.total_delivery.toLocaleString("fa-IR")} تومان
+                      </span>
+                    );
+                  }
+
+                  // ۲. اولویت دوم: هزینه مستقیم فیلد default_shipping_cost شیوه ارسال دریافتی از بک‌اند
+                  if (
+                    typeof selectedShipping?.default_shipping_cost === "number" &&
+                    selectedShipping.default_shipping_cost > 0
+                  ) {
+                    return (
+                      <span className="text-zinc-800">
+                        {selectedShipping.default_shipping_cost.toLocaleString("fa-IR")} تومان
+                      </span>
+                    );
+                  }
+
+                  // ۳. اولویت سوم: اگر بک‌اند مقدار نمایشی رشته‌ای (غیر از صفر) ارسال کرده باشد
+                  if (
+                    selectedShipping?.default_shipping_cost_display &&
+                    selectedShipping.default_shipping_cost_display !== "۰ تومان" &&
+                    selectedShipping.default_shipping_cost_display !== "0" &&
+                    selectedShipping.default_shipping_cost_display !== "0 تومان"
+                  ) {
+                    return (
+                      <span className="text-zinc-800">
+                        {selectedShipping.default_shipping_cost_display}
+                      </span>
+                    );
+                  }
+
+                  // ۴. اگر هزینه در بک‌اند صفر است:
+                  const serviceName = (selectedShipping?.name || "").trim();
+
+                  // اگر نام شیوه شامل «پس کرایه» باشد (طبق نظر کارفرما کلمه «پس کرایه» درج شود)
+                  if (serviceName.includes("پس کرایه") || serviceName.includes("پس‌کرایه")) {
+                    return (
+                      <span className="text-amber-800 font-bold bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200 text-sm">
+                        پس کرایه
+                      </span>
+                    );
+                  }
+
+                  // اگر ارسال واقعاً رایگان است یا در غیر این صورت
+                  return (
+                    <span className="text-emerald-600 font-bold">
+                      رایگان
+                    </span>
+                  );
+                })()}
+              </div>
             </div>
             <div className="flex justify-between text-zinc-700">
               <p>هزینه بسته‌بندی</p>
@@ -331,6 +436,54 @@ const CreateOrder = () => {
           </button>
         </div>
       </form>
+
+      <Modal
+        isOpen={isWarningOpen}
+        onOpenChange={setIsWarningOpen}
+        placement="center"
+        hideCloseButton
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 text-orange-600">
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl">📌</div>
+                  <span>توجه مهم قبل از پرداخت</span>
+                </div>
+              </ModalHeader>
+              <ModalBody>
+                <div className="text-gray-700 leading-relaxed text-justify space-y-4">
+                  <p>کاربر عزیز و گرامی،</p>
+                  <p>
+                    به دلیل نوسان قیمت‌ها، لطفاً پیش از انجام پرداخت نهایی، حتماً با پشتیبانی هماهنگ کنید و پس از دریافت مبلغ قطعی و تأیید، پرداخت را انجام دهید.
+                  </p>
+                  <p>
+                    این کار به شما کمک می‌کند خرید خود را با دقیق‌ترین قیمت و بدون نگرانی از اختلاف قیمت نهایی کنید.
+                  </p>
+                  <p className="font-semibold text-gray-900 pt-2 border-t">
+                    🙏 با سپاس از اعتماد و همراهی شما
+                  </p>
+                </div>
+                <div className="flex gap-3 mt-6 mb-2">
+                  <button
+                    className="btn btn-primary flex-1 py-2 font-semibold"
+                    onClick={createOrder}
+                  >
+                    متوجه شدم و پرداخت
+                  </button>
+                  <button
+                    className="btn bg-gray-200 text-gray-800 flex-1 py-2 font-semibold"
+                    onClick={onClose}
+                  >
+                    انصراف
+                  </button>
+                </div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 };

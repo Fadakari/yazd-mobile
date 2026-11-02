@@ -5,7 +5,7 @@ import { useCart } from "@/context/CartContextProvider";
 import { addToast } from "@heroui/toast";
 import { FaCheck, FaTruck, FaExclamationTriangle } from "react-icons/fa";
 
-interface ShippingService {
+export interface ShippingService {
   id: number;
   name: string;
   description: string;
@@ -17,7 +17,7 @@ interface ShippingService {
 
 interface ShippingMethodSelectorProps {
   selectedId?: number | null;
-  onSelect?: (serviceId: number) => void;
+  onSelect?: (serviceId: number, service?: ShippingService) => void;
   hasError?: boolean;
 }
 
@@ -45,6 +45,12 @@ const ShippingMethodSelector = ({
         const data: ShippingService[] = await res.json();
         const activeServices = data.filter((s) => s.is_active);
         setShippingServices(activeServices);
+        if (selectedId) {
+          const found = activeServices.find((s) => s.id === selectedId);
+          if (found && onSelect) {
+            onSelect(selectedId, found);
+          }
+        }
 
         // نکته مهم: برای اینکه کاربر مجبور به انتخاب آگاهانه باشد، هیچ گزینه پیش‌فرضی به صورت اتوماتیک ست نمی‌شود
       } catch (error: any) {
@@ -80,15 +86,15 @@ const ShippingMethodSelector = ({
       const responseData = await res.json();
       console.log("SET SHIPPING RESPONSE:", responseData);
 
+      const selectedService = shippingServices.find((s) => s.id === serviceId);
+
       // ثبت شناسه انتخاب‌شده
       setInternalSelectedId(serviceId);
       if (onSelect) {
-        onSelect(serviceId);
+        onSelect(serviceId, selectedService);
       }
 
       await refreshCart();
-
-      const selectedService = shippingServices.find((s) => s.id === serviceId);
 
       addToast({
         title: "شیوه ارسال انتخاب شد",
