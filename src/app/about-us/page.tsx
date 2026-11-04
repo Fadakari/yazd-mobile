@@ -9,13 +9,12 @@ import { GetSiteSettings } from "@/services/siteActions";
 interface aboutT {
   description: string;
   id: number;
-
   image: string | null;
   order: number;
-
   title: string;
   video: string | null;
 }
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await GetSiteSettings();
   const siteTitle = "حافظ دارو";
@@ -50,14 +49,16 @@ export async function generateMetadata(): Promise<Metadata> {
       follow: true,
     },
   };
-};
+}
+
 const transform = (node: DOMNode) => {
   if (node.type === "tag" && node.name === "img") {
     const { src, alt, width, height } = (node as Element).attribs;
 
     if (!src) return null;
 
-    const fullSrc = src.startsWith("http") ? src : `https://mpttools.co${src}`;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.hafezdaroo.com";
+    const fullSrc = src.startsWith("http") ? src : `${apiUrl}${src}`;
 
     const widthNum = width ? parseInt(width) : 600;
     const heightNum = height ? parseInt(height) : 400;
@@ -68,15 +69,16 @@ const transform = (node: DOMNode) => {
         alt={alt || ""}
         width={widthNum}
         height={heightNum}
-        className="max-w-[500px] max-h-80 object-contain mx-auto"
+        className="max-w-[500px] max-h-80 object-contain mx-auto my-4 rounded-lg"
         referrerPolicy="no-referrer"
       />
     );
   }
 };
+
 async function page() {
   const data = await homeAboutUsList();
-  const aboutUs: aboutT[] = Array.isArray(data) ? data : [];
+  const aboutUs: aboutT[] = Array.isArray(data) ? data : (data?.results || []);
 
   return (
     <div className="space-y-10">
@@ -94,10 +96,14 @@ async function page() {
           .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
           .map((about) => {
             const sanitizedHtml = sanitizeHtml(about.description ?? "", {
-              allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+              allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "figure", "figcaption", "span"]),
               allowedAttributes: {
                 ...sanitizeHtml.defaults.allowedAttributes,
                 img: ["src", "alt", "width", "height", "class", "style"],
+                figure: ["class", "style"],
+                span: ["class", "style"],
+                p: ["class", "style"],
+                div: ["class", "style"],
                 a: ["href", "name", "target", "class"],
               },
               transformTags: {
@@ -125,7 +131,7 @@ async function page() {
                     alt={about.title}
                     className="rounded-lg w-full aspect-auto max-h-full mx-auto"
                     loading="lazy"
-                    referrerPolicy="no-referrer" /* <--- فقط همین یک خط را اضافه کن */
+                    referrerPolicy="no-referrer"
                   />
                 )}
                 {about.video && (
@@ -139,7 +145,7 @@ async function page() {
                     <p>Your browser does not support the video tag.</p>
                   </video>
                 )}
-                <div className="prose [&_a]:spoiler-link max-w-full">
+                <div className="prose [&_a]:spoiler-link max-w-full text-zinc-700 leading-relaxed text-justify">
                   {parse(sanitizedHtml, { replace: transform })}
                 </div>
               </div>

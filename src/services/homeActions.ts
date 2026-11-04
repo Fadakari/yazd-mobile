@@ -13,35 +13,38 @@ const defaultFetchOptions = {
 
 export async function homeAboutUsList() {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/about-us/`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.hafezdaroo.com";
+        const res = await fetch(`${apiUrl}/home/about-us/`, {
             ...defaultFetchOptions,
-            next: { revalidate: 3600 }
+            next: { revalidate: 60 }
         });
         if (!res.ok) return [];
         const data = await res.json();
-        return data.results || [];
+        return Array.isArray(data) ? data : (data?.results || []);
     } catch (error) {
-        console.error(error);
+        console.error("homeAboutUsList error:", error);
         return [];
     }
 }
 export async function homeContactInfoList() {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/contact-info/`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.hafezdaroo.com";
+        const res = await fetch(`${apiUrl}/home/contact-info/`, {
             ...defaultFetchOptions,
-            next: { revalidate: 3600 }
+            next: { revalidate: 60 }
         });
         if (!res.ok) return [];
         const data = await res.json();
-        return data.results || [];
+        return Array.isArray(data) ? data : (data?.results || []);
     } catch (error) {
-        console.error(error);
+        console.error("homeContactInfoList error:", error);
         return [];
     }
 }
 export async function homeGalleryList() {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/gallery/`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.hafezdaroo.com";
+        const res = await fetch(`${apiUrl}/home/gallery/`, {
             ...defaultFetchOptions,
             next: { revalidate: 3600 }
         });
@@ -54,9 +57,10 @@ export async function homeGalleryList() {
 }
 export async function homeSliderList() {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/sliders/`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.hafezdaroo.com";
+        const res = await fetch(`${apiUrl}/home/sliders/`, {
             ...defaultFetchOptions,
-            next: { revalidate: 600 } // آپدیت هر 10 دقیقه
+            next: { revalidate: 60 } // آپدیت هر دقیقه
         });
         if (!res.ok) return null;
         return await res.json();
@@ -68,7 +72,8 @@ export async function homeSliderList() {
 
 export async function getTerms() {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/terms/`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.hafezdaroo.com";
+        const res = await fetch(`${apiUrl}/users/terms/`, {
             ...defaultFetchOptions,
             next: { revalidate: 3600 }
         });
@@ -147,4 +152,3 @@ export async function GetDiscountedOrder(orderNumber: string) {
         return null;
     }
 }
-
