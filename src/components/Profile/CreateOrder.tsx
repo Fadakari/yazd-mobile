@@ -12,8 +12,6 @@ import {
 import Link from "next/link";
 import { convertNumberToPersian } from "@/utils/converNumbers";
 import ShippingMethodSelector, { ShippingService } from "./ShippingMethodSelector";
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
-import { HiXMark } from "react-icons/hi2";
 
 interface FormData {
   discount_code: string;
@@ -24,7 +22,6 @@ const CreateOrder = () => {
   const { cart } = useCart();
   const [formData, setFormData] = useState<FormData>({ discount_code: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isWarningOpen, setIsWarningOpen] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [checkingDiscount, setCheckingDiscount] = useState(false);
@@ -143,14 +140,9 @@ const CreateOrder = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePreSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const createOrder = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateFields()) return;
-    setIsWarningOpen(true);
-  };
-
-  const createOrder = async () => {
-    setIsWarningOpen(false);
     setIsSubmitting(true);
 
     const discountedItems = cart.items.filter((item) => item.final_price);
@@ -194,297 +186,246 @@ const CreateOrder = () => {
   };
 
   return (
-    <>
-      <form
-        onSubmit={handlePreSubmit}
-        className="grid md:grid-cols-5 gap-6 p-5 rounded max-w-7xl mx-auto"
-      >
-        <div className="col-span-3 flex flex-col gap-4">
-          <div className="p-4 bg-zinc-100 rounded-md shadow-sm">
-            <p className="text-gray-700 text-sm">
-              سفارش شما با استفاده از اطلاعات پروفایل ثبت می‌شود. لطفا قبل از*
-              ثبت نهایی، اطلاعات را بررسی کنید.
+    <form
+      onSubmit={createOrder}
+      className="grid md:grid-cols-5 gap-6 p-5 rounded max-w-7xl mx-auto"
+    >
+      <div className="col-span-3 flex flex-col gap-4">
+        <div className="p-4 bg-zinc-100 rounded-md shadow-sm">
+          <p className="text-gray-700 text-sm">
+            سفارش شما با استفاده از اطلاعات پروفایل ثبت می‌شود. لطفا قبل از*
+            ثبت نهایی، اطلاعات را بررسی کنید.
+          </p>
+        </div>
+
+        {/* شیوه‌های ارسال */}
+        <ShippingMethodSelector
+          selectedId={selectedShippingId}
+          onSelect={(id, service) => {
+            setSelectedShippingId(id);
+            if (service) {
+              setSelectedShipping(service);
+            }
+            setShippingError("");
+          }}
+          hasError={!!shippingError}
+        />
+
+        {shippingError && (
+          <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm rounded-xl font-bold flex items-center gap-2">
+            <span>⚠️</span>
+            <span>{shippingError}</span>
+          </div>
+        )}
+
+        <div className="p-4 bg-white rounded-md shadow-sm mt-2 space-y-2">
+          <label className="block text-sm font-medium">
+            کد تخفیف (اختیاری)
+          </label>
+          <div className="flex gap-2 items-center">
+            <input
+              name="discount_code"
+              value={formData.discount_code}
+              onChange={handleChange}
+              className={`flex-1 border rounded px-3 py-2 transition ${
+                errors.discount_code
+                  ? "border-red-500 animate-shake"
+                  : "border-gray-300"
+              }`}
+              readOnly={discountApplied}
+              placeholder="اگر کد تخفیف دارید وارد کنید"
+            />
+
+            <button
+              type="button"
+              onClick={discountApplied ? removeDiscount : handleCheckDiscount}
+              className={`transition disabled:pointer-events-none rounded-md ${
+                discountApplied
+                  ? "bg-danger/10 border border-danger/40 text-danger/80 px-4 py-2"
+                  : "btn-primary !px-4 py-2"
+              }`}
+              disabled={checkingDiscount}
+            >
+              {discountApplied
+                ? "حذف کد"
+                : checkingDiscount
+                  ? "در حال بررسی..."
+                  : "بررسی کد"}
+            </button>
+          </div>
+          {errors.discount_code && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.discount_code}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="col-span-3 md:col-span-2 shadow-lg rounded-lg p-6 space-y-5 border border-zinc-200 sticky top-5 bg-white">
+        <h2 className="font-semibold text-lg border-b pb-2 mb-2">
+          اطلاعات گیرنده
+        </h2>
+        <div className="space-y-2">
+          {[
+            {
+              key: "first_name",
+              label: "نام",
+              value: user?.identity?.first_name,
+            },
+            {
+              key: "last_name",
+              label: "نام خانوادگی",
+              value: user?.identity?.last_name,
+            },
+            {
+              key: "phone_number",
+              label: "شماره",
+              value: user?.identity?.phone_number
+                ? convertNumberToPersian(user?.identity?.phone_number)
+                : user?.identity?.phone_number,
+            },
+            {
+              key: "province",
+              label: "استان",
+              value: user?.identity?.province,
+            },
+            { key: "city", label: "شهر", value: user?.identity?.city },
+            { key: "address", label: "آدرس", value: user?.identity?.address },
+            {
+              key: "postal_code",
+              label: "کد پستی",
+              value: user?.identity?.postal_code,
+            },
+          ].map((field) => (
+            <p
+              key={field.key}
+              className={`${errors[field.key] ? "text-red-500 animate-shake" : ""}`}
+            >
+              <span className="font-medium">{field.label}:</span>{" "}
+              {field.value || "نیاز به تکمیل"}
+            </p>
+          ))}
+          <Link
+            href={`/profile/personal-info?redirect=${encodeURIComponent("/profile/checkout")}`}
+            className="bg-primary text-white px-4 py-2 hover:underline !rounded-full mt-2"
+          >
+            ویرایش اطلاعات
+          </Link>
+        </div>
+
+        <hr className="my-3" />
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <p>
+              قیمت کالاها ({(cart?.total_items || 0).toLocaleString("fa-IR")} کالا)
+            </p>
+            <p className="font-semibold">
+              {(cart?.total_price || 0).toLocaleString("fa-IR")} تومان
             </p>
           </div>
-
-          {/* شیوه‌های ارسال */}
-          <ShippingMethodSelector
-            selectedId={selectedShippingId}
-            onSelect={(id, service) => {
-              setSelectedShippingId(id);
-              if (service) {
-                setSelectedShipping(service);
-              }
-              setShippingError("");
-            }}
-            hasError={!!shippingError}
-          />
-
-          {shippingError && (
-            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm rounded-xl font-bold flex items-center gap-2">
-              <span>⚠️</span>
-              <span>{shippingError}</span>
+          {discountAmount > 0 && (
+            <div className="flex justify-between text-green-700">
+              <p>تخفیف</p>
+              <p className="font-semibold">
+                -{discountAmount.toLocaleString("fa-IR")} تومان
+              </p>
             </div>
           )}
-
-          <div className="p-4 bg-white rounded-md shadow-sm mt-2 space-y-2">
-            <label className="block text-sm font-medium">
-              کد تخفیف (اختیاری)
-            </label>
-            <div className="flex gap-2 items-center">
-              <input
-                name="discount_code"
-                value={formData.discount_code}
-                onChange={handleChange}
-                className={`flex-1 border rounded px-3 py-2 transition ${
-                  errors.discount_code
-                    ? "border-red-500 animate-shake"
-                    : "border-gray-300"
-                }`}
-                readOnly={discountApplied}
-                placeholder="اگر کد تخفیف دارید وارد کنید"
-              />
-
-              <button
-                type="button"
-                onClick={discountApplied ? removeDiscount : handleCheckDiscount}
-                className={`transition disabled:pointer-events-none rounded-md ${
-                  discountApplied
-                    ? "bg-danger/10 border border-danger/40 text-danger/80 px-4 py-2"
-                    : "btn-primary !px-4 py-2"
-                }`}
-                disabled={checkingDiscount}
-              >
-                {discountApplied
-                  ? "حذف کد"
-                  : checkingDiscount
-                    ? "در حال بررسی..."
-                    : "بررسی کد"}
-              </button>
-            </div>
-            {errors.discount_code && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.discount_code}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="col-span-3 md:col-span-2 shadow-lg rounded-lg p-6 space-y-5 border border-zinc-200 sticky top-5 bg-white">
-          <h2 className="font-semibold text-lg border-b pb-2 mb-2">
-            اطلاعات گیرنده
-          </h2>
-          <div className="space-y-2">
-            {[
-              {
-                key: "first_name",
-                label: "نام",
-                value: user?.identity?.first_name,
-              },
-              {
-                key: "last_name",
-                label: "نام خانوادگی",
-                value: user?.identity?.last_name,
-              },
-              {
-                key: "phone_number",
-                label: "شماره",
-                value: user?.identity?.phone_number
-                  ? convertNumberToPersian(user?.identity?.phone_number)
-                  : user?.identity?.phone_number,
-              },
-              {
-                key: "province",
-                label: "استان",
-                value: user?.identity?.province,
-              },
-              { key: "city", label: "شهر", value: user?.identity?.city },
-              { key: "address", label: "آدرس", value: user?.identity?.address },
-              {
-                key: "postal_code",
-                label: "کد پستی",
-                value: user?.identity?.postal_code,
-              },
-            ].map((field) => (
-              <p
-                key={field.key}
-                className={`${errors[field.key] ? "text-red-500 animate-shake" : ""}`}
-              >
-                <span className="font-medium">{field.label}:</span>{" "}
-                {field.value || "نیاز به تکمیل"}
-              </p>
-            ))}
-            <Link
-              href={`/profile/personal-info?redirect=${encodeURIComponent("/profile/checkout")}`}
-              className="bg-primary text-white px-4 py-2 hover:underline !rounded-full mt-2"
-            >
-              ویرایش اطلاعات
-            </Link>
-          </div>
-
-          <hr className="my-3" />
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <p>
-                قیمت کالاها ({(cart?.total_items || 0).toLocaleString("fa-IR")} کالا)
-              </p>
-              <p className="font-semibold">
-                {(cart?.total_price || 0).toLocaleString("fa-IR")} تومان
-              </p>
-            </div>
-            {discountAmount > 0 && (
-              <div className="flex justify-between text-green-700">
-                <p>تخفیف</p>
-                <p className="font-semibold">
-                  -{discountAmount.toLocaleString("fa-IR")} تومان
-                </p>
-              </div>
-            )}
-            <div className="flex justify-between items-center">
-              <p>هزینه ارسال</p>
-              <div className="font-semibold text-left">
-                {(() => {
-                  // اگر هنوز هیچ شیوه‌ای انتخاب نشده باشد
-                  if (!selectedShippingId && !selectedShipping) {
-                    return (
-                      <span className="text-zinc-500 text-sm font-medium">
-                        وابسته به شیوه ارسال
-                      </span>
-                    );
-                  }
-
-                  // ۱. اولویت اول: هزینه مستقیم محاسبه شده در فیلد total_delivery سبد خرید از بک‌اند
-                  if (typeof cart?.total_delivery === "number" && cart.total_delivery > 0) {
-                    return (
-                      <span className="text-zinc-800">
-                        {cart.total_delivery.toLocaleString("fa-IR")} تومان
-                      </span>
-                    );
-                  }
-
-                  // ۲. اولویت دوم: هزینه مستقیم فیلد default_shipping_cost شیوه ارسال دریافتی از بک‌اند
-                  if (
-                    typeof selectedShipping?.default_shipping_cost === "number" &&
-                    selectedShipping.default_shipping_cost > 0
-                  ) {
-                    return (
-                      <span className="text-zinc-800">
-                        {selectedShipping.default_shipping_cost.toLocaleString("fa-IR")} تومان
-                      </span>
-                    );
-                  }
-
-                  // ۳. اولویت سوم: اگر بک‌اند مقدار نمایشی رشته‌ای (غیر از صفر) ارسال کرده باشد
-                  if (
-                    selectedShipping?.default_shipping_cost_display &&
-                    selectedShipping.default_shipping_cost_display !== "۰ تومان" &&
-                    selectedShipping.default_shipping_cost_display !== "0" &&
-                    selectedShipping.default_shipping_cost_display !== "0 تومان"
-                  ) {
-                    return (
-                      <span className="text-zinc-800">
-                        {selectedShipping.default_shipping_cost_display}
-                      </span>
-                    );
-                  }
-
-                  // ۴. اگر هزینه در بک‌اند صفر است:
-                  const serviceName = (selectedShipping?.name || "").trim();
-
-                  // اگر نام شیوه شامل «پس کرایه» باشد (طبق نظر کارفرما کلمه «پس کرایه» درج شود)
-                  if (serviceName.includes("پس کرایه") || serviceName.includes("پس‌کرایه")) {
-                    return (
-                      <span className="text-amber-800 font-bold bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200 text-sm">
-                        پس کرایه
-                      </span>
-                    );
-                  }
-
-                  // اگر ارسال واقعاً رایگان است یا در غیر این صورت
+          <div className="flex justify-between items-center">
+            <p>هزینه ارسال</p>
+            <div className="font-semibold text-left">
+              {(() => {
+                // اگر هنوز هیچ شیوه‌ای انتخاب نشده باشد
+                if (!selectedShippingId && !selectedShipping) {
                   return (
-                    <span className="text-emerald-600 font-bold">
-                      رایگان
+                    <span className="text-zinc-500 text-sm font-medium">
+                      وابسته به شیوه ارسال
                     </span>
                   );
-                })()}
-              </div>
-            </div>
-            <div className="flex justify-between text-zinc-700">
-              <p>هزینه بسته‌بندی</p>
-              <p className="font-semibold">
-                {/* تغییر اصلی در این قسمت برای جلوگیری از خطا */}
-                {!cart?.packaging_cost || cart?.packaging_cost === 0 ? (
-                  <span className="text-green-600 font-bold">رایگان</span>
-                ) : (
-                  `${cart.packaging_cost.toLocaleString("fa-IR")} تومان`
-                )}
-              </p>
-            </div>
-            <hr className="my-3" />
-            <div className="flex justify-between text-lg font-semibold">
-              <p>مبلغ قابل پرداخت</p>
-              <p>{(cart?.final_price || 0).toLocaleString("fa-IR")} تومان</p>
+                }
+
+                // ۱. اولویت اول: هزینه مستقیم محاسبه شده در فیلد total_delivery سبد خرید از بک‌اند
+                if (typeof cart?.total_delivery === "number" && cart.total_delivery > 0) {
+                  return (
+                    <span className="text-zinc-800">
+                      {cart.total_delivery.toLocaleString("fa-IR")} تومان
+                    </span>
+                  );
+                }
+
+                // ۲. اولویت دوم: هزینه مستقیم فیلد default_shipping_cost شیوه ارسال دریافتی از بک‌اند
+                if (
+                  typeof selectedShipping?.default_shipping_cost === "number" &&
+                  selectedShipping.default_shipping_cost > 0
+                ) {
+                  return (
+                    <span className="text-zinc-800">
+                      {selectedShipping.default_shipping_cost.toLocaleString("fa-IR")} تومان
+                    </span>
+                  );
+                }
+
+                // ۳. اولویت سوم: اگر بک‌اند مقدار نمایشی رشته‌ای (غیر از صفر) ارسال کرده باشد
+                if (
+                  selectedShipping?.default_shipping_cost_display &&
+                  selectedShipping.default_shipping_cost_display !== "۰ تومان" &&
+                  selectedShipping.default_shipping_cost_display !== "0" &&
+                  selectedShipping.default_shipping_cost_display !== "0 تومان"
+                ) {
+                  return (
+                    <span className="text-zinc-800">
+                      {selectedShipping.default_shipping_cost_display}
+                    </span>
+                  );
+                }
+
+                // ۴. اگر هزینه در بک‌اند صفر است:
+                const serviceName = (selectedShipping?.name || "").trim();
+
+                // اگر نام شیوه شامل «پس کرایه» باشد (طبق نظر کارفرما کلمه «پس کرایه» درج شود)
+                if (serviceName.includes("پس کرایه") || serviceName.includes("پس‌کرایه")) {
+                  return (
+                    <span className="text-amber-800 font-bold bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200 text-sm">
+                      پس کرایه
+                    </span>
+                  );
+                }
+
+                // اگر ارسال واقعاً رایگان است یا در غیر این صورت
+                return (
+                  <span className="text-emerald-600 font-bold">
+                    رایگان
+                  </span>
+                );
+              })()}
             </div>
           </div>
-
-          <button
-            type="submit"
-            className="btn btn-primary w-full mt-4 font-semibold py-3"
-            disabled={isSubmitting || Object.keys(errors).length > 0}
-          >
-            {isSubmitting ? "در حال ثبت..." : "ثبت نهایی"}
-          </button>
+          <div className="flex justify-between text-zinc-700">
+            <p>هزینه بسته‌بندی</p>
+            <p className="font-semibold">
+              {!cart?.packaging_cost || cart?.packaging_cost === 0 ? (
+                <span className="text-green-600 font-bold">رایگان</span>
+              ) : (
+                `${cart.packaging_cost.toLocaleString("fa-IR")} تومان`
+              )}
+            </p>
+          </div>
+          <hr className="my-3" />
+          <div className="flex justify-between text-lg font-semibold">
+            <p>مبلغ قابل پرداخت</p>
+            <p>{(cart?.final_price || 0).toLocaleString("fa-IR")} تومان</p>
+          </div>
         </div>
-      </form>
 
-      <Modal
-        isOpen={isWarningOpen}
-        onOpenChange={setIsWarningOpen}
-        placement="center"
-        hideCloseButton
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1 text-orange-600">
-                <div className="flex items-center gap-2">
-                  <div className="text-2xl">📌</div>
-                  <span>توجه مهم قبل از پرداخت</span>
-                </div>
-              </ModalHeader>
-              <ModalBody>
-                <div className="text-gray-700 leading-relaxed text-justify space-y-4">
-                  <p>کاربر عزیز و گرامی،</p>
-                  <p>
-                    به دلیل نوسان قیمت‌ها، لطفاً پیش از انجام پرداخت نهایی، حتماً با پشتیبانی هماهنگ کنید و پس از دریافت مبلغ قطعی و تأیید، پرداخت را انجام دهید.
-                  </p>
-                  <p>
-                    این کار به شما کمک می‌کند خرید خود را با دقیق‌ترین قیمت و بدون نگرانی از اختلاف قیمت نهایی کنید.
-                  </p>
-                  <p className="font-semibold text-gray-900 pt-2 border-t">
-                    🙏 با سپاس از اعتماد و همراهی شما
-                  </p>
-                </div>
-                <div className="flex gap-3 mt-6 mb-2">
-                  <button
-                    className="btn btn-primary flex-1 py-2 font-semibold"
-                    onClick={createOrder}
-                  >
-                    متوجه شدم و پرداخت
-                  </button>
-                  <button
-                    className="btn bg-gray-200 text-gray-800 flex-1 py-2 font-semibold"
-                    onClick={onClose}
-                  >
-                    انصراف
-                  </button>
-                </div>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
+        <button
+          type="submit"
+          className="btn btn-primary w-full mt-4 font-semibold py-3"
+          disabled={isSubmitting || Object.keys(errors).length > 0}
+        >
+          {isSubmitting ? "در حال ثبت..." : "ثبت نهایی"}
+        </button>
+      </div>
+    </form>
   );
 };
 
