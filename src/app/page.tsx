@@ -69,26 +69,12 @@ async function getLatestArticles(): Promise<BlogPost[]> {
   }
 }
 
-async function getActiveLogo(): Promise<string> {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/active-logo/`, {
-      next: { revalidate: 30 },
-    });
-    if (!res.ok) return "/logo.png";
-    const data = await res.json();
-    const active = Array.isArray(data) ? data[0] : data;
-    return active?.image || "/logo.png";
-  } catch {
-    return "/logo.png";
-  }
-}
 
 export default async function Home() {
-  const [apiData, fetchedBlogs, categoriesTree, siteLogo] = await Promise.all([
+  const [apiData, fetchedBlogs, categoriesTree] = await Promise.all([
     getHomeData(),
     getLatestArticles(),
     GetShopCategoriesTreeList(),
-    getActiveLogo(),
   ]);
 
   const categoriesArray = Array.isArray(categoriesTree)
@@ -98,7 +84,7 @@ export default async function Home() {
   const categories = categoriesArray.map((cat: any) => ({
     id: cat.id,
     name: cat.name,
-    image: cat.image || cat.icon || siteLogo,
+    image: cat.image || cat.icon || "",
     link: `/products?category_id=${cat.id}`,
   }));
 
@@ -110,7 +96,7 @@ export default async function Home() {
       id: p.id,
       title: p.name,
       slug: p.slug,
-      image: p.cover_image || siteLogo,
+      image: p.cover_image || "",
       price: discounted,
       oldPrice: discounted < p.price ? p.price : undefined,
       discount: discounted < p.price && p.price > 0
@@ -146,10 +132,7 @@ export default async function Home() {
     })
     .filter((section) => section.products.length > 0);
 
-  const blogs = fetchedBlogs.map((post) => ({
-    ...post,
-    image: post.image || siteLogo,
-  }));
+  const blogs = fetchedBlogs;
 
   return (
     <AkhoondiHomeExperience
