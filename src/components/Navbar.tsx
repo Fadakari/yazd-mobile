@@ -65,7 +65,7 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
                     className="flex items-center justify-between px-4 py-3 text-gray-700 text-sm font-medium hover:text-[\#41483b] hover:bg-[#eeebe3] rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="w-2 h-2 rounded-full bg-gray-300 group-hover/item:bg-orange-400 transition-colors" />
+                      <span className="w-2 h-2 rounded-full bg-gray-300 group-hover/item:bg-[#59634f] transition-colors" />
                       <span className="truncate max-w-[200px]">{cat.name}</span>
                     </div>
                     {cat.children && cat.children.length > 0 && (
@@ -80,7 +80,7 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
                           <li key={child.id}>
                             <Link
                               href={`/products/?category_id=${child.id}`}
-                              className="block px-3 py-2.5 text-sm text-gray-700 hover:text-[\#41483b] hover:bg-white hover:border-l-2 hover:border-l-orange-400 rounded-md transition-colors"
+                              className="block px-3 py-2.5 text-sm text-gray-700 hover:text-[\#41483b] hover:bg-white hover:border-l-2 hover:border-l-[#59634f] rounded-md transition-colors"
                             >
                               {child.name}
                             </Link>
@@ -505,7 +505,7 @@ function MobileCategoryList({
                 className="flex items-center justify-between w-full px-4 py-3 bg-gray-50 rounded-xl text-gray-700 hover:bg-gray-100 active:scale-[0.98] transition-all"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full bg-orange-200"></span>
+                  <span className="w-2 h-2 rounded-full bg-[#d9d2c3]"></span>
                   <span className="text-sm font-bold">{cat.name}</span>
                 </div>
                 <GoChevronLeft className="text-gray-400" />
@@ -602,14 +602,14 @@ export function MobileDrawer({ categories, links, user, onAuthOpen }: { categori
 
               <DrawerFooter className="border-t border-[#ded9ce] bg-white p-5">
                 {!user?.identity ? (
-                  <button onClick={() => { onAuthOpen(); onClose(); }} className="w-full flex items-center justify-center gap-3 bg-[#59634f] text-white py-3.5 rounded-2xl font-bold shadow-md shadow-[#59634f]/10 hover:shadow-orange-300 transition-all active:scale-95">
+                  <button onClick={() => { onAuthOpen(); onClose(); }} className="w-full flex items-center justify-center gap-3 bg-[#59634f] text-white py-3.5 rounded-2xl font-bold shadow-md shadow-[#59634f]/10 hover:shadow-[#59634f]/15 transition-all active:scale-95">
                     <CiLogin className="size-6 stroke-[1px]" />
                     ورود یا ثبت نام
                   </button>
                 ) : (
                   <div className="w-full bg-gray-50 p-4 rounded-2xl flex items-center justify-between border border-gray-100">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-[#59634f] text-white flex items-center justify-center font-bold text-lg shadow-md">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#59634f] to-[#41483b] text-white flex items-center justify-center font-bold text-lg shadow-md">
                         {user.identity.first_name?.[0] || <FiUser />}
                       </div>
                       <div className="flex flex-col">
