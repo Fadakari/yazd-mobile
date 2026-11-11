@@ -2,16 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, ReactNode, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { ReactNode, useMemo, useRef } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
-  ArrowUpLeft, ArrowDown, Search, ShoppingBag, UserRound, Sparkles,
-  MoveUpLeft, Star, Menu, X, Plus, Instagram, Phone, ChevronLeft,
+  ArrowUpLeft, ArrowDown, Sparkles, MoveUpLeft, Star, Plus, ChevronLeft,
 } from "lucide-react";
-import { useCart } from "@/context/CartContextProvider";
-import { useUser } from "@/context/UserContext";
-import { useAuthModal } from "@/context/AuthModalProvider";
 
 type Product = {
   id: number; title: string; slug: string; image: string; price?: number;
@@ -102,12 +97,6 @@ export default function AkhoondiHomeExperience({
 }: {
   logo: string; banners: Banner[]; categories: Category[]; sections: ProductSection[]; blogs: Blog[];
 }) {
-  const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const { cart } = useCart();
-  const { user } = useUser();
-  const { onOpen: onAuthOpen }: any = useAuthModal();
   const heroRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -121,54 +110,19 @@ export default function AkhoondiHomeExperience({
   const allProducts = useMemo(() => sections.flatMap(s => s.products).filter((p, i, all) => all.findIndex(x => x.id === p.id) === i), [sections]);
   const firstSection = sections.find(s => s.products.length > 0);
   const remainingSections = sections.filter(s => s.products.length > 0 && s.id !== firstSection?.id);
-  const submitSearch = (event: FormEvent) => {
-    event.preventDefault();
-    if (query.trim()) router.push(`/products?search=${encodeURIComponent(query.trim())}`);
-  };
-
   return (
-    <main dir="rtl" className="relative isolate -mx-2 -mt-0 overflow-hidden bg-[#f7f5ef] text-[#252923] [--ink:#252923] [--blue:#59634f]">
+    <main dir="rtl" className="relative isolate -mx-2 -mt-0 overflow-x-clip bg-[#f7f5ef] text-[#252923] [--ink:#252923] [--blue:#59634f]">
       <motion.div aria-hidden="true" style={{ scaleX: smoothPageProgress }} className="fixed inset-x-0 top-0 z-[100] h-1 origin-right bg-[#a65e43]" />
       <div className="pointer-events-none absolute inset-x-0 top-[900px] -z-0 h-[1200px] opacity-40" style={{ backgroundImage: "radial-gradient(#59634f 1px, transparent 1px)", backgroundSize: "22px 22px" }} />
 
-      {/* The homepage has its own single, functional header. */}
-      <header className="relative z-50 px-4 pt-4 sm:px-8 lg:px-12">
-        <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-3 rounded-[1.2rem] border border-[#d8d2c7] bg-[#f7f5ef] px-4 py-3 shadow-[0_5px_18px_rgba(37,41,35,.06)] sm:px-6">
-          <Link href="/" className="flex shrink-0 items-center gap-3">
-            <span className="relative grid h-12 w-12 place-items-center overflow-hidden rounded-2xl border-2 border-[#252923] bg-[#c8b995]">
-              {logo && <Image src={logo} alt="گروه آخوندی" fill className="object-contain p-1" />}
-            </span>
-            <span className="hidden leading-tight sm:block"><b className="block text-sm font-black tracking-wide">AKHOONDI</b><small className="text-[10px] font-bold tracking-[.24em] text-[#777568]">DESIGN GROUP</small></span>
-          </Link>
-          <nav className="hidden items-center gap-7 text-sm font-black lg:flex">
-            <Link href="/products" className="transition-colors hover:text-[#59634f]">فروشگاه</Link>
-            <Link href="/about-us" className="transition-colors hover:text-[#59634f]">درباره ما</Link>
-            <Link href="/articles" className="transition-colors hover:text-[#59634f]">مجله</Link>
-            <Link href="/contact-info" className="transition-colors hover:text-[#59634f]">تماس</Link>
-          </nav>
-          <form onSubmit={submitSearch} className="hidden max-w-[270px] flex-1 items-center rounded-full border-2 border-[#252923] bg-white px-3 py-2 md:flex">
-            <Search className="h-4 w-4 shrink-0" /><input value={query} onChange={e => setQuery(e.target.value)} placeholder="دنبال چی می‌گردی؟" className="min-w-0 flex-1 bg-transparent px-2 text-xs font-bold outline-none placeholder:text-[#aaa69d]" />
-          </form>
-          <div className="flex items-center gap-2">
-            <button onClick={() => user?.identity ? router.push("/profile") : onAuthOpen()} aria-label="حساب کاربری" className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#d9c6b4] transition-transform hover:scale-105"><UserRound size={18} /></button>
-            <Link href="/profile/cart" aria-label="سبد خرید" className="relative grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#c8b995] transition-transform hover:scale-105"><ShoppingBag size={18} />{cart?.total_items > 0 && <span className="absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-[#a65e43] px-1 text-[10px] font-black text-white">{cart.total_items}</span>}</Link>
-            <button onClick={() => setMenuOpen(v => !v)} className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#59634f] text-white lg:hidden">{menuOpen ? <X /> : <Menu />}</button>
-          </div>
-        </div>
-        {menuOpen && <motion.nav initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto mt-3 grid max-w-[1500px] grid-cols-2 gap-2 rounded-2xl border-2 border-[#252923] bg-white p-4 text-sm font-black shadow-[4px_4px_0_#252923] lg:hidden">
-          {[["فروشگاه","/products"],["درباره ما","/about-us"],["مجله","/articles"],["تماس با ما","/contact-info"]].map(([label, href]) => <Link key={href} href={href} onClick={() => setMenuOpen(false)} className="rounded-xl bg-[#eeebe3] p-3">{label}</Link>)}
-          <form onSubmit={submitSearch} className="col-span-2 flex items-center gap-2 rounded-xl border-2 border-[#252923] p-3"><Search size={17} /><input value={query} onChange={e => setQuery(e.target.value)} placeholder="جست‌وجو در محصولات" className="min-w-0 flex-1 bg-transparent outline-none" /></form>
-        </motion.nav>}
-      </header>
-
       {/* Compact editorial hero: bold composition without exceeding the first viewport. */}
-      <section ref={heroRef} className="relative mx-auto mt-5 h-[min(620px,calc(100svh-112px))] min-h-[430px] max-w-[1600px] px-4 sm:px-8 lg:px-12">
+      <section ref={heroRef} className="relative mx-auto mt-3 h-[min(620px,calc(100svh-190px))] min-h-[360px] max-w-[1600px] px-4 sm:px-8 lg:mt-5 lg:h-[min(620px,calc(100svh-112px))] lg:min-h-[430px] lg:px-12">
         <div className="absolute inset-x-4 inset-y-0 overflow-hidden rounded-[2.2rem] border-2 border-[#252923] bg-[#59634f] shadow-[8px_9px_0_#252923] sm:inset-x-8 lg:inset-x-12">
           {hero?.image ? <motion.div style={{ y: heroY, scale: heroScale }} className="absolute inset-0"><Image src={hero.image} alt={hero.alt || "گروه آخوندی"} fill priority sizes="100vw" className="object-cover" /></motion.div> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_40%,#d9c6b4_0_12%,transparent_12.5%),radial-gradient(circle_at_70%_40%,#c8b995_0_26%,transparent_26.5%),linear-gradient(125deg,#59634f,#6c7565_55%,#d9c6b4)]" />}
           <div className="absolute inset-0 bg-gradient-to-l from-[#20251f]/80 via-[#20251f]/30 to-transparent" />
           <div className="absolute -left-16 top-20 h-64 w-64 rounded-full border-[32px] border-[#c8b995]/70" />
         </div>
-        <div className="relative z-10 flex h-full min-h-0 flex-col justify-between px-5 py-6 text-white sm:px-10 sm:py-9 lg:px-16">
+        <div className="relative z-10 flex h-full min-h-0 flex-col justify-between px-4 py-4 text-white sm:px-10 sm:py-9 lg:px-16">
           <div className="flex items-center justify-between gap-4">
             <span className="rounded-full border border-white/60 bg-white/10 px-4 py-2 text-[9px] font-semibold tracking-[.18em] backdrop-blur-md sm:text-[11px]">FURNITURE WITH ATTITUDE ✳</span>
             <span className="hidden rounded-2xl border-2 border-[#252923] bg-[#c8b995] px-5 py-3 text-sm font-black text-[#252923] shadow-[4px_4px_0_#252923] sm:block">MAKE ROOM<br />FOR GOOD DESIGN</span>
@@ -176,7 +130,7 @@ export default function AkhoondiHomeExperience({
           <div className="max-w-[760px] pb-3 pt-3 sm:pb-5 sm:pt-6">
             <Reveal direction="right">
               <p className="mb-5 flex items-center gap-3 text-xs font-black tracking-widest text-[#c8b995]"><span className="h-1 w-12 rounded-full bg-[#c8b995]" /> از اینجا فضا، شخصیت پیدا می‌کند</p>
-              <h1 className="text-[clamp(2.65rem,7.2vw,7.2rem)] font-black leading-[1.08] tracking-[-.055em]">یه کم<br /><span className="relative inline-block text-[#c8b995]">متفاوت‌تر</span><br />زندگی کن<span className="text-[#d9c6b4]">!</span></h1>
+              <h1 className="text-[clamp(2.1rem,7.2vw,7.2rem)] font-black leading-[1.08] tracking-[-.055em]">یه کم<br /><span className="relative inline-block text-[#c8b995]">متفاوت‌تر</span><br />زندگی کن<span className="text-[#d9c6b4]">!</span></h1>
               <p className="mt-4 max-w-lg text-xs font-medium leading-7 text-white/85 sm:mt-5 sm:text-base sm:leading-8">میز، صندلی و مبلمان؛ برای فضاهایی که قرار نیست شبیه همه‌جا باشند.</p>
               <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-7">
                 <Link href="/products" className="group inline-flex items-center gap-5 rounded-full border border-white/30 bg-[#c8b995] px-6 py-3 text-xs font-bold text-[#252923] shadow-[0_8px_24px_rgba(20,25,20,.18)] sm:px-7 sm:py-3.5 sm:text-sm transition-all hover:-translate-y-1 hover:shadow-[7px_8px_0_#252923]">بزن بریم کشف کنیم <ArrowUpLeft className="transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1" /></Link>
