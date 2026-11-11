@@ -69,11 +69,11 @@ export default function LayoutShell({
       : []),
   ];
   return (
-    <div className={"space-y-5 container customSm:max-w-[566px]"}>
+    <div className={"akhoondi-listing space-y-6 container max-w-[1440px]"}>
       <BreadcrumbsBox items={breadcrumbItems} />
-      <section className="flex gap-4 w-full h-full ">
+      <section className="flex w-full h-full flex-col gap-5 lg:flex-row">
         <FilterBox selected={selected} brands={brands} />
-        <div className="size-full space-y-5">
+        <div className="min-w-0 size-full space-y-5">
           <SortBox />
           <Products
             href={href}
