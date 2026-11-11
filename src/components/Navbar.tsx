@@ -4,7 +4,7 @@ import React, { FormEvent, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowUpLeft, Menu, Search, ShoppingBag, UserRound, X, ChevronDown, Phone, Instagram, BookOpen, House, Tag } from "lucide-react";
+import { ArrowUpLeft, Menu, Search, ShoppingBag, UserRound, ChevronDown, Phone, Instagram, BookOpen, House, Tag } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { useAuthModal } from "@/context/AuthModalProvider";
 import { useCategories } from "@/context/CategoriesContext";
