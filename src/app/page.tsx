@@ -153,7 +153,6 @@ export default async function Home() {
 
   return (
     <AkhoondiHomeExperience
-      logo={siteLogo}
       banners={banners}
       categories={categories}
       sections={sections}
