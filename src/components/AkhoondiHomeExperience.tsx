@@ -116,7 +116,7 @@ export default function AkhoondiHomeExperience({
       <div className="pointer-events-none absolute inset-x-0 top-[900px] -z-0 h-[1200px] opacity-40" style={{ backgroundImage: "radial-gradient(#59634f 1px, transparent 1px)", backgroundSize: "22px 22px" }} />
 
       {/* Compact editorial hero: bold composition without exceeding the first viewport. */}
-      <section ref={heroRef} className="relative mx-auto mt-3 h-[min(620px,calc(100svh-190px))] min-h-[360px] max-w-[1600px] px-4 sm:px-8 lg:mt-5 lg:h-[min(620px,calc(100svh-112px))] lg:min-h-[430px] lg:px-12">
+      <section ref={heroRef} className="relative mx-auto mt-3 h-[min(620px,calc(100svh-190px))] min-h-[min(360px,calc(100svh-190px))] max-w-[1600px] px-4 sm:px-8 lg:mt-5 lg:h-[min(620px,calc(100svh-112px))] lg:min-h-[430px] lg:px-12">
         <div className="absolute inset-x-4 inset-y-0 overflow-hidden rounded-[2.2rem] border-2 border-[#252923] bg-[#59634f] shadow-[8px_9px_0_#252923] sm:inset-x-8 lg:inset-x-12">
           {hero?.image ? <motion.div style={{ y: heroY, scale: heroScale }} className="absolute inset-0"><Image src={hero.image} alt={hero.alt || "گروه آخوندی"} fill priority sizes="100vw" className="object-cover" /></motion.div> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_40%,#d9c6b4_0_12%,transparent_12.5%),radial-gradient(circle_at_70%_40%,#c8b995_0_26%,transparent_26.5%),linear-gradient(125deg,#59634f,#6c7565_55%,#d9c6b4)]" />}
           <div className="absolute inset-0 bg-gradient-to-l from-[#20251f]/80 via-[#20251f]/30 to-transparent" />
