@@ -1,4 +1,5 @@
 "use client";
+
 import Article from "@/types/blog";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,78 +7,48 @@ import { CiImageOff } from "react-icons/ci";
 import { IoTimeOutline } from "react-icons/io5";
 import { TfiArrowTopLeft } from "react-icons/tfi";
 import { SiGoogleappsscript } from "react-icons/si";
+
 function BlogCard({ item }: { item: Article }) {
   return (
-    <article
-      key={item.id}
-      className="bg-[#fffefa] rounded-[1.4rem] border border-[#ded9ce] shadow-[0_8px_24px_rgba(37,41,35,.06)] group/card w-full h-full flex flex-col overflow-hidden "
-    >
-      <Link
-        href={`/article/${item.slug}`}
-        key={item.id}
-        title={item.title}
-        className="size-full flex relative"
-      >
-        {item.thumbnail ? (
-          <Image
-            width={360}
-            height={220}
-            src={item.thumbnail}
-            alt={item.title}
-            className="w-full h-56 object-cover rounded-t-[1.35rem]"
-            loading="lazy"
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
-          />
-        ) : (
-          <div className="w-full h-56 bg-[#eeebe3] rounded-md flex items-center justify-center">
-            <CiImageOff className="size-15" />
-          </div>
-        )}
-        <div className="absolute top-3 left-3 bg-[#f7f5ef] px-4 py-2 rounded-full border border-[#ded9ce] font-medium font-dana">
-          {item.created_at_relative}
+    <Link href={`/article/${item.slug}`} title={item.title} className="group/article block h-full min-w-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a65e43]">
+      <article className="flex h-full flex-col overflow-hidden rounded-[1.55rem] border-2 border-[#252923] bg-[#f7f5ef] text-[#252923] shadow-[5px_6px_0_#252923] transition-all duration-500 group-hover/article:-translate-y-1 group-hover/article:shadow-[8px_10px_0_#252923]">
+        <div className="relative isolate h-56 overflow-hidden border-b-2 border-[#252923] bg-[#e6e2d8] sm:h-64">
+          <span className="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-[#d9c6b4]" />
+          <span className="absolute -bottom-12 -right-8 h-36 w-36 rounded-full border-[18px] border-[#c8b995]/80" />
+          {item.thumbnail ? <Image width={640} height={420} src={item.thumbnail} alt={item.title} loading="lazy" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="relative z-[1] h-full w-full object-cover transition-transform duration-700 group-hover/article:scale-[1.06]" /> : <div className="relative z-[1] flex h-full items-center justify-center"><CiImageOff className="size-16 text-[#777568]" /></div>}
+          <span className="absolute right-4 top-4 z-[2] rounded-full border-2 border-[#252923] bg-[#c8b995] px-3 py-2 text-[10px] font-black">AKHOONDI JOURNAL</span>
+          <span className="absolute bottom-4 left-4 z-[2] rounded-full border border-white/70 bg-[#252923]/80 px-3 py-2 text-xs font-bold text-white backdrop-blur">{item.created_at_relative}</span>
         </div>
-      </Link>
-      <div className="p-3.5 sm:p-5">
-        <h3 className="text-2xl font-semibold mt-2   line-clamp-2">
-          {item.title}
-        </h3>
-        <p className="w-full line-clamp-1">{item.introduction}</p>
-        <div className="flex items-center justify-around flex-wrap gap-5 text-[#777568] mt-5 text-sm">
-          <div className="flex flex-col items-center font-medium">
-            <IoTimeOutline className="size-7" />
-            {item.reading_time}
-          </div>
-          <div className="flex flex-col items-center font-medium">
-            <SiGoogleappsscript className="size-7" />
-            {item.category?.title || "بدون دسته‌بندی"}
+
+        <div className="flex flex-1 flex-col p-4 sm:p-5">
+          <div className="mb-3 flex items-center gap-2 text-[10px] font-black tracking-[.12em] text-[#59634f]"><span className="h-[2px] w-7 bg-[#a65e43]" /> NOTES ON LIVING / DESIGN</div>
+          <h3 className="line-clamp-2 text-xl font-black leading-8 sm:text-2xl">{item.title}</h3>
+          <p className="mt-3 line-clamp-2 text-sm font-medium leading-7 text-[#777568]">{item.introduction}</p>
+
+          <div className="mt-auto">
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#d8d2c7] pt-4 text-xs font-bold text-[#777568]">
+              <span className="flex items-center gap-2"><IoTimeOutline className="size-5 text-[#59634f]" />{item.reading_time}</span>
+              <span className="flex items-center gap-2"><SiGoogleappsscript className="size-4 text-[#a65e43]" />{item.category?.title || "بدون دسته‌بندی"}</span>
+            </div>
+            <div className="mt-4 flex items-center justify-between rounded-xl border-2 border-[#252923] bg-[#d9c6b4] px-4 py-3 text-sm font-black transition-colors group-hover/article:bg-[#c8b995]">
+              <span>خواندن مقاله</span><TfiArrowTopLeft className="size-5 transition-transform duration-300 group-hover/article:-translate-x-1 group-hover/article:-translate-y-1" />
+            </div>
           </div>
         </div>
-        <hr className=" text-[#ded9ce] my-4" />
-        <Link
-          href={`/article/${item.slug}`}
-          className="font-bold text-lg flex items-center gap-1 justify-center group/link hover:underline
-          "
-        >
-          جزییات بیشتر
-          <TfiArrowTopLeft className="size-6 group-hover/link:-translate-y-1 group-hover/link:-translate-x-1 transition-transform ease-soft-spring duration-300" />
-        </Link>
-      </div>
-    </article>
+      </article>
+    </Link>
   );
 }
+
 export function BlogCardSkeleton() {
   return (
-    <article className="bg-white rounded-3xl border border-zinc-300 w-full h-full flex flex-col overflow-hidden animate-pulse">
-      <div className="w-full h-56 bg-zinc-300 rounded-t-lg" />
-      <div className="p-5 flex flex-col gap-3 flex-1">
-        <div className="h-8 bg-zinc-300 rounded-md w-3/4" />
-        <div className="h-5 bg-zinc-300 rounded-md w-full" />
-        <div className="flex items-center justify-around flex-wrap gap-5 mt-5">
-          <div className="h-6 w-16 bg-zinc-300 rounded-md" />
-          <div className="h-6 w-20 bg-zinc-300 rounded-md" />
-        </div>
-        <hr className="border-zinc-300 my-4" />
-        <div className="h-7 bg-zinc-300 rounded-md w-32 mx-auto" />
+    <article className="flex h-full flex-col overflow-hidden rounded-[1.55rem] border-2 border-[#252923] bg-[#f7f5ef] p-3 shadow-[5px_6px_0_#252923]">
+      <div className="h-56 animate-pulse rounded-[1.1rem] bg-[#e6e2d8] sm:h-64" />
+      <div className="flex flex-1 flex-col gap-3 p-3 pt-5">
+        <div className="h-3 w-1/3 animate-pulse rounded-full bg-[#d9c6b4]" />
+        <div className="h-7 w-4/5 animate-pulse rounded-lg bg-[#e6e2d8]" />
+        <div className="h-4 w-full animate-pulse rounded-lg bg-[#e6e2d8]" />
+        <div className="mt-auto h-12 animate-pulse rounded-xl bg-[#d9c6b4]" />
       </div>
     </article>
   );
