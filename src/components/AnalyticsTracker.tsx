@@ -63,7 +63,9 @@ export default function AnalyticsTracker() {
         },
         body: JSON.stringify(payload),
         keepalive: true,
-      }).catch((err) => console.error("Analytics fetch error:", err));
+      }).catch(() => {
+        // Analytics is non-critical; network/CORS failures must not disrupt the storefront.
+      });
     }, 100);
 
     return () => clearTimeout(timer);
