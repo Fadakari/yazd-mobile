@@ -13,10 +13,10 @@ function ProfileSideBar({ links }: { links: NavLink[] }) {
   if (!user) return <>کاربر پیدا نشد</>;
 
   return (
-    <div className="flex flex-col rounded-tl-[60px] md:rounded-tl-xl rounded-tr-[60px] rounded-xl md:w-1/4 h-full overflow-hidden">
-      <div className="bg-primary text-zinc-100 py-10 px-7 space-y-2">
+    <div className="flex flex-col rounded-[1.4rem] border border-[#ded9ce] md:w-1/4 h-full overflow-hidden shadow-[0_8px_24px_rgba(37,41,35,.06)]">
+      <div className="bg-[#41483b] text-[#f7f5ef] py-8 px-6 space-y-2">
         <div className="flex gap-2">
-          <div className="size-20 rounded-full bg-zinc-600">
+          <div className="size-20 rounded-full bg-[#59634f]">
             <FaUserCircle className="size-20 text-white rounded-full" />
           </div>
           <div className="flex flex-col font-medium">
@@ -32,7 +32,7 @@ function ProfileSideBar({ links }: { links: NavLink[] }) {
                 });
                 location.replace("/");
               }}
-              className="bg-white px-2 mt-2 py-1 rounded-lg text-red-500 flex items-center gap-0.5 active:scale-90"
+              className="bg-[#f7f5ef] px-3 mt-2 py-2 rounded-full text-[#a65e43] flex items-center gap-0.5 active:scale-90"
             >
               <MdOutlineLogout className="size-5" />
               خروج از حساب
@@ -41,7 +41,7 @@ function ProfileSideBar({ links }: { links: NavLink[] }) {
         </div>
       </div>
 
-      <ul className="bg-white border-l border-r border-b border-zinc-200 rounded-b-xl py-10 px-7 w-full font-semibold space-y-0.5">
+      <ul className="bg-[#fffefa] border-t border-[#ded9ce] py-6 px-4 w-full font-semibold space-y-0.5">
         {links.map((link) => {
           const isActive = pathname === link.href;
 
@@ -50,7 +50,7 @@ function ProfileSideBar({ links }: { links: NavLink[] }) {
               <Link
                 href={link.href}
                 className={`px-3 py-3.5 flex items-center gap-2 justify-start rounded-2xl w-full transition-all 
-                  ${isActive ? "bg-primary-100 text-primary-700" : "text-zinc-700 hover:bg-primary-100 "}
+                  ${isActive ? "bg-[#e9e8df] text-[#41483b]" : "text-zinc-700 hover:bg-[#eeebe3] "}
                 `}
               >
                 {link.icon}
