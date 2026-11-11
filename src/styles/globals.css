@@ -563,3 +563,25 @@ html {
   .akhoondi-site .akhoondi-product-page { padding-inline: .25rem; }
   .akhoondi-site .akhoondi-product-page .fixed { bottom: 76px; }
 }
+
+
+/* Catch legacy utility accents inside shared internal pages without touching homepage art direction. */
+.akhoondi-site [class*="text-orange-"], .akhoondi-site [class*="text-amber-"],
+.akhoondi-site [class*="text-cyan-"], .akhoondi-site [class*="text-blue-"] { color: #59634f !important; }
+.akhoondi-site [class*="bg-orange-"], .akhoondi-site [class*="bg-amber-"] { background-color: #eeebe3 !important; }
+.akhoondi-site [class*="border-orange-"], .akhoondi-site [class*="border-amber-"] { border-color: #ded9ce !important; }
+.akhoondi-site .bg-slate-50, .akhoondi-site .bg-slate-100,
+.akhoondi-site .bg-gray-100, .akhoondi-site .bg-zinc-100 { background-color: #eeebe3 !important; }
+.akhoondi-site .text-slate-600, .akhoondi-site .text-slate-500 { color: #777568 !important; }
+.akhoondi-site .border-slate-200, .akhoondi-site .border-slate-300 { border-color: #ded9ce !important; }
+.akhoondi-site .bg-primary\/20 { background-color: #e9e8df !important; }
+.akhoondi-site .text-primary-800 { color: #41483b !important; }
+.akhoondi-site .akhoondi-content > * { min-width: 0; }
+.akhoondi-site .akhoondi-content img { max-width: 100%; }
+.akhoondi-site .akhoondi-content :where(input, textarea, select, button) { max-width: 100%; }
+.akhoondi-site .akhoondi-content :where(button, a.btn, .btn-primary) { touch-action: manipulation; }
+@media (max-width: 480px) {
+  .akhoondi-site .akhoondi-content { padding-inline: .5rem; }
+  .akhoondi-site .akhoondi-content h1 { font-size: clamp(1.5rem, 7vw, 2rem); }
+  .akhoondi-site .akhoondi-content h2 { overflow-wrap: anywhere; }
+}
