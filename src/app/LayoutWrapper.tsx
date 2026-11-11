@@ -13,10 +13,12 @@ interface Props {
 
 export default function LayoutWrapper({ children, navbar, footer }: Props) {
   const pathname = usePathname();
-  const isHidden = pathname.startsWith("/marketer") || pathname.startsWith("/payment");
+  const isMarketer = pathname.startsWith("/marketer");
+  const isPayment = pathname.startsWith("/payment");
   const isHome = pathname === "/";
 
-  if (isHidden) return <>{children}</>;
+  if (isMarketer) return <>{children}</>;
+  if (isPayment) return <div className="akhoondi-site min-h-screen bg-[#f7f5ef] text-[#252923]">{children}</div>;
 
   // Homepage owns its complete visual shell (header, navigation and footer).
   // Keep the store-wide shell untouched on every internal route.
