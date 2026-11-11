@@ -16,8 +16,8 @@ async function layout({ children }: { children: ReactNode }) {
         title="مقالات"
         items={[{ label: "خانه", href: "/" }, { label: "مقالات" }]}
       />
-      <div className="flex flex-col lg:flex-row gap-2 py-10 container customSm:max-w-[566px]">
-        <aside className="w-full lg:w-1/3  pl-4">
+      <div className="flex flex-col lg:flex-row gap-6 py-6 container max-w-[1440px]">
+        <aside className="w-full min-w-0 lg:w-1/4 lg:pl-4">
           <h3 className="lg:flex hidden text-2xl font-semibold mb-4  gap-2 items-center">
             <FaFilter />
             دسته‌بندی‌ها
@@ -30,7 +30,7 @@ async function layout({ children }: { children: ReactNode }) {
           </div>
         </aside>
         <div className="w-full">
-          <h1 className="text-4xl font-semibold mb-4 flex gap-2 items-center">
+          <h1 className="mb-6 flex items-center gap-2 text-3xl font-extrabold text-[#252923] sm:text-4xl">
             مقالات
           </h1>
           {children}
