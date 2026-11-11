@@ -19,11 +19,11 @@ export default function Navbar({ logo }: { logo: string }) {
   const { cart } = useCart();
   const categories = useCategories();
   const finalLogoUrl = (() => {
-    if (!logo || !logo.trim() || logo === "لوگو دریافت نشد") return "/assets/logo-abaj.png";
-    if (logo.startsWith("http")) return logo;
-    if (logo === "/logo.png" || logo.startsWith("/assets/")) return logo;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
-    return `${baseUrl}${logo.startsWith("/") ? logo : `/${logo}`}`;
+    const value = typeof logo === "string" ? logo.trim() : "";
+    if (!value || value === "لوگو دریافت نشد") return "";
+    if (/^https?:\/\//i.test(value)) return value;
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+    return baseUrl ? `${baseUrl}${value.startsWith("/") ? value : `/${value}`}` : "";
   })();
   const { onOpen: onAuthOpen }: any = useAuthModal();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -50,9 +50,9 @@ export default function Navbar({ logo }: { logo: string }) {
     <header dir="rtl" className="sticky top-0 z-[100] w-full border-b border-[#d8d2c7] bg-[#f7f5ef]/95 shadow-[0_5px_22px_rgba(37,41,35,.07)] backdrop-blur-xl">
       <div className="mx-auto flex min-h-[76px] max-w-[1500px] items-center justify-between gap-3 px-3 py-2 sm:px-6 lg:min-h-[88px] lg:px-10">
         <Link href="/" aria-label="صفحه اصلی گروه آخوندی" className="flex shrink-0 items-center gap-3">
-          <span className="relative grid h-14 w-14 place-items-center overflow-hidden rounded-2xl border-2 border-[#252923] bg-[#c8b995] shadow-[3px_3px_0_#252923] sm:h-[62px] sm:w-[62px] lg:h-[68px] lg:w-[68px]">
-            {<Image src={finalLogoUrl} alt="گروه آخوندی" fill sizes="68px" priority className="object-contain p-1.5" />}
-          </span>
+          {finalLogoUrl && <span className="relative grid h-14 w-14 place-items-center overflow-hidden rounded-2xl border-2 border-[#252923] bg-[#c8b995] shadow-[3px_3px_0_#252923] sm:h-[62px] sm:w-[62px] lg:h-[68px] lg:w-[68px]">
+            <Image src={finalLogoUrl} alt="گروه آخوندی" fill sizes="68px" priority className="object-contain p-1.5" />
+          </span>}
           <span className="hidden leading-tight sm:block">
             <b className="block text-base font-black tracking-wide text-[#252923] lg:text-lg">AKHOONDI</b>
             <small className="text-[9px] font-black tracking-[.2em] text-[#777568] lg:text-[10px]">DESIGN GROUP</small>
@@ -67,7 +67,8 @@ export default function Navbar({ logo }: { logo: string }) {
             <button onClick={() => setCategoryOpen(v => !v)} className="flex items-center gap-1 rounded-full border border-[#d8d2c7] bg-[#e6e2d8] px-4 py-2.5 transition-colors hover:bg-[#c8b995]">
               دسته‌بندی‌ها <ChevronDown size={15} className={categoryOpen ? "rotate-180 transition-transform" : "transition-transform"} />
             </button>
-            {categoryOpen && <div className="absolute right-0 top-full z-[120] mt-2 max-h-[70vh] w-[330px] overflow-y-auto rounded-2xl border-2 border-[#252923] bg-[#f7f5ef] p-3 shadow-[6px_7px_0_#252923]">
+            {categoryOpen && <div className="absolute right-0 top-full z-[120] w-[330px] max-w-[90vw] pt-2">
+              <div className="max-h-[70vh] overflow-y-auto rounded-2xl border-2 border-[#252923] bg-[#f7f5ef] p-3 shadow-[6px_7px_0_#252923]">
               {(categories || []).map((cat: CategoryNode) => <div key={cat.id} className="mb-1">
                 <Link href={`/products/?category_id=${cat.id}`} onClick={() => setCategoryOpen(false)} className="flex items-center justify-between rounded-xl bg-[#e6e2d8] px-4 py-3 text-sm font-black hover:bg-[#c8b995]">
                   {cat.name}<ArrowUpLeft size={16} />
