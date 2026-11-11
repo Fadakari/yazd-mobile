@@ -105,7 +105,7 @@ export default async function RootLayout({
         className={`${iranyekan.variable} ${pelak.variable} ${noora.variable} ${dana.variable} ${iranyekan.className} w-full min-h-screen relative antialiased text-[#212529] flex flex-col overflow-x-hidden`}
       >
         <NextTopLoader
-          color="#ff5722"
+          color="#59634f"
           initialPosition={0.08}
           crawlSpeed={200}
           height={3}
@@ -113,7 +113,7 @@ export default async function RootLayout({
           showSpinner={false} // اسپینر زشت پیش‌فرض را حذف کردم
           easing="ease"
           speed={200}
-          shadow="0 0 10px #ff5722,0 0 5px #ff5722" // سایه نئونی نارنجی
+          shadow="0 0 10px rgba(89,99,79,.25),0 0 5px rgba(89,99,79,.18)" // سایه نئونی نارنجی
           zIndex={1600}
         />
         <ConsoleLog />
