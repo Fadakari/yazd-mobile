@@ -96,7 +96,7 @@ export default function NiceOrdersTable({ items }: { items?: OrderItem[] }) {
   };
 
   return (
-    <div className="w-full">
+    <div className="akhoondi-orders w-full">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         {/* <div className="flex items-center gap-2">
           <label className="text-sm text-slate-600">جستجو</label>
@@ -129,7 +129,7 @@ export default function NiceOrdersTable({ items }: { items?: OrderItem[] }) {
         </div>
       </div>
 
-      <div className="overflow-auto border rounded-lg">
+      <div className="overflow-auto rounded-[1.35rem] border-2 border-[#252923] bg-[#f7f5ef] shadow-[4px_5px_0_#252923]">
         <table className="min-w-[720px] w-full text-sm">
           <thead className="bg-slate-50 sticky top-0">
             <tr>
@@ -188,7 +188,7 @@ export default function NiceOrdersTable({ items }: { items?: OrderItem[] }) {
               </tr>
             ) : (
               paged.map((item) => (
-                <tr key={item.id} className="border-t hover:bg-slate-50">
+                <tr key={item.id} className="border-t border-[#d8d2c7] transition-colors hover:bg-[#e6e2d8]">
                   <td className="px-4 py-3 text-right">{item.order_number}</td>
                   <td className="px-4 py-3 text-right">{item.amountFormatted}</td>
                   <td className="px-4 py-3 text-right">
@@ -202,14 +202,14 @@ export default function NiceOrdersTable({ items }: { items?: OrderItem[] }) {
                   </td>
                   <td className="px-4 py-3 text-right">{item.dateFormatted}</td>
                   <td className="px-4 py-3 text-right flex items-center justify-end gap-2">
-                    <Link href={item.detailsLink} className="text-blue-600 underline">
+                    <Link href={item.detailsLink} className="font-black text-[#59634f] underline underline-offset-4">
                       جزییات سفارش
                     </Link>
                     {item.status === "pending" && (
                       <button
                         type="button"
                         onClick={() => goToGateways(item.order_id)}
-                        className="px-3 py-1 bg-blue-600 text-white rounded-full text-xs hover:bg-blue-700"
+                        className="rounded-full border border-[#252923] bg-[#c8b995] px-4 py-2 text-xs font-black text-[#252923] transition-colors hover:bg-[#d9c6b4]"
                       >
                         پرداخت
                       </button>
