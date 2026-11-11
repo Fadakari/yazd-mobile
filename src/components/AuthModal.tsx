@@ -160,9 +160,9 @@ export default function AuthModal() {
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       placement="bottom-center"
-      className="max-w-full h-[100dvh] m-0 sm:max-w-lg sm:h-auto"
+      className="m-0 h-[100dvh] max-w-full sm:h-auto sm:max-w-[520px]"
     >
-      <ModalContent className="text-base rounded-sm overflow-auto h-full">
+      <ModalContent className="h-full overflow-y-auto rounded-none border-2 border-[#252923] bg-[#f7f5ef] text-base shadow-[8px_9px_0_#252923] sm:h-auto sm:max-h-[92dvh] sm:rounded-[2rem]">
         {(onClose) => (
           <form
             onSubmit={
@@ -172,7 +172,7 @@ export default function AuthModal() {
                   ? otpForm.handleSubmit(onOtpSubmit)
                   : loginForm.handleSubmit(onPasswordLogin)
             }
-            className="w-full h-full flex flex-col justify-between"
+            className="flex min-h-full w-full flex-col sm:min-h-0"
           >
             <ModalHeader className="flex items-center justify-between">
               <p>ورود | ثبت‌نام</p>
@@ -181,14 +181,14 @@ export default function AuthModal() {
               </button>
             </ModalHeader>
 
-            <ModalBody className="">
+            <ModalBody className="gap-5 px-6 pb-8 pt-6 sm:px-8">
               {step === "PHONE" && (
                 <>
                   <label htmlFor="phone_number">شماره تلفن</label>
                   <input
                     {...phoneForm.register("phone_number")}
                     maxLength={11}
-                    className="input text-base sm:text-base"
+                    className="input !rounded-xl !border-2 !border-[#d8d2c7] !bg-white !px-4 !py-4 text-base sm:text-base"
                     id="phone_number"
                     inputMode="numeric"
                     placeholder="مثلاً 09123456789"
@@ -212,7 +212,7 @@ export default function AuthModal() {
                     <input
                       {...loginForm.register("password")}
                       type={showPassword ? "text" : "password"}
-                      className="input pr-12 text-base sm:text-base"
+                      className="input !rounded-xl !border-2 !border-[#d8d2c7] !bg-white !px-4 !py-4 pr-12 text-base sm:text-base"
                       placeholder="رمز عبور خود را وارد کنید"
                       id="password"
                     />
@@ -231,7 +231,7 @@ export default function AuthModal() {
                   </div>
                   <button
                     type="button"
-                    className="text-xs text-cyan-500 underline underline-offset-2 mt-2 text-right"
+                    className="mt-2 text-right text-xs font-bold text-[#59634f] underline underline-offset-2"
                     onClick={() => {
                       setPhoneNumber("");
                       setStep("PHONE");
@@ -249,7 +249,7 @@ export default function AuthModal() {
                   <div className="flex items-start">
                     <button
                       type="button"
-                      className="text-xs spoiler-link text-cyan-500 hover:text-cyan-400 relative"
+                      className="relative text-xs font-bold text-[#59634f] underline underline-offset-4 hover:text-[#a65e43]"
                       onClick={async () => {
                         try {
                           setLoading(true);
@@ -272,11 +272,11 @@ export default function AuthModal() {
 
               {step === "OTP" && (
                 <>
-                  <div className="bg-green-100 border border-green-200 p-4 text-zinc-600 rounded-sm">
+                  <div className="rounded-xl border border-[#c8b995] bg-[#e6e2d8] p-4 text-sm font-medium leading-7 text-[#41483b]">
                     کد تایید برای شماره {phoneNumber} ارسال شد
                     <button
                       type="button"
-                      className="text-xs text-cyan-500 underline underline-offset-4 mt-2 mr-2"
+                      className="mr-2 mt-2 text-xs font-bold text-[#59634f] underline underline-offset-4"
                       onClick={() => {
                         setPhoneNumber("");
                         setStep("PHONE");
@@ -310,7 +310,7 @@ export default function AuthModal() {
                       <input
                         {...otpForm.register("referral_code")}
                         maxLength={11}
-                        className="input"
+                        className="input !rounded-xl !border-2 !border-[#d8d2c7] !bg-white !px-4 !py-4"
                       />
                     </>
                   )}
@@ -319,7 +319,7 @@ export default function AuthModal() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-primary disabled:opacity-60 disabled:cursor-wait mb-5"
+                className="mb-3 w-full rounded-full border-2 border-[#252923] bg-[#c8b995] px-5 py-4 font-black text-[#252923] shadow-[4px_4px_0_#252923] transition-all hover:-translate-y-0.5 hover:bg-[#d9c6b4] hover:shadow-[6px_6px_0_#252923] disabled:cursor-wait disabled:opacity-60"
               >
                 {loading
                   ? "لطفا صبر کنید..."
@@ -333,7 +333,7 @@ export default function AuthModal() {
               {step === "OTP" && (
                 <button
                   type="button"
-                  className="text-xs text-cyan-500 mt-2 pb-3"
+                  className="pb-3 text-xs font-bold text-[#59634f] hover:text-[#a65e43]"
                   onClick={() => {
                     sendOtp(phoneNumber);
                     setCanResend(false);
