@@ -77,6 +77,7 @@ export default function Navbar({ logo }: { logo: string }) {
                   {cat.children.map(child => <Link key={child.id} href={`/products/?category_id=${child.id}`} onClick={() => setCategoryOpen(false)} className="rounded-lg px-3 py-2 text-xs font-bold text-[#68685e] hover:bg-white hover:text-[#59634f]">{child.name}</Link>)}
                 </div>}
               </div>)}
+              </div>
             </div>}
           </div>
         <Link href="/products/offers" className="rounded-full border border-[#252923] bg-[#d9c6b4] px-4 py-2.5 text-[#252923] transition-colors hover:bg-[#c8b995]">تخفیف‌های ویژه</Link>
