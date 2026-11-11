@@ -203,7 +203,7 @@ function AddToCart({
       <ProductButton
         onClick={handleAddToCart}
         disabled={loading}
-        className="bg-danger text-sm sm:text-base font-semibold px-4 py-2 text-zinc-100 hover:bg-danger/95 transition-colors duration-300 ease-in-out w-full flex items-center gap-2 justify-center disabled:opacity-50 disabled:cursor-wait"
+        className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-[#252923] bg-[#59634f] px-4 py-3 text-sm font-black text-white shadow-[3px_4px_0_#252923] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#41483b] disabled:cursor-wait disabled:opacity-50 sm:text-base"
       >
         افزودن به سبد خرید
         {loading ? (
@@ -228,10 +228,10 @@ function AddToCart({
         classNames={{
           wrapper: "z-[99999]",
           backdrop: "z-[99998]",
-          base: "max-w-[92vw] sm:max-w-md mx-auto my-auto rounded-2xl shadow-2xl overflow-hidden",
+          base: "max-w-[92vw] sm:max-w-md mx-auto my-auto rounded-[1.5rem] border-2 border-[#252923] bg-[#f7f5ef] shadow-[6px_7px_0_#252923] overflow-hidden",
         }}
       >
-        <ModalContent className="text-sm rounded-2xl">
+        <ModalContent className="rounded-[1.5rem] bg-[#f7f5ef] text-sm">
           {(onClose) => (
             <form
               onSubmit={(e) => {
@@ -242,7 +242,7 @@ function AddToCart({
                 }
               }}
             >
-              <ModalHeader className="flex items-center justify-between gap-1 p-4 border-b border-zinc-100">
+              <ModalHeader className="flex items-center justify-between gap-1 border-b-2 border-[#252923] bg-[#59634f] p-4 text-white">
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -293,7 +293,7 @@ function AddToCart({
                 <p className="text-xs text-zinc-400">*واحد شمارش بر اساس عدد است.</p>
               </ModalBody>
               <ModalFooter className="p-4 border-t border-zinc-100">
-                <button className="w-full btn-primary py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all" type="submit">
+                <button className="w-full rounded-full border-2 border-[#252923] bg-[#c8b995] py-3 font-black text-[#252923] shadow-[3px_4px_0_#252923] transition-all hover:bg-[#d9c6b4]" type="submit">
                   اعمال مقدار
                 </button>
               </ModalFooter>
