@@ -38,13 +38,13 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
       <button className={`
         flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-300
         ${isOpen
-                ? "bg-orange-600 text-white shadow-lg shadow-orange-200"
-                : "bg-amber-600 text-white"
+                ? "bg-[\#41483b] text-white shadow-md shadow-[#59634f]/10"
+                : "bg-[#59634f] text-white"
               }
       `}>
 
         <BiCategory className="text-xl" />
-        <span className="font-bold text-xl">دسته بندی محصولات</span>
+        <span className="font-bold text-base">دسته بندی محصولات</span>
         <GoChevronDown className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
@@ -62,7 +62,7 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
                 <li key={cat.id} className="group/item relative">
                   <Link
                     href={`/products/?category_id=${cat.id}`}
-                    className="flex items-center justify-between px-4 py-3 text-gray-700 text-sm font-medium hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                    className="flex items-center justify-between px-4 py-3 text-gray-700 text-sm font-medium hover:text-[\#41483b] hover:bg-[#eeebe3] rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <span className="w-2 h-2 rounded-full bg-gray-300 group-hover/item:bg-orange-400 transition-colors" />
@@ -80,7 +80,7 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
                           <li key={child.id}>
                             <Link
                               href={`/products/?category_id=${child.id}`}
-                              className="block px-3 py-2.5 text-sm text-gray-700 hover:text-orange-600 hover:bg-white hover:border-l-2 hover:border-l-orange-400 rounded-md transition-colors"
+                              className="block px-3 py-2.5 text-sm text-gray-700 hover:text-[\#41483b] hover:bg-white hover:border-l-2 hover:border-l-orange-400 rounded-md transition-colors"
                             >
                               {child.name}
                             </Link>
@@ -125,10 +125,10 @@ const SearchForm = () => {
       onSubmit={handleSearch}
       className={`
                 flex-1 w-full relative flex items-center transition-all duration-300 rounded-full h-[46px]
-                ${isFocused ? "bg-white shadow-[0_4px_20px_rgba(255,87,34,0.15)] border border-[#ff5722]/30" : "bg-gray-100 border border-transparent hover:bg-gray-50"}
+                ${isFocused ? "bg-white shadow-[0_4px_20px_rgba(255,87,34,0.15)] border border-[#59634f]/30" : "bg-gray-100 border border-transparent hover:bg-gray-50"}
             `}
     >
-      <button type="submit" className="pl-3 pr-4 text-gray-400 hover:text-[#ff5722] transition-colors">
+      <button type="submit" className="pl-3 pr-4 text-gray-400 hover:text-[#59634f] transition-colors">
         <FiSearch className="size-5" />
       </button>
       <input
@@ -142,7 +142,7 @@ const SearchForm = () => {
       />
       {/* دکمه سرچ مخفی در موبایل برای ظاهر بهتر */}
       <div className="hidden md:block pl-1.5">
-        <button type="submit" className="bg-[#ff5722] text-white rounded-full w-8 h-8 flex items-center justify-center hover:scale-105 transition-transform">
+        <button type="submit" className="bg-[#59634f] text-white rounded-full w-8 h-8 flex items-center justify-center hover:scale-105 transition-transform">
           <GoChevronLeft />
         </button>
       </div>
@@ -185,11 +185,11 @@ const MobileSearchModal = () => {
                   autoFocus
                   type="text"
                   placeholder="جستجو در هزاران محصول..."
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl h-14 px-4 pr-12 text-sm outline-none focus:border-[#ff5722] focus:bg-white transition-colors"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl h-14 px-4 pr-12 text-sm outline-none focus:border-[#59634f] focus:bg-white transition-colors"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
-                <button type="submit" className="absolute right-3 text-[#ff5722] p-2 bg-orange-50 rounded-lg">
+                <button type="submit" className="absolute right-3 text-[#59634f] p-2 bg-[#eeebe3] rounded-lg">
                   <FiSearch className="size-5" />
                 </button>
               </form>
@@ -246,7 +246,7 @@ export default function Navbar({
 
   const mobileBubbleClass = `lg:hidden flex items-center pointer-events-auto border transition-all duration-500 ease-in-out ${
     isSticky 
-      ? 'bg-white/60 backdrop-blur-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] border-white/60' 
+      ? 'bg-[#f7f5ef]/90 backdrop-blur-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border-white/60' 
       : 'bg-transparent border-transparent shadow-none'
   }`;
 
@@ -254,18 +254,18 @@ export default function Navbar({
     <header className="w-full font-sans dir-rtl select-none z-50">
 
       {/* --- TOP BAR (Desktop Only) --- */}
-      <div className="hidden lg:block bg-gray-50 border-b border-gray-100/50 text-gray-500 py-2">
+      <div className="hidden lg:block bg-[#eeebe3] border-b border-[#ded9ce] text-gray-500 py-2">
         <div className="container mx-auto px-4 flex justify-between items-center text-xs font-medium">
           <div className="flex items-center gap-6">
             {topLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="hover:text-[#ff5722] transition-colors relative group">
+              <Link key={link.href} href={link.href} className="hover:text-[#59634f] transition-colors relative group">
                 {link.label}
-                <span className="absolute -bottom-1 right-0 w-0 h-[1px] bg-[#ff5722] transition-all group-hover:w-full"></span>
+                <span className="absolute -bottom-1 right-0 w-0 h-[1px] bg-[#59634f] transition-all group-hover:w-full"></span>
               </Link>
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <a href="tel:03535247891" className="flex items-center gap-1.5 hover:text-[#ff5722] transition-colors">
+            <a href="tel:03535247891" className="flex items-center gap-1.5 hover:text-[#59634f] transition-colors">
               <FiPhoneCall />
               <span className="dir-ltr font-mono font-bold tracking-wider">035-35247891</span>
             </a>
@@ -326,7 +326,7 @@ export default function Navbar({
                     <Link href="/profile/cart" className="flex items-center justify-center w-9 h-9 rounded-full bg-white/60 text-gray-700 relative hover:bg-white/80 active:scale-90 active:bg-white/40 transition-all duration-300">
                       <FiShoppingCart className="size-5" />
                       {cart && cart.total_items > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm border-2 border-white">
+                        <span className="absolute -top-1 -right-1 bg-[#a65e43] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm border-2 border-white">
                           {cart.total_items}
                         </span>
                       )}
@@ -353,10 +353,10 @@ export default function Navbar({
                     {cart && cart.items && cart.items.length > 0 ? (
                       <CartDrawer cart={cart} />
                     ) : (
-                      <Link href="/profile/cart" className="w-11 h-11 flex items-center justify-center rounded-xl bg-orange-50 text-[#ff5722] border border-orange-100 hover:shadow-lg hover:shadow-orange-100 hover:-translate-y-0.5 transition-all duration-300 relative">
+                      <Link href="/profile/cart" className="w-11 h-11 flex items-center justify-center rounded-xl bg-[#eeebe3] text-[#59634f] border border-[#ded9ce] hover:shadow-lg hover:shadow-[#59634f]/10 hover:-translate-y-0.5 transition-all duration-300 relative">
                         <FiShoppingCart className="size-5" />
                         {cart && cart.total_items > 0 && (
-                          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-lg">
+                          <span className="absolute -top-2 -right-2 bg-[#a65e43] text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-lg">
                             {cart.total_items}
                           </span>
                         )}
@@ -375,7 +375,7 @@ export default function Navbar({
       <div
         className={`hidden lg:block transition-all duration-500 ease-in-out ${isSticky
             ? "fixed top-4 left-6 right-6 z-40 bg-white/60 backdrop-blur-md shadow-lg py-2 animate-slideDown rounded-2xl border border-white/10"
-            : "relative bg-white py-0 border-t border-gray-100"
+            : "relative bg-white py-0 border-t border-[#ded9ce]"
           }`}
         style={{ transitionProperty: 'top, left, right, transform, background-color, box-shadow' }}
       >
@@ -401,13 +401,13 @@ export default function Navbar({
                     key={item.href}
                     href={item.href}
                     className={`
-                                relative py-4 transition-colors hover:text-[#ff5722]
+                                relative py-4 transition-colors hover:text-[#59634f]
                                 ${item.special ? "text-red-500 font-bold" : ""}
                              `}
                   >
                     {item.name}
                     {/* هاور افکت زیرخط */}
-                    <span className="absolute bottom-2 right-0 w-0 h-[2px] bg-[#ff5722] rounded-full transition-all duration-300 group-hover:w-full"></span>
+                    <span className="absolute bottom-2 right-0 w-0 h-[2px] bg-[#59634f] rounded-full transition-all duration-300 group-hover:w-full"></span>
                   </Link>
                 ))}
               </nav>
@@ -421,7 +421,7 @@ export default function Navbar({
                 ) : (
                   <button
                     onClick={onAuthOpen}
-                    className="flex items-center gap-2 border border-gray-200 text-gray-700 bg-white px-4 py-2.5 rounded-xl hover:border-[#ff5722] hover:text-[#ff5722] hover:bg-orange-50 transition-all duration-300 text-sm font-bold shadow-sm"
+                    className="flex items-center gap-2 border border-gray-200 text-gray-700 bg-white px-4 py-2.5 rounded-xl hover:border-[#59634f] hover:text-[#59634f] hover:bg-[#eeebe3] transition-all duration-300 text-sm font-bold shadow-sm"
                   >
                     <FiUser className="size-5" />
                     <span>ورود | ثبت نام</span>
@@ -431,12 +431,12 @@ export default function Navbar({
               {/* اگر اسکرول شده باشد، لوگوی کوچک و سبد خرید نمایش داده شود */}
               <div className={`flex items-center gap-4 transition-all duration-300 ${isSticky ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-5 pointer-events-none"}`}>
                 <div className="h-6 w-[1px] bg-gray-300"></div>
-                <Link href="/profile/cart" className="flex items-center gap-2 text-gray-700 hover:text-[#ff5722] transition-colors relative">
+                <Link href="/profile/cart" className="flex items-center gap-2 text-gray-700 hover:text-[#59634f] transition-colors relative">
                   <span className="text-sm font-bold">سبد خرید</span>
                   <div className="relative">
                     <FiShoppingCart className="size-5" />
                     {cart && cart.total_items > 0 && (
-                      <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full border-2 border-white text-white text-[10px] font-bold flex items-center justify-center shadow-lg">
+                      <span className="absolute -top-2 -right-2 w-4 h-4 bg-[#a65e43] rounded-full border-2 border-white text-white text-[10px] font-bold flex items-center justify-center shadow-lg">
                         {cart.total_items}
                       </span>
                     )}
@@ -489,7 +489,7 @@ function MobileCategoryList({
       {stack.length > 0 && (
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 p-4 bg-orange-50 text-[#ff5722] font-bold text-sm"
+          className="flex items-center gap-2 p-4 bg-[#eeebe3] text-[#59634f] font-bold text-sm"
         >
           <GoChevronRight className="text-xl" />
           بازگشت
@@ -514,7 +514,7 @@ function MobileCategoryList({
               <Link
                 href={`/products/?category_id=${cat.id}`}
                 onClick={onClose}
-                className="flex items-center justify-between w-full px-4 py-3 text-gray-600 hover:text-[#ff5722] hover:bg-orange-50 rounded-xl text-sm transition-all"
+                className="flex items-center justify-between w-full px-4 py-3 text-gray-600 hover:text-[#59634f] hover:bg-[#eeebe3] rounded-xl text-sm transition-all"
               >
                 {cat.name}
               </Link>
@@ -591,7 +591,7 @@ export function MobileDrawer({ categories, links, user, onAuthOpen }: { categori
                     <div className="text-xs font-bold text-gray-400 mb-3 px-2">دسترسی سریع</div>
                     <div className="grid grid-cols-2 gap-2">
                       {links.map((link: any) => (
-                        <Link key={link.href} href={link.href} onClick={onClose} className="bg-gray-50 text-gray-600 text-xs font-bold py-3 rounded-xl text-center hover:bg-orange-50 hover:text-[#ff5722] transition-colors">
+                        <Link key={link.href} href={link.href} onClick={onClose} className="bg-gray-50 text-gray-600 text-xs font-bold py-3 rounded-xl text-center hover:bg-[#eeebe3] hover:text-[#59634f] transition-colors">
                           {link.label}
                         </Link>
                       ))}
@@ -600,21 +600,21 @@ export function MobileDrawer({ categories, links, user, onAuthOpen }: { categori
                 )}
               </DrawerBody>
 
-              <DrawerFooter className="border-t border-gray-100 bg-white p-5">
+              <DrawerFooter className="border-t border-[#ded9ce] bg-white p-5">
                 {!user?.identity ? (
-                  <button onClick={() => { onAuthOpen(); onClose(); }} className="w-full flex items-center justify-center gap-3 bg-[#ff5722] text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-orange-200 hover:shadow-orange-300 transition-all active:scale-95">
+                  <button onClick={() => { onAuthOpen(); onClose(); }} className="w-full flex items-center justify-center gap-3 bg-[#59634f] text-white py-3.5 rounded-2xl font-bold shadow-md shadow-[#59634f]/10 hover:shadow-orange-300 transition-all active:scale-95">
                     <CiLogin className="size-6 stroke-[1px]" />
                     ورود یا ثبت نام
                   </button>
                 ) : (
                   <div className="w-full bg-gray-50 p-4 rounded-2xl flex items-center justify-between border border-gray-100">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-[#ff5722] text-white flex items-center justify-center font-bold text-lg shadow-md">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-[#59634f] text-white flex items-center justify-center font-bold text-lg shadow-md">
                         {user.identity.first_name?.[0] || <FiUser />}
                       </div>
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-gray-800">{user.identity.first_name || "کاربر عزیز"}</span>
-                        <Link href="/profile" onClick={onClose} className="text-[11px] text-[#ff5722] font-medium hover:underline">
+                        <Link href="/profile" onClick={onClose} className="text-[11px] text-[#59634f] font-medium hover:underline">
                           مشاهده حساب کاربری
                         </Link>
                       </div>
