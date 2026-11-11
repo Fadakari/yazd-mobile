@@ -1,6 +1,178 @@
+/* ========================================================
+   صنایع غذایی خوش‌طعم کماشدون - سیستم تایپوگرافی اصیل فارسی
+   فونت رسمی و اصلی: پیدا (Peyda FaNum با اعداد فارسی اختصاصی)
+   ======================================================== */
+
+/* 1. فونت پیدا (Peyda) - فونت اصلی سایت */
+@font-face {
+  font-family: "Peyda";
+  src: url("/fonts/PeydaWebFaNum-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Peyda";
+  src: url("/fonts/PeydaWebFaNum-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Peyda";
+  src: url("/fonts/PeydaWebFaNum-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Peyda";
+  src: url("/fonts/PeydaWebFaNum-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* نام مستعار برای سازگاری */
+@font-face {
+  font-family: "peyda";
+  src: url("/fonts/PeydaWebFaNum-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "peyda";
+  src: url("/fonts/PeydaWebFaNum-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "peyda";
+  src: url("/fonts/PeydaWebFaNum-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "peyda";
+  src: url("/fonts/PeydaWebFaNum-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2. فونت دانا (Dana) */
+@font-face {
+  font-family: "dana";
+  src: url("/fonts/dana-fanum-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src: url("/fonts/dana-fanum-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 3. فونت پلاک (Pelak) */
+@font-face {
+  font-family: "pelak";
+  src: url("/fonts/Pelak-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "pelak";
+  src: url("/fonts/Pelak-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pelak";
+  src: url("/fonts/Pelak-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pelak";
+  src: url("/fonts/Pelak-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 4. فونت نورا (Noora) */
+@font-face {
+  font-family: "noora";
+  src: url("/fonts/Noora Fa-En 03 Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noora";
+  src: url("/fonts/Noora Fa-En 03 Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 5. فونت ایران‌یکان (IranYekan) */
+@font-face {
+  font-family: "iranyekan";
+  src: url("/fonts/iranyekanweblight.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "iranyekan";
+  src: url("/fonts/iranyekanwebregular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "iranyekan";
+  src: url("/fonts/iranyekanwebbold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "iranyekan";
+  src: url("/fonts/iranyekanwebbold.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 6. فونت شبنم (Shabnam) */
 @font-face {
   font-family: "Shabnam";
-  src: url("/fonts/PeydaWebFaNum-Medium.woff2") format("woff2");
+  src: url("/fonts/Shabnam.woff2") format("woff2"), url("/fonts/PeydaWebFaNum-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -8,22 +180,8 @@
 
 @font-face {
   font-family: "Shabnam";
-  src: url("/fonts/PeydaWebFaNum-Bold.woff2") format("woff2");
+  src: url("/fonts/Shabnam-Bold.woff2") format("woff2"), url("/fonts/PeydaWebFaNum-Bold.woff2") format("woff2");
   font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Shabnam";
-  src: url("/fonts/PeydaWebFaNum-Black.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Shabnam";
-  src: url("/fonts/PeydaWebFaNum-Regular.woff2") format("woff2");
-  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }

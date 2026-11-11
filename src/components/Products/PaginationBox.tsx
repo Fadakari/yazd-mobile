@@ -1,7 +1,6 @@
 "use client";
 
 import type { PaginationItemRenderProps } from "@heroui/react";
-
 import React from "react";
 import { cn, Pagination, PaginationItemType } from "@heroui/react";
 import { GoChevronLeft } from "react-icons/go";
@@ -23,6 +22,7 @@ export default function PaginationBox({
 }) {
   const router = useRouter();
   const itemsPerPage = 24;
+
   const renderItem = ({
     ref,
     key,
@@ -39,11 +39,12 @@ export default function PaginationBox({
           key={key}
           className={cn(
             className,
-            "hover:bg-default-200/50 rounded-xs min-w-8 w-8 h-8"
+            "hover:bg-zinc-100 text-zinc-700 rounded-xl min-w-8 w-8 h-8 flex items-center justify-center transition-colors"
           )}
           onClick={onNext}
+          aria-label="صفحه بعد"
         >
-          <GoChevronLeft />
+          <GoChevronLeft className="size-4" />
         </button>
       );
     }
@@ -54,11 +55,12 @@ export default function PaginationBox({
           key={key}
           className={cn(
             className,
-            "hover:bg-default-200/50 rounded-xs min-w-8 w-8 h-8"
+            "hover:bg-zinc-100 text-zinc-700 rounded-xl min-w-8 w-8 h-8 flex items-center justify-center transition-colors"
           )}
           onClick={onPrevious}
+          aria-label="صفحه قبل"
         >
-          <GoChevronLeft className="rotate-180" />
+          <GoChevronLeft className="size-4 rotate-180" />
         </button>
       );
     }
@@ -67,7 +69,7 @@ export default function PaginationBox({
       return (
         <button
           key={key}
-          className={`${className} !text-sm hover:bg-default-200/50 `}
+          className={`${className} !text-sm text-zinc-400`}
         >
           ...
         </button>
@@ -79,9 +81,10 @@ export default function PaginationBox({
         key={key}
         ref={ref}
         className={cn(
-          `${className} hover:bg-default-200/50 text-sm rounded-xs`,
-          isActive &&
-            "text-white bg-primary hover:bg-primary/80 active:bg-primary-500 font-bold rounded-xs"
+          `${className} text-xs font-semibold rounded-xl min-w-8 h-8 transition-all`,
+          isActive
+            ? "text-white bg-gradient-to-r from-red-600 to-amber-600 font-bold shadow-md shadow-red-500/20"
+            : "text-zinc-700 hover:bg-zinc-100 hover:text-red-600"
         )}
         onClick={() => setPage(value)}
       >
@@ -89,23 +92,27 @@ export default function PaginationBox({
       </button>
     );
   };
+
+  const calculatedTotal = total ? total : count ? Math.ceil(count / itemsPerPage) : 1;
+  if (calculatedTotal <= 1) return null;
+
   return (
     <Pagination
       dir="rtl"
       disableCursorAnimation
       showControls
-      className="gap-2 font-dana"
+      className="gap-2"
       initialPage={page || 1}
       radius="full"
       renderItem={renderItem}
-      total={total ? total : count ? Math.ceil(count / itemsPerPage) : 1}
-      boundaries={3}
+      total={calculatedTotal}
+      boundaries={2}
       variant="light"
-      onChange={(page) => {
+      onChange={(newPage) => {
         const params = total
           ? ""
           : new URLSearchParams(searchParams).toString();
-        router.push(`/${href ? href : "products"}/page/${page}?${params}`);
+        router.push(`/${href ? href : "products"}/page/${newPage}?${params}`);
       }}
     />
   );

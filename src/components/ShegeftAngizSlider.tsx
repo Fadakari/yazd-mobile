@@ -7,8 +7,8 @@ import "swiper/css/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { Sparkles, Flame, ArrowLeft, ShoppingBasket, ChevronLeft, ChevronRight } from "lucide-react";
 
-// --- اینترفیس‌ها ---
 export interface ProductCardType {
   id: number;
   title: string;
@@ -21,25 +21,26 @@ export interface ProductCardType {
 
 interface Props {
   products: ProductCardType[];
-  heroImageSrc?: string; // عکس جعبه یا لوگوی شگفت انگیز
 }
 
-// --- کامپوننت تایمر شمارش معکوس ---
 const CountdownTimer = () => {
-  // زمان پایان فرضی (مثلاً ۲۴ ساعت بعد) - در پروژه واقعی می‌توانید از پراپ بگیرید
   const calculateTimeLeft = () => {
-    // اینجا یک زمان ثابت برای دمو گذاشتم. در صورت نیاز از دیتابیس بگیرید
-    const difference = +new Date("2025-12-30T23:59:59") - +new Date();
-    let timeLeft = { hours: 0, minutes: 0, seconds: 0 };
+    const now = new Date();
+    const endOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23,
+      59,
+      59
+    );
+    const difference = Math.max(0, endOfDay.getTime() - now.getTime());
 
-    if (difference > 0) {
-      timeLeft = {
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    }
-    return timeLeft;
+    return {
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
+    };
   };
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
@@ -53,83 +54,70 @@ const CountdownTimer = () => {
 
   const Box = ({ val, txt }: { val: number; txt: string }) => (
     <div className="flex flex-col items-center justify-center">
-      <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-md flex items-center justify-center text-gray-800 font-bold text-lg md:text-xl shadow-sm">
+      <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/95 rounded-xl flex items-center justify-center text-gray-900 font-black text-base sm:text-lg shadow-md">
         {val.toLocaleString("fa-IR")}
       </div>
-      <span className="text-white text-[10px] md:text-xs mt-1 font-light">{txt}</span>
+      <span className="text-white text-[10px] mt-1 font-bold">{txt}</span>
     </div>
   );
 
   return (
-    <div className="flex items-start gap-2 md:gap-3 dir-ltr" dir="ltr">
+    <div className="flex items-center gap-2 dir-ltr" dir="ltr">
       <Box val={timeLeft.seconds} txt="ثانیه" />
-      <span className="text-white text-xl font-bold mt-1">:</span>
+      <span className="text-white text-lg font-black">:</span>
       <Box val={timeLeft.minutes} txt="دقیقه" />
-      <span className="text-white text-xl font-bold mt-1">:</span>
+      <span className="text-white text-lg font-black">:</span>
       <Box val={timeLeft.hours} txt="ساعت" />
     </div>
   );
 };
 
-// --- کامپوننت اصلی اسلایدر ---
-export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/specialoffers.png" }: Props) {
+export default function ShegeftAngizSlider({ products }: Props) {
   const [prevEl, setPrevEl] = useState<HTMLElement | null>(null);
   const [nextEl, setNextEl] = useState<HTMLElement | null>(null);
 
-  return (
-    <section className="container mx-auto px-4 my-8">
-      {/* کانتینر اصلی */}
-      <div className="relative w-full rounded-2xl overflow-hidden min-h-[100px] md:min-h-[180px]">
-        
-        {/* 1. پس‌زمینه (Background Images) */}
-        {/* بک‌گراند رنگ اصلی برای جلوگیری از پرش تصویر */}
-        <div className="absolute inset-0 bg-orange-500 -z-20"></div>
-        
-        {/* تصویر دسکتاپ */}
-        <img 
-          src="/assets/subtract1.png" 
-          alt="Background Desktop" 
-          className="absolute inset-0 w-full h-[75%] object-fill hidden md:block -z-0 top-[15%]"
-        />
-        {/* تصویر موبایل */}
-        <img 
-          src="/assets/subtract2.png" 
-          alt="Background Mobile" 
-          className="absolute inset-0 w-full h-full object-fill block md:hidden -z-0"
-        />
+  if (!products || products.length === 0) return null;
 
-        {/* 2. محتوا */}
-        <div className="flex flex-col md:flex-row h-full py-6 md:py-0">
+  return (
+    <section className="container mx-auto px-4 my-10">
+      <div className="relative w-full rounded-3xl overflow-hidden bg-gradient-to-l from-red-700 via-red-600 to-amber-600 shadow-2xl shadow-red-900/20 p-4 md:p-6">
+        
+        {/* Subtle Decorative Elements */}
+        <div className="absolute top-0 right-1/3 w-64 h-64 bg-amber-400/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-0 left-10 w-64 h-64 bg-red-900/30 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
           
-          {/* --- بخش سایدبار (راست): تایمر و عنوان --- */}
-          <div className="w-full md:w-[220px] lg:w-[260px] shrink-0 flex flex-col justify-center items-center gap-6 md:gap-8 p-4 z-10">
-            
-            {/* تصویر عنوان پیشنهاد شگفت انگیز */}
-            <div className="relative w-[450px] h-[80px] md:w-[180px] md:h-[80px] mt-[2.5rem]">
-               {/* اگر تصویر "پیشنهاد شگفت انگیز" دارید اینجا بگذارید، وگرنه از heroImageSrc استفاده میکنیم */}
-               <Image
-                src={heroImageSrc}
-                alt="پیشنهاد شگفت‌انگیز"
-                fill
-                className="object-contain"
-              />
+          {/* Right Column: Title & Timer */}
+          <div className="w-full md:w-[240px] lg:w-[260px] shrink-0 flex flex-col items-center text-center p-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-amber-200 text-xs font-bold mb-3 border border-zinc-300">
+              <Flame className="size-4 text-amber-300 animate-bounce" />
+              <span>تخفیف‌های داغ روز</span>
             </div>
 
-            {/* تایمر */}
+            <h3 className="text-2xl sm:text-3xl font-black text-white mb-2 leading-tight">
+              پیشنهادات شگفت‌انگیز
+            </h3>
+            <p className="text-xs text-amber-100/90 font-medium mb-5">
+              فرصت محدود برای خرید محصولات منتخب خوش طعم
+            </p>
+
             <CountdownTimer />
 
-            {/* لینک مشاهده همه (اختیاری اگر در طرح هست) */}
-            <Link href="/products/offers" className="text-white text-sm flex items-center gap-1 hover:gap-2 transition-all mt-2">
-                مشاهده همه
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="rotate-180"><path d="m9 18 6-6-6-6"/></svg>
+            <Link
+              href="/products/offers"
+              className="mt-6 inline-flex items-center gap-2 text-white bg-white/15 hover:bg-white/25 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-zinc-300 shadow-sm"
+            >
+              <span>مشاهده همه تخفیف‌ها</span>
+              <ArrowLeft className="size-4" />
             </Link>
           </div>
 
-          {/* --- بخش اسلایدر (چپ) --- */}
-          <div className="flex-1 w-full min-w-0 px-2 md:pl-6 md:pr-0 self-center">
+          {/* Left Column: Swiper */}
+          <div className="flex-1 w-full min-w-0 relative">
             <Swiper
               modules={[Navigation, Autoplay]}
-              spaceBetween={12}
+              spaceBetween={14}
               slidesPerView={1.3}
               autoplay={{ delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}
               navigation={{ prevEl, nextEl }}
@@ -137,81 +125,84 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
                 480: { slidesPerView: 2.1 },
                 768: { slidesPerView: 3.1 },
                 1024: { slidesPerView: 4.1 },
-                1280: { slidesPerView: 5 },
+                1280: { slidesPerView: 4.5 },
               }}
-              className="!py-4 !px-1"
+              className="!py-2"
             >
               {products.map((product) => (
-                <SwiperSlide key={product.id} className="h-[130%]">
-                  <div className="bg-white rounded-xl overflow-hidden h-full flex flex-col justify-between group/card relative shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.04] hover:border hover:border-orange-500 transition-all hover:z-10">
+                <SwiperSlide key={product.id}>
+                  <div className="bg-white rounded-2xl p-3 flex flex-col justify-between h-[310px] group/card border border-amber-100 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5">
                     
-                    <Link href={product.link} className="block p-3 flex-1">
-                        {/* تصویر محصول */}
-                        <div className="relative w-full aspect-square mb-3">
-                          <Image
-                            src={product.image}
-                            alt={product.title}
-                            fill
-                            className="object-contain transition-transform duration-300 group-hover/card:scale-105"
-                          />
-                        </div>
+                    <Link href={product.link} className="block flex-1">
+                      {/* Image */}
+                      <div className="relative w-full aspect-square rounded-xl bg-gradient-to-b from-amber-50/40 to-white p-2 mb-2">
+                        <Image
+                          src={product.image}
+                          alt={product.title}
+                          fill
+                          className="object-contain p-2 transition-transform duration-300 group-hover/card:scale-108"
+                        />
+                        {product.discountPercentage ? (
+                          <span className="absolute top-1.5 right-1.5 bg-gradient-to-r from-red-600 to-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md">
+                            {product.discountPercentage.toLocaleString("fa-IR")}٪
+                          </span>
+                        ) : null}
+                      </div>
 
-                        {/* عنوان محصول */}
-                        <h3 className="text-[13px] text-gray-700 font-medium line-clamp-2 leading-6 mb-2">
-                          {product.title}
-                        </h3>
-
-                        {/* بخش قیمت */}
-                        <div className="flex flex-col gap-1 mt-auto">
-                          {product.oldPrice && product.discountPercentage ? (
-                            <div className="flex items-center justify-between">
-                               <div className="bg-[#ef394e] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
-                                {product.discountPercentage}٪
-                               </div>
-                               <del className="text-gray-400 text-xs">
-                                {product.oldPrice.toLocaleString("fa-IR")}
-                               </del>
-                            </div>
-                          ) : (
-                            <div className="h-[22px]"></div> // فضای خالی
-                          )}
-                          
-                          <div className="flex items-center justify-end gap-1 text-gray-800">
-                            <span className="font-bold text-lg">
-                              {product.price.toLocaleString("fa-IR")}
-                            </span>
-                            <span className="text-[10px] font-light">تومان</span>
-                          </div>
-                        </div>
+                      {/* Title */}
+                      <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 line-clamp-2 leading-snug group-hover/card:text-red-600 transition-colors">
+                        {product.title}
+                      </h4>
                     </Link>
 
-                    {/* دکمه افزودن به سبد خرید (پایین کارت) */}
-                    <button 
-                        className="w-full border-t border-gray-100 py-3 flex items-center justify-center gap-2 text-[#ef394e] text-sm font-bold hover:bg-gray-50 transition-colors cursor-pointer"
-                        // اینجا می‌توانید onClick را برای افزودن به سبد خرید هندل کنید
-                        // onClick={() => addToCart(product)} 
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                        افزودن به سبد خرید
-                    </button>
-                    
+                    {/* Price and Cart */}
+                    <div className="mt-auto pt-2 border-t border-gray-100 flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        {product.oldPrice ? (
+                          <span className="text-[11px] text-gray-400 line-through">
+                            {product.oldPrice.toLocaleString("fa-IR")}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
+                        <div className="flex items-center gap-1">
+                          <span className="font-black text-base text-red-600">
+                            {product.price.toLocaleString("fa-IR")}
+                          </span>
+                          <span className="text-[10px] text-gray-500">تومان</span>
+                        </div>
+                      </div>
+
+                      <Link
+                        href={product.link}
+                        className="w-full py-2 rounded-xl bg-gradient-to-l from-red-600 to-amber-500 hover:from-red-700 hover:to-amber-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                      >
+                        <ShoppingBasket className="size-3.5" />
+                        <span>سفارش سریع</span>
+                      </Link>
+                    </div>
+
                   </div>
                 </SwiperSlide>
               ))}
             </Swiper>
-            
-            {/* دکمه‌های نویگیشن */}
+
+            {/* Desktop Navigation Arrows */}
             <div className="hidden lg:block">
-                <button ref={(node) => setPrevEl(node)} className="absolute top-1/2 left-2 z-20 w-10 h-10 bg-white/90 shadow text-gray-500 rounded-full flex items-center justify-center -translate-y-1/2 hover:text-[#ef394e] disabled:opacity-50 cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                </button>
-                <button ref={(node) => setNextEl(node)} className="absolute top-1/2 right-[270px] z-20 w-10 h-10 bg-white/90 shadow text-gray-500 rounded-full flex items-center justify-center -translate-y-1/2 hover:text-[#ef394e] disabled:opacity-50 cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                </button>
+              <button
+                ref={(node) => setPrevEl(node)}
+                aria-label="قبلی"
+                className="absolute top-1/2 -left-3 z-20 w-10 h-10 bg-white shadow-xl text-gray-800 rounded-full flex items-center justify-center -translate-y-1/2 hover:text-red-600 hover:scale-110 active:scale-95 transition-all cursor-pointer"
+              >
+                <ChevronLeft className="size-5" />
+              </button>
+              <button
+                ref={(node) => setNextEl(node)}
+                aria-label="بعدی"
+                className="absolute top-1/2 -right-3 z-20 w-10 h-10 bg-white shadow-xl text-gray-800 rounded-full flex items-center justify-center -translate-y-1/2 hover:text-red-600 hover:scale-110 active:scale-95 transition-all cursor-pointer"
+              >
+                <ChevronRight className="size-5" />
+              </button>
             </div>
 
           </div>

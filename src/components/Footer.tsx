@@ -1,202 +1,133 @@
 import Link from "next/link";
 import React from "react";
-import {
-  FaPhoneAlt,
-  FaWhatsapp,
-  FaInstagram,
-  FaMapMarkerAlt,
-  FaLink,
-  FaEnvelope,
-} from "react-icons/fa";
+import Image from "next/image";
+import { FiPhoneCall, FiMapPin, FiMail } from "react-icons/fi";
 import { GetSiteSettings, GetActiveLogo } from "@/services/siteActions";
 
-// تعریف تایپ‌ها طبق خروجی جنگو
-interface FooterItem {
-  id: number;
-  label: string;
-  value: string;
-  item_type: "text" | "phone" | "email" | "url" | "address";
-  is_active: boolean;
-}
-
-interface FooterSectionData {
-  id: number;
-  title: string;
-  items: FooterItem[];
-  is_active: boolean;
-}
-
-// تابع دریافت دیتا از سرور
-async function getFooterData(): Promise<FooterSectionData[]> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL}`;
-  
-  try {
-    const res = await fetch(`${apiUrl}/home/footer/`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': process.env.NEXT_PUBLIC_API_KEY || '',
-      },
-      // چون فوتر دیر به دیر عوض میشه، کش ۱ ساعته (۳۶۰۰ ثانیه) براش عالی و بهینه‌ست
-      // اگر می‌خوای الان برای تست سریع‌تر آپدیت بشه، موقتاً بذارش روی 60
-      next: { revalidate: 30 } 
-    });
-    
-    if (!res.ok) {
-      console.error("Footer fetch failed with status:", res.status);
-      return [];
-    }
-    
-    return await res.json();
-  } catch (error) {
-    console.error("Footer API Error:", error);
-    return [];
-  }
-}
-
-const getIconByType = (type: string, value: string) => {
-  if (type === "phone") return <FaPhoneAlt />;
-  if (type === "address") return <FaMapMarkerAlt />;
-  if (type === "email") return <FaEnvelope />;
-  if (type === "url") {
-    if (value.includes("instagram")) return <FaInstagram />;
-    if (value.includes("whatsapp")) return <FaWhatsapp />;
-    return <FaLink />;
-  }
-  return <div className="bg-orange-400 w-5 h-5 rounded-full" />;
-};
-
-const FooterSection = ({ title, items }: { title: string; items: FooterItem[] }) => {
-  return (
-    <div className={`p-4 rounded-lg w-full`}>
-  <h4 className="text-2xl font-semibold text-[#424242] text-right flex items-center gap-2 mb-4">
-    <div className="bg-orange-400 w-3 h-6 rounded-full" />
-    {title}
-  </h4>
-
-  {items.length > 0 && (
-    <ul className="flex flex-row flex-wrap items-center justify-between w-full">
-      {items.map((item) => (
-        <li
-          key={item.id}
-          className="flex items-center justify-center border-b border-zinc-100 px-4 py-3 hover:bg-gray-50 transition rounded-md flex-1 min-w-[100%] md:min-w-[45%] lg:min-w-[25%]"
-        >
-          <Link
-            href={
-              item.item_type === "phone" ? `tel:${item.value}` :
-                item.item_type === "email" ? `mailto:${item.value}` :
-                  item.item_type === "url" ? item.value : "#"
-            }
-            className={`text-zinc-700 flex items-center justify-between w-full ${item.item_type === 'address' ? 'cursor-default pointer-events-none' : ''}`}
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-orange-500 text-3xl">
-                {getIconByType(item.item_type, item.value)}
-              </span>
-              <div className="flex flex-col items-start">
-                <span className="font-semibold">{item.label}</span>
-                {item.value && item.label !== item.value && (
-                  <span className="text-sm text-zinc-600 mt-1">{item.value}</span>
-                )}
-              </div>
-            </div>
-          </Link>
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-  );
-};
-const getFullImageUrl = (path: string | null | undefined) => {
-  if (!path) return "/logo.png";
-  if (path.startsWith("http")) return path;
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL}`;
-  return `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
-};
-// این کامپوننت به صورت Server Component اجرا می‌شود
-async function Footer() {
-  const footerSections = await getFooterData();
+export default async function Footer() {
   const settings = await GetSiteSettings();
   const logo = await GetActiveLogo();
-  const siteTitle = settings?.site_title || "سایت ما";
-  const mapUrl = settings?.map_url; // لینک نقشه
   const enamadLink = settings?.enamad_link;
   const enamadImage = settings?.enamad_image;
   const gatewayImage = settings?.payment_gateway_image;
 
+  const finalLogo =
+    !logo ||
+    logo.trim() === "" ||
+    logo === "لوگو دریافت نشد" ||
+    logo.includes("2026-08-09_11.45.47.jpg")
+      ? "/logo.png"
+      : logo.startsWith("http")
+      ? logo
+      : `${process.env.NEXT_PUBLIC_API_URL || "https://api.khooshtam.com"}${logo.startsWith("/") ? logo : `/${logo}`}`;
+
   return (
-    <footer className="w-full bg-white shadow-2xl block font-pelak font-medium py-10 shrink-0">
-      <div className="flex flex-col md:flex-row justify-center">
-        <div className="flex flex-wrap flex-col sm:flex-row justify-center md:justify-between max-w-screen-xl w-full">
-          {footerSections.length > 0 ? (
-            footerSections.map((section) => (
-              <FooterSection
-                key={section.id}
-                title={section.title}
-                items={section.items}
-              />
-            ))
-          ) : (
-            <div className="text-center w-full text-gray-400">در حال بارگذاری فوتر...</div>
-          )}
+    <footer className="w-full bg-white text-zinc-600 border-t-2 border-zinc-200 shadow-[0_-4px_25px_rgba(0,0,0,0.03)]" dir="rtl">
+      
+      {/* Upper Footer: Brand & Quick Navigation */}
+      <div className="container mx-auto px-6 sm:px-10 lg:px-16 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          
+          {/* Brand Info (5 cols) */}
+          <div className="md:col-span-5 flex flex-col items-start">
+            <Link href="/" className="flex flex-col items-start gap-3 mb-5 group" aria-label="صفحه اصلی">
+              <div className="relative h-18 sm:h-22 md:h-26 w-auto max-w-[320px] sm:max-w-[400px] flex items-center justify-start group-hover:scale-105 transition-transform duration-300">
+                <img
+                  src={finalLogo}
+                  alt="صنایع غذایی خوش طعم کماشدون"
+                  className="h-16 sm:h-20 md:h-24 w-auto max-w-full object-contain filter drop-shadow-md"
+                />
+              </div>
+              <span className="text-sm text-red-600 font-extrabold">
+                چاشنی اصیل لحظه‌های ناب زندگی • تاسیس ۱۳۷۷
+              </span>
+            </Link>
+
+            <p className="text-sm text-zinc-700 leading-relaxed max-w-md text-justify mb-4">
+              تولیدکننده تخصصی انواع پودر سوخاری پولکی، پودر کتلت سویا، ادویه‌جات و سبزیجات خشک؛
+              همراه شما در خلق طعم‌های ترد و لذیذ با نشان استاندارد ملی و سیب سلامت.
+            </p>
+
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-zinc-600 font-bold">تماس با ما:</span>
+              <a href="tel:03535247891" className="text-zinc-950 hover:text-red-600 font-black">
+                ۰۳۵-۳۵۲۴۷۸۹۱
+              </a>
+            </div>
+          </div>
+
+          {/* Links 1: Collections (3 cols) */}
+          <div className="md:col-span-3">
+            <h4 className="text-sm font-black text-zinc-950 mb-3 pb-1 border-b-2 border-red-500 inline-block">
+              دسته‌بندی‌های اصلی
+            </h4>
+            <ul className="flex flex-col gap-3 text-sm font-bold text-zinc-700">
+              <li>
+                <Link href="/products?category_id=2" className="hover:text-red-600 transition-colors">
+                  پودر سوخاری پولکی و کتلت
+                </Link>
+              </li>
+              <li>
+                <Link href="/products?category_id=4" className="hover:text-red-600 transition-colors">
+                  محصولات آردی و نشاسته
+                </Link>
+              </li>
+              <li>
+                <Link href="/products?category_id=1" className="hover:text-red-600 transition-colors">
+                  سبزیجات خشک معطر
+                </Link>
+              </li>
+              <li>
+                <Link href="/about-us" className="hover:text-red-600 transition-colors">
+                  درباره ما
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact-info" className="hover:text-red-600 transition-colors">
+                  تماس با ما
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Links 2: Trust (4 cols) */}
+          <div className="md:col-span-4">
+            <h4 className="text-sm font-black text-zinc-950 mb-3 pb-1 border-b-2 border-red-500 inline-block">
+              مجوزها و نمادهای اعتماد
+            </h4>
+            <p className="text-sm text-zinc-700 leading-relaxed mb-4">
+              ارسال سریع و مطمئن سفارشات به سراسر کشور با بسته‌بندی بهداشتی و استاندارد.
+            </p>
+
+            {/* Badges */}
+            <div className="flex items-center gap-3">
+              {enamadLink && enamadImage && (
+                <a href={enamadLink} target="_blank" rel="noopener noreferrer" className="p-2 bg-zinc-50 rounded-xl border border-zinc-200 hover:border-red-400 shadow-sm transition-colors">
+                  <img src={enamadImage} alt="اینماد" className="h-9 object-contain" />
+                </a>
+              )}
+              {gatewayImage && (
+                <div className="p-2 bg-zinc-50 rounded-xl border border-zinc-200 shadow-sm">
+                  <img src={gatewayImage} alt="پرداخت امن" className="h-9 object-contain" />
+                </div>
+              )}
+              <div className="px-3 py-1.5 rounded-xl bg-red-50 border border-red-200 text-xs font-bold text-red-700 shadow-sm">
+                سیب سلامت و استاندارد
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div className="flex flex-col justify-between text-center pt-10 mx-auto mt-5 px-10 items-center gap-4">
-
-        <div className="flex items-center justify-center gap-6 flex-wrap">
-          {/* ۱. نمایش داینامیک اینماد (فقط وقتی لینک و عکس وجود داشته باشه) */}
-          {logo && (
-            <img 
-              src={getFullImageUrl(logo)} 
-              alt={`لوگوی ${siteTitle}`} 
-              className="h-20 object-contain drop-shadow-sm" 
-            />
-          )}
-          {enamadLink && enamadImage && (
-            <a referrerPolicy="origin" target="_blank" href={enamadLink}>
-              <img 
-                referrerPolicy="origin" 
-                src={enamadImage} 
-                alt="Enamad" 
-                style={{ cursor: 'pointer' }} 
-                className="max-h-20"
-              />
-            </a>
-          )}
-
-          {/* ۲. نمایش داینامیک لوگوی درگاه بانکی */}
-          {gatewayImage && (
-            <img src={gatewayImage} alt="درگاه بانکی" className="h-20" />
-          )}
-
-          {/* ۳. نمایش داینامیک دکمه نقشه */}
-          {mapUrl && (
-            <a 
-              referrerPolicy="origin" 
-              target="_blank" 
-              href={mapUrl}
-              title="نشانی ما در گوگل مپ"
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-all"
-            >
-              <FaMapMarkerAlt className="text-orange-600 text-xl" />
-              <span className="text-sm font-bold text-orange-600">آدرس در نقشه</span>
-            </a>
-          )}
+      {/* Bottom Minimalist Strip */}
+      <div className="border-t border-zinc-200 bg-zinc-50 py-4">
+        <div className="container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500 font-medium">
+          <p>© کلیه حقوق مادی و معنوی متعلق به صنایع غذایی خوش‌طعم کماشدون است.</p>
+          <p className="text-red-700 font-bold">دارای پروانه بهداشتی و نشان استاندارد ملی</p>
         </div>
-
-        <p className="text-md text-gray-600 max-md:mb-12 lg:px-10" style={{ fontFamily: "pelak, tahoma, serif" }}>
-          تمام حقوق این سایت نزد 
-          <span className="text-primary font-extrabold mx-2">{siteTitle}</span>
-           محفوظ است.
-        </p>
-        <p className="text-md text-gray-600 max-md:mb-12 lg:px-10" style={{ fontFamily: "pelak, tahoma, serif" }}>
-          طراحی شده توسط گروه  
-          <span className="text-primary font-extrabold mx-2">Pattern</span>
-        </p>
       </div>
+
     </footer>
   );
 }
-
-export default Footer;

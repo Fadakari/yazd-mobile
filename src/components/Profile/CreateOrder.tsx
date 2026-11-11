@@ -200,8 +200,8 @@ const CreateOrder = () => {
         className="grid md:grid-cols-5 gap-6 p-5 rounded max-w-7xl mx-auto"
       >
         <div className="col-span-3 flex flex-col gap-4">
-          <div className="p-4 bg-zinc-100 rounded-md shadow-sm">
-            <p className="text-gray-700 text-sm">
+          <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl">
+            <p className="text-zinc-700 text-xs sm:text-sm">
               سفارش شما با استفاده از اطلاعات پروفایل ثبت می‌شود. لطفا قبل از*
               ثبت نهایی، اطلاعات را بررسی کنید.
             </p>
@@ -227,7 +227,7 @@ const CreateOrder = () => {
             </div>
           )}
 
-          <div className="p-4 bg-white rounded-md shadow-sm mt-2 space-y-2">
+          <div className="p-5 bg-white border border-zinc-200/90 rounded-3xl shadow-xl mt-2 space-y-3">
             <label className="block text-sm font-medium">
               کد تخفیف (اختیاری)
             </label>
@@ -239,7 +239,7 @@ const CreateOrder = () => {
                 className={`flex-1 border rounded px-3 py-2 transition ${
                   errors.discount_code
                     ? "border-red-500 animate-shake"
-                    : "border-gray-300"
+                    : "border-zinc-200 bg-zinc-50 text-zinc-900 placeholder:text-slate-500"
                 }`}
                 readOnly={discountApplied}
                 placeholder="اگر کد تخفیف دارید وارد کنید"
@@ -251,7 +251,7 @@ const CreateOrder = () => {
                 className={`transition disabled:pointer-events-none rounded-md ${
                   discountApplied
                     ? "bg-danger/10 border border-danger/40 text-danger/80 px-4 py-2"
-                    : "btn-primary !px-4 py-2"
+                    : "px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-bold text-xs"
                 }`}
                 disabled={checkingDiscount}
               >
@@ -270,7 +270,7 @@ const CreateOrder = () => {
           </div>
         </div>
 
-        <div className="col-span-3 md:col-span-2 shadow-lg rounded-lg p-6 space-y-5 border border-zinc-200 sticky top-5 bg-white">
+        <div className="col-span-3 md:col-span-2 shadow-2xl rounded-3xl p-6 space-y-5 border border-zinc-200/90 sticky top-24 bg-white backdrop-blur-xl text-zinc-900">
           <h2 className="font-semibold text-lg border-b pb-2 mb-2">
             اطلاعات گیرنده
           </h2>
@@ -316,7 +316,7 @@ const CreateOrder = () => {
             ))}
             <Link
               href={`/profile/personal-info?redirect=${encodeURIComponent("/profile/checkout")}`}
-              className="bg-primary text-white px-4 py-2 hover:underline !rounded-full mt-2"
+              className="inline-block mt-3 px-4 py-1.5 rounded-full bg-white/10 hover:bg-amber-400/20 text-amber-300 text-xs font-bold border border-amber-400/30 transition-all"
             >
               ویرایش اطلاعات
             </Link>
@@ -429,7 +429,7 @@ const CreateOrder = () => {
 
           <button
             type="submit"
-            className="btn btn-primary w-full mt-4 font-semibold py-3"
+            className="w-full mt-5 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-extrabold text-sm shadow-xl shadow-red-500/25 transition-all active:scale-98 disabled:opacity-50"
             disabled={isSubmitting || Object.keys(errors).length > 0}
           >
             {isSubmitting ? "در حال ثبت..." : "ثبت نهایی"}
@@ -442,18 +442,22 @@ const CreateOrder = () => {
         onOpenChange={setIsWarningOpen}
         placement="center"
         hideCloseButton
+        classNames={{
+          base: "bg-white border border-zinc-200 text-zinc-950 rounded-3xl p-3 shadow-2xl max-w-md",
+          backdrop: "bg-black/50 backdrop-blur-sm",
+        }}
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1 text-orange-600">
+              <ModalHeader className="flex flex-col gap-1 text-amber-400 border-b border-zinc-200 pb-2">
                 <div className="flex items-center gap-2">
                   <div className="text-2xl">📌</div>
                   <span>توجه مهم قبل از پرداخت</span>
                 </div>
               </ModalHeader>
               <ModalBody>
-                <div className="text-gray-700 leading-relaxed text-justify space-y-4">
+                <div className="text-zinc-700 leading-relaxed text-justify space-y-3 pt-2 text-xs sm:text-sm">
                   <p>کاربر عزیز و گرامی،</p>
                   <p>
                     به دلیل نوسان قیمت‌ها، لطفاً پیش از انجام پرداخت نهایی، حتماً با پشتیبانی هماهنگ کنید و پس از دریافت مبلغ قطعی و تأیید، پرداخت را انجام دهید.
@@ -467,13 +471,13 @@ const CreateOrder = () => {
                 </div>
                 <div className="flex gap-3 mt-6 mb-2">
                   <button
-                    className="btn btn-primary flex-1 py-2 font-semibold"
+                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 text-white font-bold text-xs"
                     onClick={createOrder}
                   >
                     متوجه شدم و پرداخت
                   </button>
                   <button
-                    className="btn bg-gray-200 text-gray-800 flex-1 py-2 font-semibold"
+                    className="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-zinc-700 font-bold text-xs border border-zinc-200"
                     onClick={onClose}
                   >
                     انصراف

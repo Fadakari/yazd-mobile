@@ -141,11 +141,11 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
 
         <div
           id="article-content"
-          className="flex flex-col md:flex-row gap-8 p-5 font-pelak container max-w-full md:max-w-[1140px] customSm:max-w-[566px]"
+          className="flex flex-col md:flex-row gap-8 py-8 container mx-auto px-4 sm:px-6 lg:px-8 text-zinc-950"
         >
-          <div className="w-full md:w-3/4 bg-white py-6 px-5 md:py-10 md:px-20 shadow-xl rounded-2xl">
-            <h1 className="text-2xl md:text-3xl font-semibold">{data.title}</h1>
-            <div className="flex flex-wrap items-center gap-4 text-primary-700 mt-3">
+          <div className="w-full md:w-3/4 bg-white border border-zinc-200/90 py-6 px-5 md:py-10 md:px-12 shadow-2xl rounded-3xl backdrop-blur-xl">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-zinc-950 leading-tight">{data.title}</h1>
+            <div className="flex flex-wrap items-center gap-4 text-amber-400 mt-3 text-xs sm:text-sm">
               <p className="flex items-center gap-1 text-sm md:text-base">
                 <HiMiniCalendarDateRange className="size-5" />
                 <span>{formatPersianDate(data.jalali_created)}</span>
@@ -160,7 +160,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
                 </Link>
               )}
             </div>
-            <p className="text-zinc-600 mb-3 mt-5 text-sm md:text-base">
+            <p className="text-zinc-700 mb-5 mt-5 text-sm md:text-base leading-relaxed border-r-2 border-amber-400 pr-3.5 bg-white/5 py-3 rounded-l-xl">
               {data.introduction}
             </p>
             <Image
@@ -170,16 +170,16 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
               height={445}
               priority
               unoptimized={true}
-              className="object-cover w-full h-auto aspect-video rounded-lg"
+              className="object-cover w-full h-auto aspect-video rounded-2xl border border-zinc-200 shadow-xl my-4"
             />
-            <div className="article-content !text-black mt-7">
+            <div className="article-content prose max-w-full text-zinc-700 leading-relaxed mt-7 space-y-4">
               {parse(sanitizeHtml(data.content || "<p></p>"))}
             </div>
           </div>
 
-          <aside className="w-full md:w-1/4 flex flex-col gap-5 sticky top-20">
-            <div className="bg-white shadow md:shadow-2xl p-4 rounded-xl">
-              <h2 className="text-2xl md:text-3xl py-4 font-pelak text-[#d55931] font-bold">
+          <aside className="w-full md:w-1/4 flex flex-col gap-6 sticky top-24">
+            <div className="bg-white border border-zinc-200/90 shadow-2xl p-5 rounded-3xl backdrop-blur-xl">
+              <h2 className="text-base sm:text-lg font-bold pb-3 mb-3 text-amber-400 border-b border-zinc-200 flex items-center gap-2">
                 دسته بندی ها
               </h2>
               <ul className="font-pelak text-sm md:text-base">
@@ -194,8 +194,8 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
               </ul>
             </div>
             {filteredLatestPosts && filteredLatestPosts.length > 0 && (
-              <div className="bg-white shadow md:shadow-2xl p-4 rounded-xl">
-                <h2 className="text-2xl md:text-3xl py-4 mb-3 font-pelak text-[#d55931] font-bold">
+              <div className="bg-white border border-zinc-200/90 shadow-2xl p-5 rounded-3xl backdrop-blur-xl">
+                <h2 className="text-base sm:text-lg font-bold pb-3 mb-3 text-amber-400 border-b border-zinc-200">
                   آخرین مطالب
                 </h2>
                 <ul className="font-pelak space-y-5 text-sm md:text-base">
@@ -214,11 +214,11 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
                       <div className="flex flex-col justify-start items-start">
                         <Link
                           href={`/article/${post.slug}`}
-                          className="font-semibold text-xl md:text-base"
+                          className="font-bold text-zinc-900 hover:text-amber-400 transition-colors line-clamp-2 leading-snug text-sm"
                         >
                           {post.title}
                         </Link>
-                        <p className="p-1 bg-primary-100 text-primary-600 font-semibold text-xs md:text-sm mt-1">
+                        <p className="text-[11px] text-amber-400/80 mt-1">
                           {formatPersianDate(post.jalali_created)}
                         </p>
                       </div>

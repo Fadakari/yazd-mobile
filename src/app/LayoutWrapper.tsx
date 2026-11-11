@@ -7,8 +7,8 @@ import React from "react";
 
 interface Props {
   children: React.ReactNode;
-  navbar: React.ReactNode; // نوبار را از بیرون می‌گیریم
-  footer: React.ReactNode; // فوتر را از بیرون می‌گیریم
+  navbar: React.ReactNode;
+  footer: React.ReactNode;
 }
 
 export default function LayoutWrapper({ children, navbar, footer }: Props) {
@@ -22,11 +22,17 @@ export default function LayoutWrapper({ children, navbar, footer }: Props) {
     return <>{children}</>;
   }
 
+  const isHomePage = pathname === "/";
+
   return (
     <>
       <FixedSocialLinks />
       {navbar}
-      <main className="flex-1 w-full mx-auto pb-20 px-2 lg:px-0 h-full">
+      <main
+        className={`flex-1 w-full mx-auto pb-20 px-2 lg:px-0 h-full ${
+          isHomePage ? "pt-0" : "pt-28 lg:pt-32"
+        }`}
+      >
         {children}
       </main>
       <MobileBottomNav />

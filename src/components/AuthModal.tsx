@@ -94,7 +94,7 @@ export default function AuthModal() {
         loginForm.reset();
         onClose();
         const redirectTo =
-          searchParams.get("redirectTo") || "/profile/dashboard";
+          searchParams.get("redirectTo") || "/profile";
 
         router.push(redirectTo);
       }
@@ -120,7 +120,7 @@ export default function AuthModal() {
         loginForm.reset();
         onClose();
         const redirectTo =
-          searchParams.get("redirectTo") || "/profile/dashboard";
+          searchParams.get("redirectTo") || "/profile";
         router.push(redirectTo);
       }
     } catch {
@@ -131,6 +131,7 @@ export default function AuthModal() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (step === "OTP") {
       const interval = setInterval(() => {
@@ -151,7 +152,6 @@ export default function AuthModal() {
     phoneForm.reset();
     otpForm.reset();
     loginForm.reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
   return (
@@ -159,10 +159,13 @@ export default function AuthModal() {
       hideCloseButton
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      placement="bottom-center"
-      className="max-w-full h-[100dvh] m-0 sm:max-w-lg sm:h-auto"
+      placement="center"
+      classNames={{
+        base: "bg-white border border-zinc-200 text-zinc-950 rounded-3xl p-2 sm:p-4 shadow-2xl max-w-md w-full mx-4",
+        backdrop: "bg-black/50 backdrop-blur-md",
+      }}
     >
-      <ModalContent className="text-base rounded-sm overflow-auto h-full">
+      <ModalContent className="text-right" dir="rtl">
         {(onClose) => (
           <form
             onSubmit={
@@ -172,54 +175,61 @@ export default function AuthModal() {
                   ? otpForm.handleSubmit(onOtpSubmit)
                   : loginForm.handleSubmit(onPasswordLogin)
             }
-            className="w-full h-full flex flex-col justify-between"
+            className="w-full flex flex-col justify-between"
           >
-            <ModalHeader className="flex items-center justify-between">
-              <p>ورود | ثبت‌نام</p>
-              <button type="button" onClick={onClose}>
+            <ModalHeader className="flex items-center justify-between border-b border-zinc-200 pb-3 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                <p className="text-base font-extrabold text-zinc-950">ورود / عضویت در خوش‌طعم</p>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-1 rounded-lg text-zinc-500 hover:text-white hover:bg-white/5 transition-colors"
+              >
                 <HiXMark className="size-6" />
               </button>
             </ModalHeader>
 
-            <ModalBody className="">
+            <ModalBody className="space-y-4 px-2 sm:px-4">
               {step === "PHONE" && (
                 <>
-                  <label htmlFor="phone_number">شماره تلفن</label>
+                  <label htmlFor="phone_number" className="text-xs font-bold text-zinc-700">
+                    شماره موبایل خود را وارد فرمایید
+                  </label>
                   <input
                     {...phoneForm.register("phone_number")}
                     maxLength={11}
-                    className="input text-base sm:text-base"
+                    className="w-full bg-zinc-50 border border-zinc-200 focus:border-amber-400 rounded-xl h-12 px-4 text-sm text-zinc-900 placeholder:text-slate-500 outline-none transition-colors text-right"
                     id="phone_number"
                     inputMode="numeric"
-                    placeholder="مثلاً 09123456789"
+                    placeholder="مثلاً ۰۹۱۲۳۴۵۶۷۸۹"
                   />
                   {phoneForm.formState.errors.phone_number && (
-                    <p className="text-xs text-red-500">
+                    <p className="text-xs text-red-400">
                       {phoneForm.formState.errors.phone_number.message}
                     </p>
                   )}
-
-                  <div className="flex items-center w-full">
-                    <div className="scale-75 -mr-12 -my-5"></div>
-                  </div>
                 </>
               )}
 
               {step === "PASSWORD" && (
                 <>
-                  <label htmlFor="password">رمز عبور</label>
+                  <label htmlFor="password" className="text-xs font-bold text-zinc-700">
+                    رمز عبور حساب کاربری
+                  </label>
                   <div className="relative w-full">
                     <input
                       {...loginForm.register("password")}
                       type={showPassword ? "text" : "password"}
-                      className="input pr-12 text-base sm:text-base"
+                      className="w-full bg-zinc-50 border border-zinc-200 focus:border-amber-400 rounded-xl h-12 px-4 pl-11 text-sm text-zinc-900 placeholder:text-slate-500 outline-none transition-colors text-right"
                       placeholder="رمز عبور خود را وارد کنید"
                       id="password"
                     />
 
                     <button
                       type="button"
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-xl text-zinc-500"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-xl text-zinc-500 hover:text-white"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
@@ -229,27 +239,21 @@ export default function AuthModal() {
                       )}
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    className="text-xs text-cyan-500 underline underline-offset-2 mt-2 text-right"
-                    onClick={() => {
-                      setPhoneNumber("");
-                      setStep("PHONE");
-                    }}
-                  >
-                    تغییر شماره
-                  </button>
-
-                  {!loading && hasPasswordError && (
-                    <p className="text-xs text-red-500">
-                      {loginForm.formState.errors.password?.message}
-                    </p>
-                  )}
-
-                  <div className="flex items-start">
+                  <div className="flex items-center justify-between text-xs pt-1">
                     <button
                       type="button"
-                      className="text-xs spoiler-link text-cyan-500 hover:text-cyan-400 relative"
+                      className="text-amber-400 hover:underline"
+                      onClick={() => {
+                        setPhoneNumber("");
+                        setStep("PHONE");
+                      }}
+                    >
+                      تغییر شماره موبایل
+                    </button>
+
+                    <button
+                      type="button"
+                      className="text-zinc-500 hover:text-amber-400 transition-colors"
                       onClick={async () => {
                         try {
                           setLoading(true);
@@ -264,19 +268,25 @@ export default function AuthModal() {
                         }
                       }}
                     >
-                      ورود با کد تایید
+                      ورود با پیامک کد یکبار مصرف
                     </button>
                   </div>
+
+                  {!loading && hasPasswordError && (
+                    <p className="text-xs text-red-400">
+                      {loginForm.formState.errors.password?.message}
+                    </p>
+                  )}
                 </>
               )}
 
               {step === "OTP" && (
                 <>
-                  <div className="bg-green-100 border border-green-200 p-4 text-zinc-600 rounded-sm">
-                    کد تایید برای شماره {phoneNumber} ارسال شد
+                  <div className="bg-red-50 border border-red-200 p-3.5 text-red-700 text-xs rounded-xl flex items-center justify-between">
+                    <span>کد تایید به شماره {phoneNumber} پیامک شد</span>
                     <button
                       type="button"
-                      className="text-xs text-cyan-500 underline underline-offset-4 mt-2 mr-2"
+                      className="text-red-700 hover:underline font-bold"
                       onClick={() => {
                         setPhoneNumber("");
                         setStep("PHONE");
@@ -286,7 +296,9 @@ export default function AuthModal() {
                     </button>
                   </div>
 
-                  <label htmlFor="otp_code">کد تایید</label>
+                  <label htmlFor="otp_code" className="text-xs font-bold text-zinc-700">
+                    کد تایید ۶ رقمی
+                  </label>
                   <InputOtp
                     {...otpForm.register("code")}
                     errorMessage={otpForm.formState.errors?.code?.message}
@@ -297,57 +309,60 @@ export default function AuthModal() {
                     classNames={{
                       input: "w-full",
                       base: "w-full",
-                      wrapper: "w-full",
+                      wrapper: "w-full justify-center gap-2",
                       segmentWrapper: "w-full",
-                      segment: "input w-full !py-6 text-base",
-                      errorMessage: "text-right",
+                      segment: "w-11 h-12 bg-zinc-50 border-zinc-300 text-zinc-950 text-lg font-black rounded-xl focus:border-red-500",
+                      errorMessage: "text-right text-xs text-red-500",
                     }}
                   />
 
                   {isNewUser && (
-                    <>
-                      <label>کد معرف (اختیاری)</label>
+                    <div className="space-y-1">
+                      <label className="text-xs text-zinc-700">کد معرف (اختیاری)</label>
                       <input
                         {...otpForm.register("referral_code")}
                         maxLength={11}
-                        className="input"
+                        className="w-full bg-zinc-50 border border-zinc-200 focus:border-red-500 rounded-xl h-11 px-4 text-xs text-zinc-900 outline-none"
                       />
-                    </>
+                    </div>
+                  )}
+
+                  {step === "OTP" && (
+                    <div className="text-center pt-1">
+                      <button
+                        type="button"
+                        className="text-xs text-red-700 font-bold hover:underline disabled:opacity-50 disabled:no-underline"
+                        onClick={() => {
+                          sendOtp(phoneNumber);
+                          setCanResend(false);
+                          setResendTimer(120);
+                        }}
+                        disabled={!canResend}
+                      >
+                        {canResend
+                          ? "ارسال مجدد کد تایید"
+                          : `ارسال مجدد تا ${(Math.floor(resendTimer / 60)).toLocaleString("fa-IR")}:${String(
+                              resendTimer % 60
+                            ).padStart(2, "0")}`}
+                      </button>
+                    </div>
                   )}
                 </>
               )}
+
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-primary disabled:opacity-60 disabled:cursor-wait mb-5"
+                className="w-full py-3.5 mt-2 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-extrabold text-sm shadow-xl shadow-red-500/25 transition-all active:scale-98 disabled:opacity-60"
               >
                 {loading
-                  ? "لطفا صبر کنید..."
+                  ? "در حال پردازش..."
                   : step === "PHONE"
                     ? "ادامه"
                     : step === "OTP"
-                      ? "تایید"
-                      : "ورود"}
+                      ? "تایید و ورود"
+                      : "ورود به حساب"}
               </button>
-
-              {step === "OTP" && (
-                <button
-                  type="button"
-                  className="text-xs text-cyan-500 mt-2 pb-3"
-                  onClick={() => {
-                    sendOtp(phoneNumber);
-                    setCanResend(false);
-                    setResendTimer(120);
-                  }}
-                  disabled={!canResend}
-                >
-                  {canResend
-                    ? "ارسال مجدد کد"
-                    : `ارسال مجدد بعد از ${Math.floor(resendTimer / 60)}:${String(
-                        resendTimer % 60
-                      ).padStart(2, "0")}`}
-                </button>
-              )}
             </ModalBody>
           </form>
         )}

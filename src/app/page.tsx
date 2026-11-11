@@ -1,13 +1,10 @@
 import { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import MainHeroSlider, { SliderItem } from "@/components/MainHeroSlider";
-import AmazingOfferSlider, { OfferProduct } from "@/components/AmazingOfferSlider";
-import CategorySection, { CategoryItem } from "@/components/CategorySection";
-import ShegeftAngizSlider, { ProductCardType } from "@/components/ShegeftAngizSlider";
-import LatestBlogSection, { BlogPostItem } from "@/components/LatestBlogSection";
-import NewProductsSlider, { NewProductItem } from "@/components/NewProductsSlider";
-import { GetShopCategoriesTreeList } from "@/services/shopActions"; // <--- ایمپورت جدید
+import HeroEditorialChapter from "@/components/Editorial/HeroEditorialChapter";
+import LookGridSection from "@/components/Editorial/LookGridSection";
+import EditorialSplitSection from "@/components/Editorial/EditorialSplitSection";
+import PantryCuratedSection from "@/components/Editorial/PantryCuratedSection";
+import StudioCraftsmanshipSection from "@/components/Editorial/StudioCraftsmanshipSection";
+import ClosingEditorialSection from "@/components/Editorial/ClosingEditorialSection";
 
 export const revalidate = 30;
 
@@ -22,16 +19,20 @@ interface ApiProduct {
   is_available: boolean;
   is_featured: boolean;
 }
+
 interface ApiBanner {
   id: number;
   banner_image: string;
   alt: string;
   link: string;
 }
+
 interface ApiCategoryInternal {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
+  products?: ApiProduct[];
 }
+
 interface ApiSection {
   id: number;
   title: string;
@@ -43,20 +44,16 @@ interface ApiSection {
 }
 
 // --- توابع دریافت دیتا ---
-
 async function getHomeData(): Promise<ApiSection[]> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/home/sliders-index/`,
       {
-        next: {
-          revalidate: 30,
-        },
+        next: { revalidate: 30 },
       }
     );
 
     if (!res.ok) throw new Error("Failed to fetch home data");
-
     return res.json();
   } catch (error) {
     console.error("Home Data Error:", error);
@@ -64,315 +61,73 @@ async function getHomeData(): Promise<ApiSection[]> {
   }
 }
 
-// در فایل page.tsx
-async function getLatestArticles(): Promise<BlogPostItem[]> {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/`, { 
-        
-        next: {
-          revalidate: 30
-        }
-    });
-    
-    if (!res.ok) return [];
-    
-    const data = await res.json();
-    return data['data'].map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        excerpt: item.description || item.excerpt || "",
-        // تغییر مهم: اگر عکس نبود، رشته خالی بگذار (تا بعداً لوگو را جایگزین کنیم)
-        image: item.image || item.cover || item.thumbnail || "", 
-        date: item.created_at_shamsi || "جدید",
-        author: item.author_name || "ادمین",
-        slug: item.slug
-    }));
-  } catch (error) {
-    return [];
-  }
-}
-
-// --- داده‌های دامی برای بلاگ (در صورت قطعی API) ---
-const dummyBlogPosts: BlogPostItem[] = [
-  {
-    id: 1,
-    title: "راهنمای جامع خرید بهترین پاوربانک در سال 2025",
-    excerpt: "در این مقاله به بررسی مهم‌ترین ویژگی‌های یک پاوربانک خوب می‌پردازیم...",
-    image: "https://images.unsplash.com/photo-1609592424368-e66a8589c31c?q=80&w=600&auto=format&fit=crop",
-    date: "1403/10/05",
-    author: "محمد احمدی",
-    slug: "powerbank-guide-2025",
-    category: "راهنمای خرید",
-    readTime: "7 دقیقه"
-  },
-  // ... سایر پست‌های دامی که داشتید
-];
-
-// --- تابع کمکی برای نمایش فقط دسته‌بندی‌های اصلی (بدون زیرمجموعه‌ها) ---
-function flattenCategories(categories: any[], defaultIcon: string): CategoryItem[] {
-  return categories.map((cat) => ({
-    id: cat.id,
-    name: cat.name,
-    // اگر عکس نداشت، از defaultIcon (همان لوگوی سایت) استفاده کن
-    icon: cat.image || cat.icon || defaultIcon, 
-    link: `/products?category_id=${cat.id}`,
-  }));
-}
-
-// تابع جدید برای دریافت لوگوی سایت
-async function getActiveLogo(): Promise<string> {
-  try {
-    // آدرس API را مطابق ناوبار تنظیم کردم
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/active-logo/`, { 
-      next: { revalidate: 30 } // کش برای ۱ ساعت
-    });
-    
-    if (!res.ok) return "/logo.png"; // عکس پیش‌فرض در صورت خطا
-    
-    const data = await res.json();
-    const active = Array.isArray(data) ? data[0] : data;
-    return active?.image || "/logo.png";
-  } catch (error) {
-    return "/logo.png";
-  }
-}
-
 export default async function Home() {
-  // دریافت موازی دیتا (شامل لیست درختی دسته‌بندی‌ها)
-  const homeDataPromise = getHomeData();
-  const blogDataPromise = getLatestArticles();
-  const categoriesTreePromise = GetShopCategoriesTreeList(); // <--- فراخوانی سرویس دسته‌بندی
-  const logoPromise = getActiveLogo();
-  
-const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all([
-    homeDataPromise, 
-    blogDataPromise,
-    categoriesTreePromise,
-    logoPromise
-  ]);
+  const apiData = await getHomeData();
 
-  // --- کد جدید: مستقیم از fetchedBlogPosts استفاده می‌کنیم ---
-  const blogPosts = fetchedBlogPosts.map(post => ({
-    ...post,
-    // اگر پست عکس نداشت، لوگوی سایت را بگذار (جایگزین Placeholder)
-    image: post.image || siteLogo 
-  }));
-  // const blogPosts = fetchedBlogPosts.length > 0 ? fetchedBlogPosts : dummyBlogPosts;
+  // استخراج تمام بنرها از API (اسلایدر اصلی + بنرهای ایستا)
+  const allBanners: { id: number; image: string; link?: string; title?: string }[] = [];
 
-  const bannerSection = apiData.find((item) => item.item_type === "banner");
-  const productSection = apiData.find((item) => item.item_type === "product");
-  // نکته: دیگر نیازی به categorySection از apiData نداریم چون ناقص است
+  apiData.forEach((section) => {
+    if (section.banner_image && section.banner_image.length > 0) {
+      section.banner_image.forEach((b) => {
+        if (b.banner_image) {
+          allBanners.push({
+            id: b.id,
+            image: b.banner_image,
+            link: b.link || "/products",
+            title: b.alt,
+          });
+        }
+      });
+    }
+  });
 
-  // برای محصولات/محصولات درون دسته‌بندی‌ها، یک مپر عمومی می‌سازیم
-  const mapApiProductToNewProduct = (p: any): NewProductItem => {
-    let discountPrice = p.discount_price ?? p.price;
-    if (discountPrice == 0) {
-      discountPrice = p.price;
-    };
-    const originalPrice = p.price;
-    
-    // تخفیف زمانی وجود دارد که:
-    // 1. قیمت پس از تخفیف کمتر از قیمت اصلی باشد
-    // 2. قیمت پس از تخفیف 0 نباشد (یعنی یک قیمت واقعی است)
-    const hasDiscount = discountPrice > 0 && discountPrice < originalPrice;
-    
-    const discountPercent = hasDiscount
-      ? Math.round(((originalPrice - discountPrice) / originalPrice) * 100)
-      : 0;
+  // بنر اصلی در صورت خالی بودن دیتابیس
+  if (allBanners.length === 0) {
+    allBanners.push({
+      id: 999,
+      image: "/images/brand/hero-banner.webp",
+      link: "/products",
+      title: "صنایع غذایی خوش طعم کماشدون",
+    });
+  }
 
-    return {
-      id: p.id,
-      title: p.name,
-      price: discountPrice,
-      oldPrice: hasDiscount ? originalPrice : undefined,
-      discount: hasDiscount ? discountPercent : undefined,
-      image: p.cover_image || siteLogo,
-      isSpecial: p.is_featured,
-      slug: p.slug,
-    };
-  };
+  // تفکیک دسته‌ها
+  const flourSection = apiData.find((s) => s.title?.includes("آرد") || s.id === 5);
+  const soyaSection = apiData.find((s) => s.title?.includes("سویا") || s.id === 3);
+  const herbSection = apiData.find((s) => s.title?.includes("سبزی") || s.id === 2);
 
-  // محصولات کلی صفحه (اگر نیاز باشد در جاهای دیگر استفاده کنیم)
-  const allApiProducts: NewProductItem[] = [];
-
-  // 3. پیشنهادات عمودی — می‌توانیم از اولین بخش محصولات استفاده کنیم به عنوان پیش‌فرض
-  const firstProductSection = apiData.find((it) => it.item_type === "product");
-  const verticalOffers: OfferProduct[] = (firstProductSection?.products || [])
-    .slice(0, 6)
-    .map((p: any) => ({
-      id: p.id,
-      title: p.name,
-      image: p.cover_image || siteLogo,
-      price: (p.discount_price ?? p.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-      link: `/product/${p.slug}`,
-    }));
-
-
-  // اضافه کردن شرطِ پشتیبانی از ساختار results بک‌اند
-  const categoriesArray = Array.isArray(categoriesTree) 
-    ? categoriesTree 
-    : (categoriesTree?.data || categoriesTree?.results || []);
-    
-  const allCategories = flattenCategories(categoriesArray, siteLogo);
-
-  // 5. شگفت انگیز — از محصولات جدید استخراج می‌شود (در صورت موجود بودن)
-  const shegeftAngizData: ProductCardType[] = (firstProductSection?.products || []).map(mapApiProductToNewProduct).map(p => ({
-    id: p.id,
-    title: p.title,
-    price: p.price,
-    oldPrice: p.oldPrice,
-    discountPercentage: p.discount,
-    image: p.image,
-    link: `/product/${p.slug}`
-  }));
-
-  // آماده‌سازی بخش‌های برای رندر: ترتیب: بنر اول، دسته‌بندی دوم، بقیه (بدون محدودیت)
-  const bannerSectionToRender = apiData.find((item) => item.item_type === "banner") || null;
-  const staticBannerSections = apiData.filter((item) => item.item_type === "static_banner");
-  const nonBannerSections = apiData.filter((item) => item.item_type !== "banner" && item.item_type !== "static_banner");
+  const flourProducts: ApiProduct[] =
+    flourSection?.categories?.flatMap((c) => c.products || []) || [];
+  const soyaProducts: ApiProduct[] =
+    soyaSection?.categories?.flatMap((c) => c.products || []) || [];
+  const herbProducts: ApiProduct[] =
+    herbSection?.categories?.flatMap((c) => c.products || []) || [];
 
   return (
-    <main className="w-full bg-[#f9f9f9] min-h-screen pb-10">
-
-      {/* 1. بنر (اول، بدون عنوان پایینی) */}
-      <section className="container mx-auto px-4 py-6">
-        {bannerSectionToRender ? (
-          <div>
-            <div className="grid grid-cols-12 gap-4 lg:h-[350px]">
-              <div className="col-span-12 lg:col-span-9 h-[300px] md:h-[420px] lg:h-full">
-                {(() => {
-                  const slides: SliderItem[] = (bannerSectionToRender.banner_image || []).map((b: any) => ({
-                    id: b.id,
-                    image: b.banner_image || siteLogo,
-                    title: "",
-                    subtitle: "",
-                    description: "",
-                    link: b.link || "#",
-                  }));
-                  return slides.length > 0 ? (
-                    <MainHeroSlider slides={slides} />
-                  ) : (
-                    <div className="w-full h-64 bg-gray-200 rounded-2xl flex items-center justify-center text-gray-400">بنری یافت نشد</div>
-                  );
-                })()}
-              </div>
-              <div className="hidden lg:block lg:col-span-3 h-full overflow-hidden">
-                {verticalOffers.length > 0 && <AmazingOfferSlider offers={verticalOffers} />}
-              </div>
-            </div>
-          </div>
-        ) : null}
-      </section>
-
-      {/* 2. دسته‌بندی‌های ثابت سایت */}
-      <CategorySection categories={allCategories} />
-
-      {/* 3. اسلایدرها و بنرهای ایستا (یکی در میون) */}
-      <section className="container mx-auto px-4 py-6 space-y-8">
-        {(() => {
-          const sliders = nonBannerSections;
-          const banners: ApiBanner[] = []; // هر عکس بنر جداگانه
-          
-          // تمام عکس‌های تمام static_banner ها را جمع کن
-          staticBannerSections.forEach((section) => {
-            if (section.banner_image && section.banner_image.length > 0) {
-              banners.push(...section.banner_image);
-            }
-          });
-          
-          const combined = [];
-          
-          // ادغام اسلایدرها و بنرها یکی در میان
-          for (let i = 0; i < Math.max(sliders.length, banners.length); i++) {
-            if (i < sliders.length) {
-              combined.push({ type: 'slider', data: sliders[i] });
-            }
-            if (i < banners.length) {
-              combined.push({ type: 'banner', data: banners[i] });
-            }
-          }
-          
-          return combined.map((item, index) => {
-            if (item.type === 'slider') {
-              const section: ApiSection = item.data;
-              
-              // product -> horizontal product slider
-              if (section.item_type === "product") {
-                const products: NewProductItem[] = (section.products || []).map(mapApiProductToNewProduct);
-                allApiProducts.push(...products);
-
-                return (
-                  <div key={`slider-${section.id}`}>
-                    <NewProductsSlider
-                      title={section.title || "محصولات"}
-                      highlightTitle=""
-                      products={products}
-                      viewAllLink="/products"
-                      sectionId={section.id}
-                      sectionType="product"
-                    />
-                  </div>
-                );
-              }
-
-              // category -> اگر شامل categories است، از آنها اسلایدر محصولات بساز
-              if (section.item_type === "category") {
-                const catProductsRaw = (section.categories || []).flatMap((c: any) => c.products || []);
-                const products: NewProductItem[] = catProductsRaw.map(mapApiProductToNewProduct);
-                allApiProducts.push(...products);
-
-                // دریافت اولین دسته‌بندی برای category_id
-                const firstCategory = section.categories?.[0];
-                const categoryId = firstCategory?.id;
-
-                return (
-                  <div key={`slider-${section.id}`}>
-                    <NewProductsSlider
-                      title={section.title || "دسته‌بندی"}
-                      highlightTitle=""
-                      products={products}
-                      viewAllLink="/products"
-                      categoryId={categoryId}
-                      sort="newest"
-                      sectionId={section.id}
-                      sectionType="category"
-                    />
-                  </div>
-                );
-              }
-            }
-            
-            if (item.type === 'banner') {
-              const banner: ApiBanner = item.data;
-              return (
-                <div key={`banner-${banner.id}`}>
-                  <Link 
-                    href={banner.link || "#"}
-                    className="block relative w-full h-[200px] md:h-[300px] rounded-[20px] overflow-hidden group"
-                  >
-                    <Image
-                      src={banner.banner_image}
-                      alt={banner.alt || "بنر"}
-                      fill
-                      className="object-contain transition-transform duration-500 group-hover:scale-105"
-                      priority
-                    />
-                  </Link>
-                </div>
-              );
-            }
-            
-            return null;
-          });
-        })()}
-      </section>
+    <main className="w-full bg-[#f8fafc] text-[#09090b] min-h-screen selection:bg-[#dc2626] selection:text-white">
       
+      {/* فصل اول: استیج سینمایی هیرو (سازگار با هر اندازه بنر با افکت حل شدن در فضا) */}
+      <HeroEditorialChapter banners={allBanners} />
 
-      {/* شگفت‌انگیز */}
-      {shegeftAngizData.length > 0 && <ShegeftAngizSlider products={shegeftAngizData} />}
+      {/* فصل دوم: گالری لوک‌بوک محصولات (چیدمان نامتقارن و استگر ۲ ستونه با زوم نرم) */}
+      <LookGridSection products={soyaProducts} />
 
-      {/* بلاگ */}
-      <LatestBlogSection posts={blogPosts} />
+      {/* فصل سوم: اسپلیت اسکرین فرمول تردی و مانیفست سوخاری */}
+      <EditorialSplitSection />
+
+      {/* فصل چهارم: قفسه عطاری و آردهای تخصصی بوتیک */}
+      <PantryCuratedSection
+        flourProducts={flourProducts}
+        herbProducts={herbProducts}
+      />
+
+      {/* فصل پنجم: تالار اصالت، دانش تولید و استانداردها */}
+      <StudioCraftsmanshipSection />
+
+      {/* فصل ششم: پایان‌بندی سینمایی و دعوت به همکاری */}
+      <ClosingEditorialSection />
+
     </main>
   );
 }

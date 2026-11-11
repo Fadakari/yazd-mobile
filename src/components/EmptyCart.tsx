@@ -1,20 +1,26 @@
-import { ShoppingCart } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 export default function EmptyCart({ onClose }: any) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center size-full mb-2">
-      <ShoppingCart className="w-16 h-16 text-gray-400 mb-4" />
-      <h2 className="text-2xl font-semibold mb-2">سبد خرید شما خالی است</h2>
-      <p className="text-gray-500 mb-6">
-        محصولی به سبد خرید خود اضافه نکرده‌اید.
+    <div className="flex flex-col items-center justify-center py-16 px-4 text-center size-full" dir="rtl">
+      <div className="relative mb-5">
+        <div className="w-20 h-20 rounded-full bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400 shadow-xl shadow-amber-500/10">
+          <ShoppingBag className="w-10 h-10" />
+        </div>
+      </div>
+      <h2 className="text-lg sm:text-xl font-extrabold text-zinc-950 mb-2">
+        سبد خرید شما خالی است
+      </h2>
+      <p className="text-xs sm:text-sm text-zinc-500 mb-6 max-w-xs">
+        هنوز محصولی به سبد خریدتان اضافه نکرده‌اید. طعم‌های ترد و برگزیده ما را کشف کنید!
       </p>
       <Link
         href="/products"
         onClick={onClose}
-        className="btn-primary px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl transition"
+        className="px-6 py-2.5 bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-bold rounded-full text-xs sm:text-sm transition-all shadow-lg shadow-red-500/25 active:scale-95"
       >
-        رفتن به فروشگاه
+        مشاهده و سفارش محصولات
       </Link>
     </div>
   );

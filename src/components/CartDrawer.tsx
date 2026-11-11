@@ -1,3 +1,5 @@
+"use client";
+
 import { CartFormat, useCart } from "@/context/CartContextProvider";
 import {
   Drawer,
@@ -7,10 +9,8 @@ import {
   DrawerHeader,
   Spinner,
   useDisclosure,
-  Badge,
 } from "@heroui/react";
-import ProductButton from "./ProtectButton";
-import { FaBasketShopping } from "react-icons/fa6";
+import { FiShoppingCart } from "react-icons/fi";
 import { HiXMark } from "react-icons/hi2";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,137 +21,121 @@ export default function CartDrawer({ cart }: { cart: CartFormat }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { removeFromCart, incrementQuantity, decrementQuantity, loading } =
     useCart();
-  console.log(cart)
+
+  const totalItemsCount = cart.items?.reduce((sum, item) => sum + (item.quantity || 1), 0) || cart.items?.length || 0;
+
   return (
-    <div className="relative inline-block group mt-1">
-      <Badge
-        color="warning"
-        content={cart.items.length.toLocaleString("fa-IR")}
-        placement="bottom-right"
-        classNames={{ badge: "font-dana text-white bg-primary pt-1" }}
+    <div className="relative inline-block">
+      <button
+        onClick={onOpen}
+        aria-label="سبد خرید"
+        className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-400/40 bg-amber-400/10 hover:bg-amber-400/20 text-white text-xs transition-all backdrop-blur-md shadow-md shadow-amber-500/10"
       >
-        <ProductButton
-          aria-label="cart"
-          title="سبد خرید"
-          onClick={onOpen}
-          className="group-hover:bg-primary/50 group-active:bg-primary/50 p-2 rounded-lg"
-        >
-          <FaBasketShopping className="size-8 text-zinc-700" />
-        </ProductButton>
-      </Badge>
+        <FiShoppingCart className="size-3.5 text-amber-400" />
+        <span className="text-[11px] hidden sm:inline">سبد خرید</span>
+        <span className="bg-amber-400 text-slate-950 font-black text-[10px] px-1.5 py-0.2 rounded-full">
+          {totalItemsCount.toLocaleString("fa-IR")}
+        </span>
+      </button>
 
       <Drawer
         hideCloseButton
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        radius="none"
+        placement="left"
+        classNames={{
+          base: "bg-[#f8fafc] border-r border-zinc-200 text-zinc-950 max-w-[390px] w-full",
+          backdrop: "bg-black/50 backdrop-blur-sm",
+        }}
       >
-        <DrawerContent className="bg-zinc-100">
+        <DrawerContent>
           {(onClose) => (
-            <>
-              <DrawerHeader className="flex justify-between bg-primary-600 text-white px-6 py-3 border-b border-zinc-300">
-                <p className="text-2xl font-bold">سبد خرید</p>
-                <button onClick={onClose}>
-                  <HiXMark className="size-8" />
+            <div className="flex flex-col h-full" dir="rtl">
+              <DrawerHeader className="flex justify-between items-center bg-white text-zinc-950 px-5 py-4 border-b border-zinc-200">
+                <div className="flex items-center gap-2">
+                  <FiShoppingCart className="size-5 text-red-600" />
+                  <p className="text-base font-extrabold text-zinc-950">سبد خرید شما</p>
+                  <span className="text-xs text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200 font-bold">
+                    {totalItemsCount.toLocaleString("fa-IR")} کالا
+                  </span>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="p-1 rounded-lg text-zinc-400 hover:text-zinc-950 hover:bg-zinc-100 transition-colors"
+                >
+                  <HiXMark className="size-6" />
                 </button>
               </DrawerHeader>
 
-              <DrawerBody className="px-2 flex flex-col gap-4 overflow-auto relative">
-                {cart.items.length > 0 ? (
+              <DrawerBody className="p-4 flex flex-col gap-3 overflow-y-auto relative flex-1">
+                {cart.items && cart.items.length > 0 ? (
                   cart.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-start gap-3 p-2 rounded-lg"
+                      className="bg-white border border-zinc-200/90 rounded-2xl p-3 shadow-lg flex items-start gap-3 relative group"
                     >
-                      <div className="relative bg-white rounded-xl shadow-md">
+                      {/* Image Box */}
+                      <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-zinc-50 border border-zinc-200 shrink-0 flex items-center justify-center">
                         {item.product.cover_image ? (
                           <Image
                             src={item.product.cover_image}
                             alt={item.product.name}
-                            width={100}
-                            height={100}
-                            className="w-40 h-24 object-contain rounded-lg overflow-hidden"
+                            fill
+                            className="object-contain p-1"
                           />
                         ) : (
-                          <div className="w-full h-24 bg-zinc-200 rounded-md flex items-center justify-center">
-                            <CiImageOff className="size-14" />
-                          </div>
+                          <CiImageOff className="size-8 text-slate-500" />
                         )}
-                        <button
-                          onClick={() => removeFromCart(item.id)}
-                          className=" absolute -top-1 -right-2 bg-white border border-zinc-400 text-zinc-600 p-1 rounded-full"
-                        >
-                          <HiXMark className="size-4" />
-                        </button>
-                        <div className="flex items-center gap-2 font-pelak text-sm">
-                          <div className="flex items-center rounded-b-xl overflow-hidden bg-white">
+                      </div>
+
+                      {/* Info & Actions */}
+                      <div className="flex flex-col justify-between flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="font-bold text-xs sm:text-sm text-zinc-950 line-clamp-1">
+                            {item.product.name}
+                          </p>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="text-zinc-500 hover:text-red-400 p-1 transition-colors"
+                            aria-label="حذف"
+                          >
+                            <HiXMark className="size-4" />
+                          </button>
+                        </div>
+
+                        {/* Price */}
+                        <div className="mt-1 text-xs text-zinc-700">
+                          <span className="text-red-700 font-black">
+                            {item.unit_price.toLocaleString("fa-IR")}
+                          </span>
+                          <span className="text-zinc-500 text-[10px] mr-1">تومان</span>
+                        </div>
+
+                        {/* Quantity Counter */}
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-zinc-200">
+                          <div className="flex items-center bg-zinc-50 border border-zinc-200 rounded-lg overflow-hidden text-xs">
                             <button
                               onClick={() => incrementQuantity(item.id)}
-                              className="px-3 py-2 border-l border-zinc-300 
-                 transition-all duration-200 ease-in-out
-                 hover:bg-zinc-50 active:bg-zinc-100
-                 focus:outline-none focus:ring-1 focus:ring-zinc-300"
+                              className="px-2.5 py-1 text-zinc-700 hover:text-red-600 hover:bg-zinc-200 transition-colors"
                             >
                               +
                             </button>
-
-                            <span className="px-4">{item.quantity}</span>
-
+                            <span className="px-3 font-bold text-zinc-950 text-xs">
+                              {item.quantity.toLocaleString("fa-IR")}
+                            </span>
                             <button
                               onClick={() => decrementQuantity(item.id)}
-                              className="px-3 py-2 border-r border-zinc-300
-                 transition-all duration-200 ease-in-out
-                 hover:bg-zinc-50 active:bg-zinc-100
-                 focus:outline-none focus:ring-1 focus:ring-zinc-300"
+                              className="px-2.5 py-1 text-zinc-700 hover:text-red-600 hover:bg-zinc-200 transition-colors"
                             >
                               -
                             </button>
                           </div>
-                        </div>
-                      </div>
 
-                      <div className="flex flex-col w-full gap-2 pr-1">
-                        <div className="flex flex-col w-full gap-2 pr-1">
-                          <p className="font-semibold text-zinc-700 text-lg">
-                            {item.product.name}
-                          </p>
-                          <div className="flex gap-2 items-center">
-                            {item.color_variant && (
-                              <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 border border-zinc-200 shadow-2xs cursor-default">
-                                <div
-                                  className="w-3 h-3 rounded-full border border-zinc-300 shadow-inner"
-                                  style={{
-                                    backgroundColor: `#${item.color_variant.color_code}`,
-                                  }}
-                                ></div>
-                                <span className="text-sm text-zinc-800 font-medium">
-                                  {item.color_variant.color_name}
-                                </span>
-                              </div>
-                            )}
-
-                            {item.material_variant && (
-                              <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 border border-zinc-200 shadow-2xs cursor-default">
-                                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-zinc-400 to-zinc-500 border border-zinc-300 shadow-inner"></div>
-                                <span className="text-sm text-zinc-800 font-medium">
-                                  {item.material_variant.material_name}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                            <p>
-                              <span className="text-zinc-600 text-sm">
-                                قیمت واحد:
-                              </span>{" "}
-                              {item.unit_price.toLocaleString("fa-IR")} تومان
-                            </p>
-                            <p>
-                              <span className="text-zinc-600 text-sm">
-                                قیمت کل:
-                              </span>{" "}
-                              {item.total_price.toLocaleString("fa-IR")} تومان
-                            </p>
+                          <div className="text-xs text-zinc-500">
+                            <span>مجموع: </span>
+                            <span className="text-zinc-950 font-bold">
+                              {item.total_price.toLocaleString("fa-IR")}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -162,29 +146,32 @@ export default function CartDrawer({ cart }: { cart: CartFormat }) {
                 )}
 
                 {loading && (
-                  <div className="absolute top-0 left-0 w-full h-full bg-zinc-100/80 flex justify-center items-center">
-                    <Spinner size="lg" />
+                  <div className="absolute inset-0 bg-zinc-50 backdrop-blur-xs flex justify-center items-center z-20">
+                    <Spinner size="lg" color="warning" />
                   </div>
                 )}
               </DrawerBody>
 
-              {cart.items.length > 0 && (
-                <DrawerFooter className="flex flex-col gap-4 w-full px-4 pb-4">
-                  <div className="flex items-center justify-between text-xl font-semibold">
-                    <p className="text-zinc-600">جمع کل:</p>
-                    <p>{cart.total_price.toLocaleString("fa-IR")} تومان</p>
+              {cart.items && cart.items.length > 0 && (
+                <DrawerFooter className="flex flex-col gap-3 w-full p-4 bg-white border-t border-zinc-200">
+                  <div className="flex items-center justify-between text-sm font-bold w-full">
+                    <span className="text-zinc-500">مبلغ کل خرید:</span>
+                    <div className="text-base text-red-700 font-black">
+                      {cart.total_price.toLocaleString("fa-IR")}{" "}
+                      <span className="text-xs font-normal text-zinc-500">تومان</span>
+                    </div>
                   </div>
 
                   <Link
                     href="/profile/cart"
                     onClick={onClose}
-                    className="btn-primary w-full rounded-xl text-center font-semibold py-3"
+                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-extrabold text-xs sm:text-sm text-center shadow-lg shadow-red-500/25 active:scale-98 transition-all"
                   >
-                    مشاهده سبد خرید
+                    تکمیل خرید و پرداخت
                   </Link>
                 </DrawerFooter>
               )}
-            </>
+            </div>
           )}
         </DrawerContent>
       </Drawer>

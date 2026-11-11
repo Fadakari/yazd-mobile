@@ -28,7 +28,7 @@ export async function generateMetadata({
   searchParams,
 }: PageProps): Promise<Metadata> {
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title
+  const siteTitle = settings?.site_title || "خوش طعم کماشدون";
   const category = (await searchParams).category;
 
   let title = `مقالات ${siteTitle}`;
@@ -50,8 +50,8 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/articles${category ? `?category=${category}` : ""}`,
-      siteName: `${siteTitle}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/articles`,
+      siteName: siteTitle,
       locale: "fa_IR",
       type: "website",
     },
@@ -67,16 +67,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductsPage({ params, searchParams }: any) {
+export default async function Page({ searchParams, params }: PageProps) {
   const { page } = await params;
   const search = await searchParams;
-  const result = await getCashedBlogPosts(search, page);
+  const result = await getCashedBlogPosts(searchParams, page);
 
-  if (!result) {
-    return notFound();
-  }
-
-  if (!result.data || result.data.length === 0) {
+  if (!result || !result.data) {
     notFound();
   }
 
@@ -97,11 +93,13 @@ export default async function ProductsPage({ params, searchParams }: any) {
           __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
         }}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {posts.map((post) => (
-          <BlogCard key={post.id} item={post} />
-        ))}
-        <div className="mt-10">
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+          {posts.map((post) => (
+            <BlogCard key={post.id} item={post} />
+          ))}
+        </div>
+        <div className="flex justify-center">
           <PaginationBox
             href="articles"
             searchParams={search}

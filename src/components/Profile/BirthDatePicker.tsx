@@ -42,7 +42,7 @@ export default function BirthDatePicker({
       locale={persian_fa}
       format="YYYY/MM/DD"
       disabled={disabled}
-      inputClass="w-full rounded-xl px-2 py-3 placeholder:text-zinc-400 disabled:opacity-50 disabled:border-none border border-zinc-200 text-right"
+      inputClass="w-full rounded-xl px-3 py-2.5 placeholder:text-slate-500 bg-zinc-50 text-zinc-900 disabled:opacity-50 disabled:bg-[#f8fafc]/50 border border-zinc-200 focus:border-amber-400 outline-none text-right text-xs sm:text-sm"
       placeholder="تاریخ تولد را انتخاب کنید"
       calendarPosition="bottom-center"
       maxDate={new DateObject({ calendar: persian, locale: persian_fa })}

@@ -1,6 +1,69 @@
 * {
-  font-family: "Shabnam", system-ui, sans-serif;
+  box-sizing: border-box;
 }
-.swiper-pagination-bullet-active{
-    background-color: rgb(235, 113, 0) !important;
+
+html {
+  scroll-behavior: smooth;
+  background-color: #f8fafc;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #09090b;
+  overflow-x: hidden;
+  font-family: "Peyda", var(--font-peyda), var(--font-dana), var(--font-iranyekan), sans-serif;
+}
+
+.font-editorial {
+  font-family: "Peyda", var(--font-peyda), var(--font-dana), sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.gold-accent {
+  color: #b45309;
+}
+
+.crimson-accent {
+  color: #dc2626;
+}
+
+.gold-border {
+  border-color: rgba(217, 119, 6, 0.35);
+}
+
+.gold-border-solid {
+  border-color: #d97706;
+}
+
+.brand-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+}
+
+/* Subtle Warm Kitchen Vignette & Logo Inspired Glow for Light Mode */
+.editorial-vignette {
+  background: radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
+              radial-gradient(circle at 80% 80%, rgba(220, 38, 38, 0.06) 0%, transparent 50%),
+              linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, #f8fafc 100%);
+}
+
+.shadow-tactile {
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+}
+
+.shadow-tactile-hover:hover {
+  box-shadow: 0 20px 35px -8px rgba(220, 38, 38, 0.12), 0 10px 20px -5px rgba(217, 119, 6, 0.12);
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #dc2626 !important;
+  width: 28px !important;
+  border-radius: 9999px !important;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet {
+  background-color: rgba(15, 23, 42, 0.25) !important;
+  transition: all 0.3s ease;
 }

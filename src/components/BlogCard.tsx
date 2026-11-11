@@ -1,22 +1,23 @@
 "use client";
+
 import Article from "@/types/blog";
 import Image from "next/image";
 import Link from "next/link";
 import { CiImageOff } from "react-icons/ci";
 import { IoTimeOutline } from "react-icons/io5";
 import { TfiArrowTopLeft } from "react-icons/tfi";
-import { SiGoogleappsscript } from "react-icons/si";
-function BlogCard({ item }: { item: Article }) {
+import { BiCategory } from "react-icons/bi";
+
+export default function BlogCard({ item }: { item: Article }) {
   return (
     <article
       key={item.id}
-      className="bg-white  rounded-3xl border border-zinc-300 hover:-translate-y-3 transition-all ease-soft-spring duration-300 group/card w-full h-full flex flex-col overflow-hidden "
+      className="bg-white border border-zinc-200/90 hover:border-amber-400/50 rounded-3xl transition-all duration-300 group/card w-full h-full flex flex-col overflow-hidden shadow-xl"
     >
       <Link
         href={`/article/${item.slug}`}
-        key={item.id}
         title={item.title}
-        className="size-full flex relative"
+        className="w-full flex relative overflow-hidden h-52 bg-[#f8fafc]"
       >
         {item.thumbnail ? (
           <Image
@@ -24,63 +25,67 @@ function BlogCard({ item }: { item: Article }) {
             height={220}
             src={item.thumbnail}
             alt={item.title}
-            className="w-full h-56 object-cover rounded-t-lg group-hover/card:brightness-110 transition-all ease-linear duration-500"
+            className="w-full h-52 object-cover group-hover/card:scale-105 transition-all duration-700 filter brightness-90 contrast-105"
             loading="lazy"
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
           />
         ) : (
-          <div className="w-full h-56 bg-zinc-200 rounded-md flex items-center justify-center">
-            <CiImageOff className="size-15" />
+          <div className="w-full h-52 bg-zinc-50 flex items-center justify-center">
+            <CiImageOff className="size-12 text-amber-400/30" />
           </div>
         )}
-        <div className="absolute top-3 left-3 bg-white px-5 py-1 rounded-lg shadow font-medium font-dana">
-          {item.created_at_relative}
-        </div>
+        {item.created_at_relative && (
+          <div className="absolute top-3 left-3 bg-white/95 text-red-700 text-xs px-3 py-1 rounded-full border border-zinc-200 shadow-sm font-bold">
+            {item.created_at_relative}
+          </div>
+        )}
       </Link>
-      <div className="p-3.5 sm:p-5">
-        <h3 className="text-2xl font-semibold mt-2   line-clamp-2">
-          {item.title}
-        </h3>
-        <p className="w-full line-clamp-1">{item.introduction}</p>
-        <div className="flex items-center justify-around flex-wrap gap-5 text-zinc-600 mt-5 text-sm">
-          <div className="flex flex-col items-center font-medium">
-            <IoTimeOutline className="size-7" />
-            {item.reading_time}
-          </div>
-          <div className="flex flex-col items-center font-medium">
-            <SiGoogleappsscript className="size-7" />
-            {item.category?.title || "بدون دسته‌بندی"}
-          </div>
+
+      <div className="p-5 flex flex-col justify-between flex-1 space-y-4">
+        <div className="space-y-2">
+          <Link href={`/article/${item.slug}`}>
+            <h3 className="text-base sm:text-lg font-black text-zinc-950 group-hover/card:text-red-600 transition-colors line-clamp-2 leading-snug">
+              {item.title}
+            </h3>
+          </Link>
+          <p className="w-full line-clamp-2 text-xs text-zinc-600 leading-relaxed font-normal">
+            {item.introduction}
+          </p>
         </div>
-        <hr className=" text-zinc-300 my-4" />
-        <Link
-          href={`/article/${item.slug}`}
-          className="font-bold text-lg flex items-center gap-1 justify-center group/link hover:underline
-          "
-        >
-          جزییات بیشتر
-          <TfiArrowTopLeft className="size-6 group-hover/link:-translate-y-1 group-hover/link:-translate-x-1 transition-transform ease-soft-spring duration-300" />
-        </Link>
-      </div>
-    </article>
-  );
-}
-export function BlogCardSkeleton() {
-  return (
-    <article className="bg-white rounded-3xl border border-zinc-300 w-full h-full flex flex-col overflow-hidden animate-pulse">
-      <div className="w-full h-56 bg-zinc-300 rounded-t-lg" />
-      <div className="p-5 flex flex-col gap-3 flex-1">
-        <div className="h-8 bg-zinc-300 rounded-md w-3/4" />
-        <div className="h-5 bg-zinc-300 rounded-md w-full" />
-        <div className="flex items-center justify-around flex-wrap gap-5 mt-5">
-          <div className="h-6 w-16 bg-zinc-300 rounded-md" />
-          <div className="h-6 w-20 bg-zinc-300 rounded-md" />
+
+        <div className="pt-3 border-t border-zinc-200 flex items-center justify-between text-xs text-zinc-500 font-medium">
+          <div className="flex items-center gap-1.5 text-red-700">
+            <BiCategory className="size-4 text-red-600" />
+            <span>{item.category?.title || "آموزش و مقالات"}</span>
+          </div>
+
+          <Link
+            href={`/article/${item.slug}`}
+            className="flex items-center gap-1 text-red-600 hover:text-red-800 font-black transition-colors"
+          >
+            <span>مطالعه مقاله</span>
+            <TfiArrowTopLeft className="size-3" />
+          </Link>
         </div>
-        <hr className="border-zinc-300 my-4" />
-        <div className="h-7 bg-zinc-300 rounded-md w-32 mx-auto" />
       </div>
     </article>
   );
 }
 
-export default BlogCard;
+export function BlogCardSkeleton() {
+  return (
+    <div className="bg-white border border-zinc-200/90 rounded-3xl overflow-hidden shadow-xl animate-pulse flex flex-col justify-between">
+      <div className="w-full h-52 bg-zinc-50 border-b border-zinc-200" />
+      <div className="p-5 flex flex-col justify-between flex-1 space-y-4">
+        <div className="space-y-2.5">
+          <div className="h-5 bg-zinc-50 rounded-full w-4/5" />
+          <div className="h-3.5 bg-zinc-50/70 rounded-full w-full" />
+          <div className="h-3.5 bg-zinc-50/50 rounded-full w-2/3" />
+        </div>
+        <div className="pt-3 border-t border-zinc-200 flex items-center justify-between">
+          <div className="h-3 bg-zinc-50 rounded-full w-20" />
+          <div className="h-3 bg-amber-400/20 rounded-full w-16" />
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -23,20 +23,19 @@ import ProductOptions from "@/components/Products/Product/ProductOptions";
 import { ProductProvider } from "@/context/ProductContext";
 import ProductPriceBox from "@/components/Products/Product/ProductPriceBox";
 import ProductMetaTags from "@/components/ProductMetaTags";
+import { GetSiteSettings } from "@/services/siteActions";
+import { FiTruck, FiShield, FiCheckCircle } from "react-icons/fi";
 
-// تابع کمکی برای دریافت روش‌های ارسال
 async function getShippingServices() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/shipping-services/`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'accept': 'application/json',
-        'X-CSRFTOKEN': 'VzLJ2enpPgMw9rXJprJVvBuRlr7bX7tnjvl0RzYMhH02siiI7uLD9wYBPYouYqcS'
+        accept: "application/json",
       },
-      // کش کردن پاسخ برای 5 دقیقه جهت افزایش پرفورمنس
-      next: { revalidate: 30 } 
+      next: { revalidate: 30 },
     });
-    
+
     if (!res.ok) {
       return [];
     }
@@ -58,9 +57,7 @@ function findCategory(
     }
     if (category.children) {
       const foundInChildren = findCategory(category.children, targetName);
-      if (foundInChildren) {
-        return foundInChildren;
-      }
+      if (foundInChildren) return foundInChildren;
     }
   }
   return undefined;
@@ -73,30 +70,38 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
-  const product = await GetProductBySlug(decodedSlug);
+  const product: ProductType = await GetProductBySlug(decodedSlug);
+  const settings = await GetSiteSettings();
+  const siteTitle = settings?.site_title || "خوش طعم کماشدون";
 
   if (!product) {
     return {
       title: "محصول یافت نشد",
-      description: "محصول مورد نظر در فروشگاه یافت نشد.",
+      description: "محصول مورد نظر شما یافت نشد.",
     };
   }
 
-  const title = `قیمت و خرید ${product.name}`;
-  const description =
-    product.short_description ||
-    `خرید ${product.name} با بهترین قیمت از دسته ${product.category}${
-      product.final_price ? " - تخفیف ویژه!" : ""
-    }`;
+  const metaTitle = `${product.name} | ${siteTitle}`;
+  const metaDescription =
+    product.description_1?.slice(0, 160) ||
+    `خرید آنلاین ${product.name} با بهترین کیفیت و تضمین اصالت از فروشگاه ${siteTitle}`;
 
   return {
-    title,
-    description,
+    title: metaTitle,
+    description: metaDescription,
+    keywords: [
+      product.name,
+      product.category,
+      siteTitle,
+      "خرید آنلاین",
+      "پودر سوخاری",
+      "چاشنی کتلت",
+    ],
     openGraph: {
-      title,
-      description,
-      type: "website",
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${slug}`,
+      title: metaTitle,
+      description: metaDescription,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/product/${product.slug}`,
+      siteName: siteTitle,
       images: product.cover_image
         ? [
             {
@@ -107,23 +112,15 @@ export async function generateMetadata({
             },
           ]
         : [],
+      locale: "fa_IR",
+      type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
+      title: metaTitle,
+      description: metaDescription,
       images: product.cover_image ? [product.cover_image] : [],
     },
-    alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${slug}`,
-    },
-    other: {
-      "product_id": product.id.toString(),
-      "product_name": product.name,
-      "product_price": (product.final_price || product.price || 0).toString(),
-      "availability": product.is_available && product.stock > 0 ? "instock" : "outofstock",
-      "og:image": product.cover_image || "",
-    } as Record<string, string>,
   };
 }
 
@@ -135,33 +132,35 @@ export default async function Page({
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   if (!slug || typeof slug !== "string") return notFound();
-  
+
   const res = await GetProductBySlug(decodedSlug);
   if (!res) return notFound();
 
   const data: ProductType = res;
   const categories: CategoryNode[] = (await GetShopCategoriesTreeList()) || [];
-  const shippingMethods = await getShippingServices(); // دریافت روش‌های ارسال
+  const shippingMethods = await getShippingServices();
 
   const categoryFind = findCategory(categories, data.category);
   const comments = await GetComments(data.id);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mpttools.co";
-  
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://api.khooshtam.com";
+
   const breadcrumbs = [
-    { name: "خانه", url: `${siteUrl}/` },
-    { name: "محصولات", url: `${siteUrl}/products` },
-    categoryFind
-      ? {
-          name: categoryFind.name,
-          url: `${siteUrl}/products?category_id=${categoryFind.id}`,
-        }
-      : { name: data.category },
-    { name: data.name },
+    { label: "خانه", href: "/" },
+    { label: "محصولات", href: "/products" },
+    ...(categoryFind
+      ? [{ label: categoryFind.name, href: `/products?category_id=${categoryFind.id}` }]
+      : [{ label: data.category, href: `/products` }]),
+    { label: data.name },
   ];
 
   const schema = [
     productSchema(data),
-    breadcrumbSchema(breadcrumbs),
+    breadcrumbSchema(
+      breadcrumbs.map((b) => ({
+        name: b.label,
+        url: b.href ? `${siteUrl}${b.href}` : `${siteUrl}/products`,
+      }))
+    ),
     imageSchema(data.cover_image, data.name),
   ];
 
@@ -172,16 +171,15 @@ export default async function Page({
           .map((img) => img.image)
           .filter(Boolean)
       : data.cover_image
-        ? [data.cover_image]
-        : [];
+      ? [data.cover_image]
+      : [];
 
-  // فیلتر کردن روش‌های ارسال فعال
   const activeShippingMethods = shippingMethods.filter((m: any) => m.is_active);
 
   return (
     <>
       <ProductMetaTags product={data} />
-      
+
       <Script
         id="product-jsonld"
         type="application/ld+json"
@@ -191,169 +189,124 @@ export default async function Page({
         }}
       />
 
-      <BreadcrumbsBox
-        title={data.name}
-        items={[
-          { label: "خانه", href: "/" },
-          { label: "محصولات", href: "/products" },
-          {
-            label: data.category,
-            href: `/products/?category_id=${categoryFind?.id}`,
-          },
-          { label: data.name },
-        ]}
-      />
-      <ProductProvider product={data}>
-        <div className="container customSm:max-w-[566px]">
-          <div className="bg-white shadow-lg shadow-black/10 rounded-[5px] px-5 py-4 w-full mt-7 text-sm ">
-            <div className="flex flex-col md:flex-row justify-between">
-              <div className="w-full md:w-1/3 h-full flex">
-                <ProductSlider images={images} alt={data.name} />
-              </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <BreadcrumbsBox title={data.name} items={breadcrumbs} />
 
-              <div className="w-full lg:w-2/3 p-2 flex flex-col items-start space-y-5 px-4">
-                <h1 className="text-2xl font-bold">{data.name}</h1>
-
-                <div className="text-sm flex flex-col items-start gap-3">
-                  <div>
-                    <span>دسته :‌</span>{" "}
-                    <Link
-                      href={`/products/?category_id=${categoryFind?.id}`}
-                      className="text-cyan-400 spoiler-link relative"
-                    >
-                      {data.category}
-                    </Link>
-                  </div>
-                  <div>
-                    <span>مشاهده انواع </span>{" "}
-                    <Link
-                      href={`/products/?category_id=${categoryFind?.id}`}
-                      className="text-cyan-400 spoiler-link relative"
-                    >
-                      {data.category}
-                    </Link>
-                  </div>
-                </div>
-                <ProductOptions product={data} />
-                <div>
-                  <ProductDescription
-                    description={data.description_1}
-                  />
-                </div>
-              </div>
+        <ProductProvider product={data}>
+          {/* Main Product Showcase Card */}
+          <div className="bg-white border border-zinc-200/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               
-              <div className="w-5/12 h-full space-y-3 lg:block hidden">
-                <div className="bg-zinc-100 border border-zinc-200 p-5 text-center space-y-4 rounded-md">
+              {/* Product Gallery Slider */}
+              <div className="lg:col-span-5 w-full">
+                <div className="bg-gradient-to-b from-zinc-50 to-amber-50/20 border border-zinc-200 rounded-2xl p-4 shadow-sm">
+                  <ProductSlider images={images} alt={data.name} />
+                </div>
+              </div>
+
+              {/* Product Info & Options */}
+              <div className="lg:col-span-4 flex flex-col space-y-5">
+                <div className="space-y-2">
+                  <span className="text-xs text-red-700 font-bold tracking-wide">
+                    {data.category}
+                  </span>
+                  <h1 className="text-xl sm:text-2xl font-black text-zinc-950 leading-relaxed">
+                    {data.name}
+                  </h1>
+                </div>
+
+                {/* Features & Highlights */}
+                <div className="grid grid-cols-2 gap-2 text-xs text-zinc-700 py-2 border-y border-zinc-200">
+                  <div className="flex items-center gap-1.5">
+                    <FiCheckCircle className="size-4 text-red-600 shrink-0" />
+                    <span>تولید صنعتی با فرمولاسیون اصیل</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <FiShield className="size-4 text-red-600 shrink-0" />
+                    <span>سیب سلامت و پروانه استاندارد</span>
+                  </div>
+                </div>
+
+                <ProductOptions product={data} />
+
+                {data.description_1 && (
+                  <div className="text-xs text-zinc-700 leading-relaxed bg-zinc-50 rounded-xl p-4 border border-zinc-200">
+                    <ProductDescription description={data.description_1} />
+                  </div>
+                )}
+              </div>
+
+              {/* Pricing & Purchase Box (Desktop) */}
+              <div className="lg:col-span-3 w-full space-y-4">
+                <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-6 shadow-md space-y-5">
                   <ProductPriceBox product={data} />
 
                   {data.stock <= 5 && data.stock > 0 && (
-                    <p
-                      className={`text-right font-bold font-dana ${
-                        data.stock <= 2 ? "text-danger" : "text-warning"
-                      }`}
-                    >
-                      تنها {data.stock === 1 ? "یک" : data.stock + " عدد"} در
-                      انبار باقی مانده
+                    <p className="text-center font-bold text-xs text-red-700 bg-red-50 py-1.5 px-3 rounded-lg border border-red-200">
+                      تنها {data.stock === 1 ? "یک" : data.stock.toLocaleString("fa-IR") + " عدد"} در انبار باقی مانده
                     </p>
                   )}
+
                   <AddToCart
                     is_available={data.is_available && data.stock > 0}
                     product={data}
                   />
                 </div>
 
-                {data.is_available && data.stock > 0 && (
-                  <>
-                    <a href="#" className="text-cyan-400 spoiler-link relative text-sm">
-                      آیا قیمت مناسب‌تری سراغ دارید؟
-                    </a>
-                    
-                    {/* --- تغییر جدید: لیست روش‌های ارسال برای دسکتاپ --- */}
-                    <div className="mt-5">
-                      <h4 className="font-bold text-zinc-700 mb-3 text-sm">روش‌های ارسال موجود:</h4>
-                      <div className="space-y-2">
-                        {activeShippingMethods.length > 0 ? (
-                          activeShippingMethods.map((method: any) => (
-                            <div 
-                              key={method.id} 
-                              className="bg-white border border-zinc-200 rounded-lg p-3 flex flex-col gap-1 shadow-sm text-sm"
-                            >
-                              <div className="flex items-center gap-2 font-bold text-zinc-800">
-                                <span className="text-cyan-600">🚚</span>
-                                {method.name}
-                              </div>
-                              <p className="text-xs text-zinc-500 mr-6">
-                                {method.description}
-                              </p>
-                            </div>
-                          ))
-                        ) : (
-                           <p className="text-xs text-zinc-500 text-center">در حال حاضر روش ارسانی ثبت نشده است.</p>
-                        )}
-                      </div>
-                    </div>
-                    {/* --- پایان تغییر --- */}
-                    
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          <div className="hidden sm:block lg:hidden bg-zinc-100 border border-zinc-200 p-5 my-5 text-center space-y-4 rounded-md">
-            <ProductPriceBox product={data} />
-            <AddToCart
-              is_available={data.is_available && data.stock > 0}
-              product={data}
-            />
-          </div>
-
-          {/* --- تغییر جدید: لیست روش‌های ارسال برای موبایل (بخش میانی صفحه) --- */}
-          <div className="my-10 w-full h-full space-y-3 block lg:hidden px-4">
-             <a href="#" className="text-cyan-400 spoiler-link relative text-sm">
-              آیا قیمت مناسب‌تری سراغ دارید؟
-            </a>
-            
-            <div className="bg-white border border-zinc-200 rounded-lg p-4 mt-4 shadow-sm">
-                <h4 className="font-bold text-zinc-800 mb-3 text-sm border-b pb-2">روش‌های ارسال</h4>
-                <div className="space-y-3">
-                   {activeShippingMethods.length > 0 ? (
+                {/* Shipping Services info */}
+                <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 text-xs space-y-3">
+                  <div className="flex items-center gap-2 font-bold text-red-700 border-b border-zinc-200 pb-2">
+                    <FiTruck className="size-4" />
+                    <span>روش‌های ارسال سراسری:</span>
+                  </div>
+                  <div className="space-y-2">
+                    {activeShippingMethods.length > 0 ? (
                       activeShippingMethods.map((method: any) => (
-                        <div key={method.id} className="flex items-start gap-3">
-                           <div className="size-8 bg-zinc-100 rounded-full flex items-center justify-center flex-shrink-0 text-xs">
-                              🚚
-                           </div>
-                           <div>
-                              <p className="font-bold text-sm text-zinc-800">{method.name}</p>
-                              <p className="text-xs text-zinc-500 leading-relaxed mt-1">{method.description}</p>
-                           </div>
+                        <div
+                          key={method.id}
+                          className="bg-white/5 border border-zinc-200 rounded-xl p-2.5 space-y-1"
+                        >
+                          <p className="font-semibold text-zinc-900">{method.name}</p>
+                          {method.description && (
+                            <p className="text-[11px] text-zinc-500">{method.description}</p>
+                          )}
                         </div>
                       ))
-                   ) : (
-                      <p className="text-xs text-zinc-500 text-center py-2">معلوماتی موجود نیست</p>
-                   )}
+                    ) : (
+                      <p className="text-[11px] text-zinc-500 text-center">
+                        ارسال سریع با پست پیشتاز و باربری
+                      </p>
+                    )}
+                  </div>
                 </div>
+              </div>
+
             </div>
           </div>
-          {/* --- پایان تغییر موبایل --- */}
 
-          <div className="fixed bottom-[88px] z-40 right-0 w-full space-y-3 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.1)] sm:hidden p-2 flex items-center gap-3 border-t border-zinc-200 rounded-t-2xl">
-            <ProductPriceBox product={data} />
-            <AddToCart
-              is_available={data.is_available && data.stock > 0}
-              product={data}
-            />
+          {/* Floating Mobile Bottom Action Bar */}
+          <div className="fixed bottom-[74px] z-40 right-0 left-0 bg-white/95 backdrop-blur-2xl border-t border-zinc-200 p-3 flex items-center justify-between gap-3 shadow-2xl lg:hidden">
+            <div className="text-right">
+              <ProductPriceBox product={data} />
+            </div>
+            <div className="w-1/2">
+              <AddToCart
+                is_available={data.is_available && data.stock > 0}
+                product={data}
+              />
+            </div>
           </div>
-          
-          <div className="bg-white shadow-lg shadow-black/10 rounded-[5px] w-full mt-7 text-sm">
+
+          {/* Tabs Section: Description & Comments */}
+          <div className="bg-white border border-zinc-200/90 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl">
             <TabsBox
               comments={comments}
               productId={data.id}
               description_2={data.description_2}
             />
           </div>
-        </div>
-      </ProductProvider>
+        </ProductProvider>
+      </div>
     </>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { FaSlidersH, FaSortAmountUp } from "react-icons/fa";
+import { FaSlidersH } from "react-icons/fa";
+import { HiArrowsUpDown } from "react-icons/hi2";
 import FilterBox from "./FilterBox";
 import {
   Drawer,
@@ -12,12 +13,12 @@ import {
 } from "@heroui/react";
 import { HiXMark } from "react-icons/hi2";
 
-function SortBox() {
+export default function SortBox() {
   const sortOptions = [
     { label: "جدیدترین", value: "newest" },
-    { label: "محبوب ترین", value: "popularity" },
-    { label: "ارزان ترین", value: "price_asc" },
-    { label: "گران ترین", value: "price_desc" },
+    { label: "محبوب‌ترین", value: "popularity" },
+    { label: "ارزان‌ترین", value: "price_asc" },
+    { label: "گران‌ترین", value: "price_desc" },
   ];
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const searchParams = useSearchParams();
@@ -34,79 +35,88 @@ function SortBox() {
 
   return (
     <>
-      <div className="hidden items-center lg:flex">
-        <p className="text-zinc-400 font-light select-none">
-          مرتب‌سازی بر اساس:
-        </p>
-        <div className="flex items-center mr-2">
-          {sortOptions.map((option, i) => (
-            <button
-              key={i}
-              className={`text-zinc-500 font-light text-sm px-3 py-1 rounded-full  transition-colors ${
-                currentSort === option.value
-                  ? "bg-orange hover:bg-orange-500 !text-white cursor-default"
-                  : "hover:text-zinc-600"
-              }`}
-              onClick={() => handleSortChange(option.value)}
-            >
-              {option.label}
-            </button>
-          ))}
+      {/* Desktop Sort Box */}
+      <div className="hidden lg:flex items-center justify-between bg-white border border-zinc-200/90 backdrop-blur-md rounded-2xl px-5 py-3.5 shadow-lg shadow-zinc-900/5">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-xs text-red-700 font-bold select-none">
+            <HiArrowsUpDown className="size-4" />
+            <span>مرتب‌سازی بر اساس:</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {sortOptions.map((option, i) => (
+              <button
+                key={i}
+                className={`text-xs px-3.5 py-1.5 rounded-full transition-all duration-300 font-semibold ${
+                  currentSort === option.value
+                    ? "bg-gradient-to-r from-red-600 to-amber-600 text-white font-black shadow-md shadow-red-500/20"
+                    : "text-zinc-700 hover:text-red-600 hover:bg-zinc-100"
+                }`}
+                onClick={() => handleSortChange(option.value)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="lg:hidden flex items-center gap-4">
+
+      {/* Mobile Filter & Sort */}
+      <div className="lg:hidden flex items-center gap-3">
         <button
           onClick={onOpen}
-          className="btn-primary w-full h-full font-semibold relative text-center !py-2.5"
+          className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs shadow-md shadow-red-500/25 active:scale-95 transition-all"
         >
-          فیلتر تخصصی{" "}
-          <FaSlidersH className="absolute top-3.5 right-3 size-5 " />
+          <FaSlidersH className="size-4" />
+          <span>فیلتر و دسته‌بندی</span>
         </button>
+
+        <div className="relative flex-1">
+          <select
+            name="sort"
+            id="sort"
+            value={currentSort}
+            onChange={(e) => handleSortChange(e.target.value)}
+            className="w-full bg-white border border-zinc-200 text-zinc-900 text-xs py-3 px-4 rounded-xl appearance-none outline-none focus:border-amber-400"
+          >
+            {sortOptions.map((opt, i) => (
+              <option key={i} value={opt.value} className="bg-white text-zinc-900">
+                مرتب‌سازی: {opt.label}
+              </option>
+            ))}
+          </select>
+          <HiArrowsUpDown className="size-4 absolute left-3 top-3.5 text-red-600 pointer-events-none" />
+        </div>
+
         <Drawer
           hideCloseButton
           isOpen={isOpen}
           onOpenChange={onOpenChange}
-          className="bg-[#f3f3f3] w-full transition-transform duration-300 ease-in-out"
-          radius="sm"
+          placement="right"
+          classNames={{
+            base: "max-w-[340px] bg-white text-zinc-900 border-l border-zinc-200",
+            backdrop: "bg-black/50 backdrop-blur-md",
+          }}
         >
           <DrawerContent>
             {(onClose) => (
               <>
-                <DrawerHeader className="flex flex-col gap-1  ">
-                  <div className="flex items-center justify-between gap-2 py-2">
-                    <div className="flex items-center gap-3">
-                      <p>فیلتر نتایج</p>
-                    </div>
-                    <button type="button" onClick={onClose}>
-                      <HiXMark className="size-8" />
+                <DrawerHeader className="border-b border-zinc-200 px-5 py-4">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="font-bold text-sm text-red-700">فیلتر پیشرفته محصولات</span>
+                    <button type="button" onClick={onClose} className="p-1 text-zinc-500 hover:text-white">
+                      <HiXMark className="size-6" />
                     </button>
                   </div>
                 </DrawerHeader>
 
-                <DrawerBody className="relative overflow-hidden px-0 w-full">
+                <DrawerBody className="p-4 overflow-y-auto">
                   <FilterBox isShow />
                 </DrawerBody>
               </>
             )}
           </DrawerContent>
         </Drawer>
-        <div className="relative w-full">
-          <select
-            name="sort"
-            id="sort"
-            className="border-2 outline-none p-2 appearance-none pr-10 border-zinc-200 text-zinc-600 bg-white w-full"
-          >
-            {sortOptions.map((opt, i) => (
-              <option key={i} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <FaSortAmountUp className="size-5 absolute top-3 right-2 text-zinc-600" />
-        </div>
       </div>
     </>
   );
 }
-
-export default SortBox;

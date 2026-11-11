@@ -1,4 +1,5 @@
 "use client";
+
 import { CartItem } from "@/types/cartItem";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,94 +21,77 @@ import { CiImageOff } from "react-icons/ci";
 import { IoCartOutline } from "react-icons/io5";
 import { useCart } from "../../../context/CartContextProvider";
 import EmptyCart from "../../../components/EmptyCart";
-function Page() {
+
+export default function Page() {
   const { cart, loading } = useCart();
 
   return (
-    <div className="grid md:grid-cols-5 items-start gap-5 p-4  overflow-y-auto h-[600px] ]  w-full">
+    <div className="grid md:grid-cols-5 items-start gap-6 w-full text-zinc-900">
       {loading ? (
-        <div className="col-span-3 w-full h-full p-5 flex items-center justify-center">
-          درحال دریافت اطلاعات سبد خرید ...{" "}
+        <div className="col-span-3 w-full h-64 flex items-center justify-center text-amber-400 text-sm">
+          در حال به‌روزرسانی سبد خرید...
         </div>
       ) : cart.total_items > 0 ? (
-        <ul className="col-span-3 rounded-sm p-5 flex flex-col gap-4 shadow divide-y divide-zinc-200 border border-zinc-300  ">
+        <ul className="col-span-3 rounded-2xl p-4 sm:p-6 flex flex-col gap-4 bg-white border border-zinc-200/90 divide-y divide-white/10 shadow-xl">
           {cart.items.map((item: CartItem) => (
             <CartLi item={item} key={item.id} />
-          ))}{" "}
+          ))}
         </ul>
       ) : (
-        <div className="col-span-5 p-5">
-          {" "}
-          <EmptyCart />{" "}
+        <div className="col-span-5 p-6 bg-white border border-zinc-200/90 rounded-2xl">
+          <EmptyCart />
         </div>
       )}
 
       {cart.total_items > 0 && (
-        <div className="col-span-3 md:col-span-2 shadow rounded-lg h-auto p-5 space-y-2 border border-zinc-300 sticky top-5">
-          <div className="flex items-center justify-between ">
-            <p>
-              قیمت کالاها ({cart.items.length.toLocaleString("fa-IR")} کالا)
-            </p>
-            <p className="font-semibold text-xl">
-              {cart.total_price.toLocaleString("fa-IR")}
-              <span className="pr-1 text-sm">تومان</span>
-            </p>
+        <div className="col-span-3 md:col-span-2 bg-zinc-50 border border-zinc-200 shadow-2xl rounded-2xl p-6 space-y-4 sticky top-28">
+          <h3 className="font-bold text-sm text-red-700 border-b border-zinc-200 pb-3">
+            صورت‌حساب سفارش
+          </h3>
+
+          <div className="flex items-center justify-between text-xs sm:text-sm">
+            <span className="text-zinc-500">
+              قیمت اقلام ({cart.items.length.toLocaleString("fa-IR")} ردیف کالا):
+            </span>
+            <span className="font-bold text-zinc-950">
+              {cart.total_price.toLocaleString("fa-IR")}{" "}
+              <span className="text-[11px] font-normal text-zinc-500">تومان</span>
+            </span>
           </div>
 
-          <div className="flex items-center justify-between">
-            <p>هزینه ارسال</p>
-            <div className="font-semibold text-lg text-left">
+          <div className="flex items-center justify-between text-xs sm:text-sm">
+            <span className="text-zinc-500">هزینه ارسال:</span>
+            <div className="font-bold text-left">
               {cart.total_delivery > 0 ? (
-                <>
-                  {cart.total_delivery.toLocaleString("fa-IR")}
-                  <span className="pr-1 text-sm">تومان</span>
-                </>
-              ) : (
-                <span className="text-sm font-medium text-zinc-500">
-                  وابسته به شیوه ارسال
+                <span className="text-zinc-900">
+                  {cart.total_delivery.toLocaleString("fa-IR")}{" "}
+                  <span className="text-[11px] font-normal text-zinc-500">تومان</span>
                 </span>
+              ) : (
+                <span className="text-xs text-amber-400/90">محاسبه در مرحله نهایی</span>
               )}
             </div>
           </div>
 
-          <div className="flex items-center justify-between border-t border-zinc-200 pt-2 mt-2">
-            <p>جمع نهایی</p>
-            <p className="font-semibold text-xl">
-              {cart.final_price.toLocaleString("fa-IR")}
-              <span className="pr-1 text-sm">تومان</span>
-            </p>
+          <div className="flex items-center justify-between border-t border-zinc-200 pt-3 text-sm">
+            <span className="font-bold text-zinc-950">مبلغ نهایی پرداختی:</span>
+            <span className="font-black text-lg text-red-700">
+              {cart.final_price.toLocaleString("fa-IR")}{" "}
+              <span className="text-xs font-normal text-zinc-500">تومان</span>
+            </span>
           </div>
 
-          <div className="flex flex-col gap-2 w-full">
+          <div className="pt-2 w-full">
             <Link
               href="/profile/checkout"
-              className="btn btn-primary w-full relative font-semibold text-center"
+              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-bold text-sm shadow-lg shadow-red-500/25 transition-all text-center"
             >
-              ادامه ثبت سفارش{" "}
-              <IoCartOutline className="size-8 absolute right-5 top-2.5" />
+              <span>ادامه فرایند خرید و ثبت سفارش</span>
+              <IoCartOutline className="size-5" />
             </Link>
           </div>
         </div>
       )}
-      <style jsx>{`
-        .overflow-y-auto::-webkit-scrollbar {
-          width: 3px;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar-thumb {
-          background-color: #4f9cff;
-          border-radius: 10px;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar-track {
-          background-color: #f1f1f1;
-          border-radius: 10px;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar:hover {
-          width: 12px;
-        }
-      `}</style>
     </div>
   );
 }
@@ -143,56 +127,83 @@ function CartLi({ item }: { item: CartItem }) {
 
   return (
     <>
-      <li className="flex items-center justify-between p-4 relative">
+      <li className="flex flex-col sm:flex-row items-center justify-between py-4 first:pt-0 last:pb-0 gap-4 relative">
         {loading && (
-          <div className="absolute top-0 right-0 size-full bg-white/80 flex items-center justify-center cursor-wait">
-            <Spinner size="lg" />
+          <div className="absolute inset-0 bg-zinc-50 backdrop-blur-sm z-20 flex items-center justify-center rounded-xl cursor-wait">
+            <Spinner size="md" color="warning" />
           </div>
         )}
 
-        <div className="flex flex-col justify-center text-center w-28">
+        <div className="flex items-center gap-4 w-full sm:w-auto">
           <Link
             href={`/product/${item.product.slug}`}
-            className="min-h-28 flex items-center justify-center relative"
+            className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center overflow-hidden shrink-0"
           >
             {item.product.cover_image ? (
               <Image
                 src={item.product.cover_image}
                 alt={item.product.name}
-                width={100}
-                height={100}
-                className="object-cover w-28 min-h-28 max-w-full rounded-md"
+                width={96}
+                height={96}
+                className="object-contain p-2"
               />
             ) : (
-              <div className="w-28 min-h-28 h-full max-w-full bg-zinc-200 rounded-md flex items-center justify-center mb-2">
-                <CiImageOff className="size-15" />
-              </div>
+              <CiImageOff className="size-8 text-amber-400/40" />
             )}
           </Link>
 
-          <div className="relative mx-auto" ref={dropdownRef}>
+          <div className="flex flex-col space-y-1">
+            <Link
+              href={`/product/${item.product.slug}`}
+              className="font-bold text-sm text-zinc-950 hover:text-amber-400 transition-colors line-clamp-1"
+            >
+              {item.product.name}
+            </Link>
+
+            <div className="text-xs text-zinc-500 space-y-0.5">
+              <p>
+                <span>قیمت واحد: </span>
+                <span className="text-zinc-900 font-semibold">
+                  {item.unit_price.toLocaleString("fa-IR")} تومان
+                </span>
+              </p>
+              <p>
+                <span>قیمت کل: </span>
+                <span className="text-red-700 font-black">
+                  {item.total_price.toLocaleString("fa-IR")} تومان
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
+          {/* Quantity Selector */}
+          <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setDropDownOpen(!dropDownOpen)}
-              className="w-full p-3 flex items-center justify-between font-bold border border-zinc-300 font-dana"
+              className="py-1.5 px-3 rounded-lg bg-zinc-50 border border-zinc-200 text-xs font-bold text-zinc-950 flex items-center gap-2 hover:border-amber-400 transition-colors"
             >
-              {quantity} عدد
-              <MdChevronLeft className="w-5 h-5 text-zinc-500 -rotate-90" />
+              <span>{quantity.toLocaleString("fa-IR")} عدد</span>
+              <MdChevronLeft className={`size-4 text-amber-400 transition-transform ${dropDownOpen ? "rotate-90" : "-rotate-90"}`} />
             </button>
 
             {dropDownOpen && (
-              <div className="absolute right-0 top-11 bg-white w-full sm:w-44 z-10 border border-zinc-300 shadow-lg rounded-md">
-                {[1, 2, 3].map((num) => (
+              <div className="absolute right-0 top-10 bg-white w-36 z-30 border border-zinc-200 shadow-2xl rounded-xl overflow-hidden p-1">
+                {[1, 2, 3, 4, 5].map((num) => (
                   <button
                     key={num}
-                    className={`w-full p-3 flex items-center justify-between font-bold hover:bg-primary-200 font-dana ${
-                      num === quantity ? "bg-primary-200" : ""
+                    className={`w-full py-1.5 px-3 text-right text-xs rounded-lg transition-colors ${
+                      num === quantity
+                        ? "bg-amber-400/20 text-amber-400 font-bold"
+                        : "text-zinc-700 hover:bg-white/5"
                     }`}
                     onClick={() => {
                       setQuantity(num);
                       setDropDownOpen(false);
                     }}
                   >
-                    {num} عدد
+                    {num.toLocaleString("fa-IR")} عدد
                   </button>
                 ))}
 
@@ -201,70 +212,34 @@ function CartLi({ item }: { item: CartItem }) {
                     onOpen();
                     setDropDownOpen(false);
                   }}
-                  className="w-full p-3 flex items-center justify-between font-bold hover:bg-primary-200"
+                  className="w-full py-1.5 px-3 text-right text-[11px] text-amber-400 hover:bg-amber-400/10 rounded-lg mt-1 border-t border-zinc-200"
                 >
-                  وارد کردن مقدار دلخواه
+                  مقدار دلخواه...
                 </button>
               </div>
             )}
           </div>
-        </div>
 
-        <div className="flex justify-between w-[80%] items-start pr-2">
-          <div className="flex flex-col justify-between h-full px-2">
-            <p className="font-semibold text-lg">{item.product.name}</p>
-            <div className="flex gap-2 items-center py-2">
-              {item.color_variant && (
-                <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 border border-zinc-200 shadow-2xs cursor-default">
-                  <div
-                    className="w-3 h-3 rounded-full border border-zinc-300 shadow-inner"
-                    style={{
-                      backgroundColor: `${item.color_variant.color_code}`,
-                    }}
-                  ></div>
-                  <span className="text-sm text-zinc-800 font-medium">
-                    {item.color_variant.color_name}
-                  </span>
-                </div>
-              )}
-
-              {item.material_variant && (
-                <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 border border-zinc-200 shadow-2xs cursor-default">
-                  <div className="w-3 h-3 rounded-full bg-gradient-to-br from-zinc-400 to-zinc-500 border border-zinc-300 shadow-inner"></div>
-                  <span className="text-sm text-zinc-800 font-medium">
-                    {item.material_variant.material_name}
-                  </span>
-                </div>
-              )}
-            </div>
-            <div>
-              <p>
-                <span className="text-zinc-600">قیمت واحد:</span>{" "}
-                {item.unit_price.toLocaleString("fa-IR")} تومان
-              </p>
-              <p>
-                <span className="text-zinc-600">قیمت کل:</span>{" "}
-                {item.total_price.toLocaleString("fa-IR")} تومان
-              </p>
-            </div>
-          </div>
-
+          {/* Remove Button */}
           <button
             onClick={() => removeFromCart(item.id)}
-            className="bg-zinc-200 text-zinc-500 p-2 rounded"
+            className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
+            title="حذف از سبد خرید"
           >
-            <FaRegTrashAlt className="size-5" />
+            <FaRegTrashAlt className="size-4" />
           </button>
         </div>
       </li>
 
       <Modal
-        backdrop="opaque"
+        backdrop="blur"
         isOpen={isOpen}
         hideCloseButton
         onOpenChange={onOpenChange}
-        size="lg"
-        placement="bottom-center"
+        placement="center"
+        classNames={{
+          base: "bg-white border border-zinc-200 text-zinc-900 rounded-2xl p-4 max-w-sm",
+        }}
       >
         <ModalContent>
           {(onClose) => (
@@ -275,29 +250,33 @@ function CartLi({ item }: { item: CartItem }) {
                 setQuantity(newQuantity);
                 onClose();
               }}
+              dir="rtl"
             >
-              <ModalHeader className="flex justify-between items-center">
-                <p>وارد کردن مقدار دلخواه</p>
-                <button type="button" onClick={onClose}>
-                  <HiXMark className="size-6" />
+              <ModalHeader className="flex justify-between items-center pb-3 border-b border-zinc-200">
+                <span className="text-xs font-bold text-amber-400">تعیین تعداد دلخواه</span>
+                <button type="button" onClick={onClose} className="text-zinc-500 hover:text-white">
+                  <HiXMark className="size-5" />
                 </button>
               </ModalHeader>
-              <ModalBody>
+              <ModalBody className="py-4">
                 <NumberInput
                   value={newQuantity || undefined}
                   onValueChange={(value: number) => setNewQuantity(value)}
                   hideStepper
                   minValue={1}
                   classNames={{
-                    inputWrapper: "input !rounded-full",
-                    input: "input font-dana border-none",
+                    inputWrapper: "input !rounded-xl bg-zinc-50 border border-zinc-200",
+                    input: "input text-zinc-900 text-sm",
                   }}
                   aria-label="مقدار سبد خرید"
                 />
               </ModalBody>
-              <ModalFooter>
-                <button className="w-full btn-primary" type="submit">
-                  اعمال مقدار
+              <ModalFooter className="pt-2 border-t border-zinc-200">
+                <button
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20"
+                  type="submit"
+                >
+                  ثبت تعداد
                 </button>
               </ModalFooter>
             </form>
@@ -307,5 +286,3 @@ function CartLi({ item }: { item: CartItem }) {
     </>
   );
 }
-
-export default Page;

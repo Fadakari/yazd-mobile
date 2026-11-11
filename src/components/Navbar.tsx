@@ -2,627 +2,271 @@
 
 import React, { useEffect, useState, FormEvent } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-
-// Icons
-import { GoChevronLeft, GoChevronDown, GoChevronRight } from "react-icons/go";
-import { HiOutlineMenuAlt3 } from "react-icons/hi"; // این آیکون در نسخه 1 است
-import { HiXMark } from "react-icons/hi2"; // این آیکون در نسخه 2 است
-import { FiPhoneCall, FiShoppingCart, FiSearch, FiHeart, FiUser } from "react-icons/fi";
-import { CiLogin } from "react-icons/ci";
-import { BiCategory } from "react-icons/bi";
-
-// Components & Contexts
-import { Drawer, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter, useDisclosure, Modal, ModalContent } from "@heroui/react";
+import { useRouter } from "next/navigation";
+import { FiShoppingCart, FiSearch, FiUser } from "react-icons/fi";
+import { HiBars3, HiXMark } from "react-icons/hi2";
+import { Drawer, DrawerContent, useDisclosure, Modal, ModalContent } from "@heroui/react";
 import { useUser } from "../context/UserContext";
 import { useAuthModal } from "../context/AuthModalProvider";
-import { useCategories } from "../context/CategoriesContext";
 import { useCart } from "../context/CartContextProvider";
 import CartDrawer from "./CartDrawer";
 import UserDropdown from "./UserMenu";
-import { CategoryNode } from "@/types/categories";
-import { User } from "@/types/user";
 
-// Assets
-
-const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div
-      className="relative group h-full z-50 flex items-center"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      <button className={`
-        flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-300
-        ${isOpen
-                ? "bg-orange-600 text-white shadow-lg shadow-orange-200"
-                : "bg-amber-600 text-white"
-              }
-      `}>
-
-        <BiCategory className="text-xl" />
-        <span className="font-bold text-xl">دسته بندی محصولات</span>
-        <GoChevronDown className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
-      </button>
-
-      {/* This is a dropdown list of categories */}
-      <div
-        className={`absolute top-[calc(100%+10px)] right-0 w-[360px] bg-white/95 backdrop-blur-[12px] shadow-lg border border-gray-100 rounded-2xl transition-all duration-250 origin-top-right transform ${isOpen ? "opacity-100 visible scale-100 translate-y-0" : "opacity-0 invisible scale-95 -translate-y-2"
-          }`}
-        style={{ zIndex: 2000 }}
-      >
-        <div className="py-3 px-2">
-          <div className="text-xs text-gray-500 px-3 pb-2 font-medium">دسته‌بندی‌ها</div>
-          <ul className="flex flex-col divide-y divide-gray-100 max-h-[420px] overflow-y-auto">
-            {categories && categories.length > 0 ? (
-              categories.map((cat) => (
-                <li key={cat.id} className="group/item relative">
-                  <Link
-                    href={`/products/?category_id=${cat.id}`}
-                    className="flex items-center justify-between px-4 py-3 text-gray-700 text-sm font-medium hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="w-2 h-2 rounded-full bg-gray-300 group-hover/item:bg-orange-400 transition-colors" />
-                      <span className="truncate max-w-[200px]">{cat.name}</span>
-                    </div>
-                    {cat.children && cat.children.length > 0 && (
-                      <GoChevronLeft className="text-gray-400 text-sm flex-shrink-0" />
-                    )}
-                  </Link>
-
-                  {cat.children && cat.children.length > 0 && (
-                    <div className="mt-1 ml-4 mr-4 bg-gray-50 rounded-lg p-2 border border-gray-100 shadow-sm hidden group-hover/item:block max-h-[280px] overflow-y-auto">
-                      <ul className="flex flex-col gap-1">
-                        {cat.children.map((child) => (
-                          <li key={child.id}>
-                            <Link
-                              href={`/products/?category_id=${child.id}`}
-                              className="block px-3 py-2.5 text-sm text-gray-700 hover:text-orange-600 hover:bg-white hover:border-l-2 hover:border-l-orange-400 rounded-md transition-colors"
-                            >
-                              {child.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </li>
-              ))
-            ) : (
-              <li className="px-5 py-4 text-sm text-gray-500 text-center">دسته بندی یافت نشد</li>
-            )}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// --- کامپوننت جستجو (Search Box) ---
-const SearchForm = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [query, setQuery] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
-
-  useEffect(() => {
-    const currentSearch = searchParams.get("search");
-    if (currentSearch) setQuery(currentSearch);
-  }, [searchParams]);
-
-  const handleSearch = (e: FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      router.push(`/products?search=${encodeURIComponent(query)}`);
-    }
-  };
-
-  return (
-    <form
-      onSubmit={handleSearch}
-      className={`
-                flex-1 w-full relative flex items-center transition-all duration-300 rounded-full h-[46px]
-                ${isFocused ? "bg-white shadow-[0_4px_20px_rgba(255,87,34,0.15)] border border-[#ff5722]/30" : "bg-gray-100 border border-transparent hover:bg-gray-50"}
-            `}
-    >
-      <button type="submit" className="pl-3 pr-4 text-gray-400 hover:text-[#ff5722] transition-colors">
-        <FiSearch className="size-5" />
-      </button>
-      <input
-        type="text"
-        placeholder="جستجو در هزاران محصول..."
-        className="w-full h-full bg-transparent border-none outline-none text-sm text-gray-700 px-2 placeholder:text-gray-400"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-      />
-      {/* دکمه سرچ مخفی در موبایل برای ظاهر بهتر */}
-      <div className="hidden md:block pl-1.5">
-        <button type="submit" className="bg-[#ff5722] text-white rounded-full w-8 h-8 flex items-center justify-center hover:scale-105 transition-transform">
-          <GoChevronLeft />
-        </button>
-      </div>
-    </form>
-  );
-};
-
-const MobileSearchModal = () => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const router = useRouter();
-  const [query, setQuery] = useState("");
-
-  const handleSearch = (e: FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      router.push(`/products?search=${encodeURIComponent(query)}`);
-      onClose();
-    }
-  };
-
-  return (
-    <>
-      <button onClick={onOpen} className="p-2 text-gray-700 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
-        <FiSearch className="size-6" />
-      </button>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement="top"
-        classNames={{
-          backdrop: "bg-black/40 backdrop-blur-sm",
-          base: "m-4 mt-16 rounded-2xl bg-white shadow-2xl",
-        }}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <div className="px-5 py-6">
-              <form onSubmit={handleSearch} className="relative flex items-center pt-5">
-                <input
-                  autoFocus
-                  type="text"
-                  placeholder="جستجو در هزاران محصول..."
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl h-14 px-4 pr-12 text-sm outline-none focus:border-[#ff5722] focus:bg-white transition-colors"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-                <button type="submit" className="absolute right-3 text-[#ff5722] p-2 bg-orange-50 rounded-lg">
-                  <FiSearch className="size-5" />
-                </button>
-              </form>
-            </div>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
-  );
-};
-
-export default function Navbar({
-    logo,
-}: {
-    logo: string;
-}) {
+export default function Navbar({ logo }: { logo: string }) {
   const { user } = useUser();
   const { cart } = useCart();
-  const categories = useCategories();
   const { onOpen: onAuthOpen }: any = useAuthModal();
+  const { isOpen: isSearchOpen, onOpen: onSearchOpen, onOpenChange: onSearchOpenChange, onClose: onSearchClose } = useDisclosure();
+  const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onOpenChange: onDrawerOpenChange } = useDisclosure();
 
-  const [isSticky, setIsSticky] = useState(false);
-
-  const topLinks = [
-    { href: "/contact-info", label: "تماس با ما" },
-    { href: "/about-us", label: "درباره ما" },
-  ];
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 100);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const getFullImageUrl = (path: string | null | undefined) => {
-  // ۱. اگر اصلاً لوگویی نبود یا خالی بود، لوگوی پیش‌فرض را برگردان
-  if (!path || path.trim() === "" || path === "لوگو دریافت نشد") return "/assets/logo-abaj.png"; 
-  
-  // ۲. اگر خودش آدرس کامل بود (با http شروع می‌شد)، برگردان
-  if (path.startsWith("http")) return path;
-
-  // ۳. ترکیب ایمن با دامین اصلی
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
-  
-  // مطمئن شو که اگر در مسیر / وجود نداشت، اضافه شود تا URL نشکند
-  const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  
-  return `${baseUrl}${cleanPath}`;
-};
-
-  const finalLogoUrl = getFullImageUrl(logo);
-
-  const mobileBubbleClass = `lg:hidden flex items-center pointer-events-auto border transition-all duration-500 ease-in-out ${
-    isSticky 
-      ? 'bg-white/60 backdrop-blur-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] border-white/60' 
-      : 'bg-transparent border-transparent shadow-none'
-  }`;
-
-  return (
-    <header className="w-full font-sans dir-rtl select-none z-50">
-
-      {/* --- TOP BAR (Desktop Only) --- */}
-      <div className="hidden lg:block bg-gray-50 border-b border-gray-100/50 text-gray-500 py-2">
-        <div className="container mx-auto px-4 flex justify-between items-center text-xs font-medium">
-          <div className="flex items-center gap-6">
-            {topLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="hover:text-[#ff5722] transition-colors relative group">
-                {link.label}
-                <span className="absolute -bottom-1 right-0 w-0 h-[1px] bg-[#ff5722] transition-all group-hover:w-full"></span>
-              </Link>
-            ))}
-          </div>
-          <div className="flex items-center gap-4">
-            <a href="tel:03535247891" className="flex items-center gap-1.5 hover:text-[#ff5722] transition-colors">
-              <FiPhoneCall />
-              <span className="dir-ltr font-mono font-bold tracking-wider">035-35247891</span>
-            </a>
-            <span className="w-[1px] h-3 bg-gray-300"></span>
-            <span>پشتیبانی ۷ روز هفته</span>
-          </div>
-        </div>
-      </div>
-
-      {/* --- MAIN HEADER (Middle) --- */}
-      <div className="h-[72px] lg:h-auto z-40 relative">
-        <div 
-          className={`transition-all duration-300 z-40 w-full pointer-events-none lg:pointer-events-auto
-            ${isSticky 
-              ? "fixed top-3 left-0 right-0 px-3 lg:px-0 lg:static lg:bg-white lg:shadow-none lg:border-none lg:rounded-none lg:py-6 lg:!bg-white"
-              : "relative pt-3 lg:py-6 lg:bg-white px-3 lg:px-0"
-            }`}
-        >
-          <div className="container mx-auto px-0 lg:px-4">
-            <div className="flex items-center justify-between lg:gap-8">
-
-              {/* Mobile: Hamburger & Logo Pill */}
-              <div className={`${mobileBubbleClass} gap-1 rounded-2xl px-2 py-1.5`}>
-                <MobileDrawer onAuthOpen={onAuthOpen} user={user} links={topLinks} categories={categories} />
-                <Link href="/" className="relative w-24 h-9 flex items-center justify-center ml-1 active:scale-95 transition-transform duration-300">
-                  <Image src={finalLogoUrl} alt="Logo" fill className="object-contain" priority />
-                </Link>
-              </div>
-
-              {/* Desktop: Logo */}
-              <Link href="/" className="hidden lg:flex shrink-0 items-center min-w-[120px] h-[56px]">
-                <Image
-                  src={finalLogoUrl}
-                  alt="Logo"
-                  width={200}
-                  height={80}
-                  className="h-auto w-auto max-h-14"
-                  priority
-                />
-              </Link>
-
-              {/* Mobile: Left Actions Container (Search + Cart/Login) */}
-              <div className="lg:hidden flex items-center gap-2">
-                {/* Search Bubble */}
-                <div className={`${mobileBubbleClass} justify-center rounded-full p-0.5`}>
-                  <MobileSearchModal />
-                </div>
-
-                {/* Cart & Login Bubble */}
-                <div className={`${mobileBubbleClass} gap-1 rounded-full px-1.5 py-1.5`}>
-                  {!user?.identity && (
-                    <button onClick={onAuthOpen} className="p-1.5 text-gray-700 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
-                      <CiLogin className="size-6" />
-                    </button>
-                  )}
-                  <div className="relative">
-                    {/* نسخه ساده‌تر سبد خرید برای موبایل */}
-                    <Link href="/profile/cart" className="flex items-center justify-center w-9 h-9 rounded-full bg-white/60 text-gray-700 relative hover:bg-white/80 active:scale-90 active:bg-white/40 transition-all duration-300">
-                      <FiShoppingCart className="size-5" />
-                      {cart && cart.total_items > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm border-2 border-white">
-                          {cart.total_items}
-                        </span>
-                      )}
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Desktop: Search */}
-              <div className="hidden lg:block flex-1 max-w-[600px] mx-auto">
-                <SearchForm />
-              </div>
-
-              {/* Desktop: Actions (User, Cart, etc) */}
-              <div className="hidden lg:flex items-center justify-end gap-3">
-                {/* دکمه ورود / پنل */}
-
-
-                <span className="w-[1px] h-8 bg-gray-100 mx-1"></span>
-
-                {/* سبد خرید */}
-                <div className="relative group">
-                  <div className="relative z-10">
-                    {cart && cart.items && cart.items.length > 0 ? (
-                      <CartDrawer cart={cart} />
-                    ) : (
-                      <Link href="/profile/cart" className="w-11 h-11 flex items-center justify-center rounded-xl bg-orange-50 text-[#ff5722] border border-orange-100 hover:shadow-lg hover:shadow-orange-100 hover:-translate-y-0.5 transition-all duration-300 relative">
-                        <FiShoppingCart className="size-5" />
-                        {cart && cart.total_items > 0 && (
-                          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-lg">
-                            {cart.total_items}
-                          </span>
-                        )}
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* --- STICKY BOTTOM BAR (Desktop Navigation) --- */}
-      <div
-        className={`hidden lg:block transition-all duration-500 ease-in-out ${isSticky
-            ? "fixed top-4 left-6 right-6 z-40 bg-white/60 backdrop-blur-md shadow-lg py-2 animate-slideDown rounded-2xl border border-white/10"
-            : "relative bg-white py-0 border-t border-gray-100"
-          }`}
-        style={{ transitionProperty: 'top, left, right, transform, background-color, box-shadow' }}
-      >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-[56px]">
-
-            <div className="flex items-center gap-8 h-full">
-
-              {/* دسته‌بندی */}
-              <CategoriesButton categories={categories} />
-
-              {/* لینک‌های اصلی */}
-              <nav className="flex items-center gap-8 text-[14px] font-medium text-gray-600 mr-[3rem]">
-                {[
-                  { name: "صفحه اصلی", href: "/" },
-                  { name: "فروشگاه", href: "/products" },
-                  { name: "وبلاگ آموزشی", href: "/articles" },
-                  { name: "درباره ما", href: "/about-us" },
-                  { name: "تماس با ما", href: "/contact-info" },
-                  { name: "تخفیف‌های ویژه", href: "/products/offers", special: true },
-                ].map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`
-                                relative py-4 transition-colors hover:text-[#ff5722]
-                                ${item.special ? "text-red-500 font-bold" : ""}
-                             `}
-                  >
-                    {item.name}
-                    {/* هاور افکت زیرخط */}
-                    <span className="absolute bottom-2 right-0 w-0 h-[2px] bg-[#ff5722] rounded-full transition-all duration-300 group-hover:w-full"></span>
-                  </Link>
-                ))}
-              </nav>
-
-
-            </div>
-            <div className="flex">
-              <div className="relative ml-[1rem]">
-                {user?.identity ? (
-                  <UserDropdown user={user} />
-                ) : (
-                  <button
-                    onClick={onAuthOpen}
-                    className="flex items-center gap-2 border border-gray-200 text-gray-700 bg-white px-4 py-2.5 rounded-xl hover:border-[#ff5722] hover:text-[#ff5722] hover:bg-orange-50 transition-all duration-300 text-sm font-bold shadow-sm"
-                  >
-                    <FiUser className="size-5" />
-                    <span>ورود | ثبت نام</span>
-                  </button>
-                )}
-              </div>
-              {/* اگر اسکرول شده باشد، لوگوی کوچک و سبد خرید نمایش داده شود */}
-              <div className={`flex items-center gap-4 transition-all duration-300 ${isSticky ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-5 pointer-events-none"}`}>
-                <div className="h-6 w-[1px] bg-gray-300"></div>
-                <Link href="/profile/cart" className="flex items-center gap-2 text-gray-700 hover:text-[#ff5722] transition-colors relative">
-                  <span className="text-sm font-bold">سبد خرید</span>
-                  <div className="relative">
-                    <FiShoppingCart className="size-5" />
-                    {cart && cart.total_items > 0 && (
-                      <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full border-2 border-white text-white text-[10px] font-bold flex items-center justify-center shadow-lg">
-                        {cart.total_items}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-    </header>
-  );
-}
-
-
-// ----------------------------------------------------------------------
-// --- MOBILE DRAWER (بهبود یافته) ---
-// ----------------------------------------------------------------------
-
-type MobileCategoryProps = {
-  categories: CategoryNode[];
-  handleBack: () => void;
-  setStack: any; stack: any; setCurrent: any; setTitle: any; onClose: any; current: any;
-};
-
-function MobileCategoryList({
-  categories,
-  stack,
-  setStack,
-  setCurrent,
-  current,
-  setTitle,
-  onClose,
-  handleBack
-}: MobileCategoryProps) {
-  const handleEnter = (category: CategoryNode) => {
-    if (category.children?.length) {
-      setStack((prev: any) => [...prev, current ?? categories]);
-      setCurrent(category.children);
-      setTitle(category.name);
+  const handleSearchSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(searchQuery)}`);
+      onSearchClose();
     }
   };
 
-  const listToRender = current || categories;
+  const finalLogoUrl =
+    !logo ||
+    logo.trim() === "" ||
+    logo === "لوگو دریافت نشد" ||
+    logo.includes("2026-08-09_11.45.47.jpg")
+      ? "/logo.png"
+      : logo.startsWith("http")
+      ? logo
+      : `${process.env.NEXT_PUBLIC_API_URL || "https://api.khooshtam.com"}${logo.startsWith("/") ? logo : `/${logo}`}`;
 
-  return (
-    <div className="flex flex-col h-full">
-      {stack.length > 0 && (
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-2 p-4 bg-orange-50 text-[#ff5722] font-bold text-sm"
-        >
-          <GoChevronRight className="text-xl" />
-          بازگشت
-        </button>
-      )}
-
-      <ul className="flex flex-col px-2 py-2">
-        {listToRender?.map((cat: CategoryNode) => (
-          <li key={cat.id} className="mb-1">
-            {cat.children?.length ? (
-              <button
-                onClick={() => handleEnter(cat)}
-                className="flex items-center justify-between w-full px-4 py-3 bg-gray-50 rounded-xl text-gray-700 hover:bg-gray-100 active:scale-[0.98] transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full bg-orange-200"></span>
-                  <span className="text-sm font-bold">{cat.name}</span>
-                </div>
-                <GoChevronLeft className="text-gray-400" />
-              </button>
-            ) : (
-              <Link
-                href={`/products/?category_id=${cat.id}`}
-                onClick={onClose}
-                className="flex items-center justify-between w-full px-4 py-3 text-gray-600 hover:text-[#ff5722] hover:bg-orange-50 rounded-xl text-sm transition-all"
-              >
-                {cat.name}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-export function MobileDrawer({ categories, links, user, onAuthOpen }: { categories: CategoryNode[]; links: any; user: User | null; onAuthOpen: () => void; }) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [stack, setStack] = useState<CategoryNode[][]>([]);
-  const [current, setCurrent] = useState<CategoryNode[] | null>(null);
-  const [title, setTitle] = useState("دسته بندی محصولات");
-
-  const handleBack = () => {
-    if (stack.length === 0) return;
-    const prev = stack[stack.length - 1];
-    setStack((prevStack) => prevStack.slice(0, -1));
-    setCurrent(prev ?? null);
-    if (stack.length === 1) setTitle("دسته بندی محصولات");
-  };
-
-  const handleOpenChange = (open: boolean) => {
-    onOpenChange(open);
-    if (!open) {
-      setTimeout(() => {
-        setStack([]);
-        setCurrent(null);
-        setTitle("دسته بندی محصولات");
-      }, 300);
-    }
-  }
+  const navLinks = [
+    { name: "صفحه اصلی", href: "/" },
+    { name: "سوخاری و کتلت", href: "/products?category_id=2" },
+    { name: "عطاری و آردها", href: "/products?category_id=4" },
+    { name: "سبزیجات معطر", href: "/products?category_id=1" },
+    { name: "درباره ما", href: "/about-us" },
+    { name: "تماس با ما", href: "/contact-info" },
+  ];
 
   return (
     <>
-      <button onClick={onOpen} className="lg:hidden p-2 -mr-2 text-gray-800 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
-        <HiOutlineMenuAlt3 className="size-7" />
-      </button>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 h-[96px] sm:h-[105px] flex items-center justify-between px-4 sm:px-8 lg:px-12 transition-all duration-300 select-none ${
+          isScrolled
+            ? "bg-white/95 backdrop-blur-xl border-b border-zinc-200/90 shadow-md"
+            : "bg-white/95 backdrop-blur-md border-b border-zinc-200/70 shadow-sm"
+        }`}
+        dir="rtl"
+      >
+        {/* 1. Right: Wordmark Brand */}
+        <div className="flex items-center gap-3 sm:gap-5">
+          <button
+            onClick={onDrawerOpen}
+            className="lg:hidden p-2 text-zinc-800 hover:text-red-600 transition-colors"
+            aria-label="منو"
+          >
+            <HiBars3 className="size-7" />
+          </button>
 
-      <Drawer
-        hideCloseButton
-        isOpen={isOpen}
-        onOpenChange={handleOpenChange}
-        placement="right"
+          <Link href="/" className="flex items-center group py-1" aria-label="صفحه اصلی">
+            <div className="relative h-16 sm:h-20 md:h-22 w-auto max-w-[260px] sm:max-w-[340px] md:max-w-[400px] flex items-center justify-start group-hover:scale-105 transition-transform duration-300">
+              <img
+                src={finalLogoUrl}
+                alt="صنایع غذایی خوش طعم کماشدون"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/logo.png";
+                }}
+                className="h-14 sm:h-18 md:h-20 lg:h-22 w-auto max-w-full object-contain filter drop-shadow-md"
+              />
+            </div>
+          </Link>
+        </div>
+
+        {/* 2. Center: Clean Navigation Links (Desktop) */}
+        <nav className="hidden lg:flex items-center gap-7 text-[15px] font-bold text-zinc-900">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="py-1 hover:text-red-600 transition-colors relative group"
+            >
+              {link.name}
+              <span className="absolute -bottom-1.5 right-0 w-0 h-[2.5px] bg-gradient-to-l from-red-600 to-amber-500 transition-all duration-300 group-hover:w-full rounded-full" />
+            </Link>
+          ))}
+        </nav>
+
+        {/* 3. Left: Action Buttons (Search pill, Cart, User) */}
+        <div className="flex items-center gap-3">
+          {/* Search Pill */}
+          <button
+            onClick={onSearchOpen}
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 bg-zinc-50 hover:border-red-500 hover:bg-white text-zinc-800 text-sm font-semibold transition-all shadow-sm"
+          >
+            <FiSearch className="size-4 text-red-600" />
+            <span className="hidden sm:inline text-xs font-semibold">جستجو</span>
+          </button>
+
+          {/* Cart Trigger Pill */}
+          <div>
+            {cart && cart.items && cart.items.length > 0 ? (
+              <CartDrawer cart={cart} />
+            ) : (
+              <Link
+                href="/profile/cart"
+                className="flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 bg-white hover:border-red-500 text-zinc-900 text-sm font-semibold transition-all shadow-sm"
+              >
+                <FiShoppingCart className="size-4 text-red-600" />
+                <span className="text-xs hidden sm:inline font-semibold">سبد خرید</span>
+                {cart && cart.total_items > 0 && (
+                  <span className="bg-red-600 text-white font-black text-[11px] px-1.5 py-0.2 rounded-full shadow-sm">
+                    {cart.total_items.toLocaleString("fa-IR")}
+                  </span>
+                )}
+              </Link>
+            )}
+          </div>
+
+          {/* User Auth Pill */}
+          <div>
+            {user?.identity ? (
+              <UserDropdown user={user} />
+            ) : (
+              <button
+                onClick={onAuthOpen}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs sm:text-sm font-black transition-all shadow-sm"
+              >
+                <FiUser className="size-4 text-red-600" />
+                <span className="hidden sm:inline">ورود</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Search Modal */}
+      <Modal
+        isOpen={isSearchOpen}
+        onOpenChange={onSearchOpenChange}
+        placement="top"
         classNames={{
-          base: "max-w-[85%] sm:max-w-[320px] rounded-l-3xl overflow-hidden", // گوشه‌های گرد برای دراور
-          backdrop: "bg-black/20 backdrop-blur-sm"
+          backdrop: "bg-black/50 backdrop-blur-sm",
+          base: "m-4 mt-20 max-w-xl rounded-3xl bg-white border border-zinc-200 shadow-2xl p-6 text-zinc-900",
         }}
       >
-        <DrawerContent className="bg-white">
+        <ModalContent>
           {(onClose) => (
-            <>
-              <DrawerHeader className="border-b border-gray-100 bg-white py-5 px-5 flex items-center justify-between sticky top-0 z-10">
-                <span className="text-lg font-black text-gray-800 tracking-tight">{title}</span>
-                <button onClick={onClose} className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors">
+            <div dir="rtl">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200 mb-4">
+                <span className="text-xs font-bold text-red-600">
+                  جستجوی سریع محصولات خوش‌طعم
+                </span>
+                <button onClick={onClose} className="text-zinc-400 hover:text-zinc-900">
                   <HiXMark className="size-5" />
                 </button>
-              </DrawerHeader>
+              </div>
 
-              <DrawerBody className="p-0 overflow-y-auto scrollbar-hide">
-                <MobileCategoryList
-                  categories={categories}
-                  stack={stack} setStack={setStack}
-                  current={current} setCurrent={setCurrent}
-                  setTitle={setTitle} onClose={onClose}
-                  handleBack={handleBack}
+              <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="جستجوی پودر سوخاری، کتلت، ادویه، سبزی خشک..."
+                  className="w-full bg-zinc-50 border border-zinc-300 focus:border-red-500 rounded-xl h-12 px-4 pr-11 text-xs sm:text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-colors"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
+                <button type="submit" className="absolute right-3.5 text-red-600 p-1">
+                  <FiSearch className="size-4" />
+                </button>
+              </form>
 
-                {!current && (
-                  <div className="mt-4 px-4 pb-8">
-                    <div className="text-xs font-bold text-gray-400 mb-3 px-2">دسترسی سریع</div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {links.map((link: any) => (
-                        <Link key={link.href} href={link.href} onClick={onClose} className="bg-gray-50 text-gray-600 text-xs font-bold py-3 rounded-xl text-center hover:bg-orange-50 hover:text-[#ff5722] transition-colors">
-                          {link.label}
-                        </Link>
-                      ))}
-                    </div>
+              <div className="flex flex-wrap items-center gap-2 mt-4 text-xs">
+                <span className="text-zinc-500 text-[11px]">پیشنهادها:</span>
+                <Link
+                  href="/products?search=پودر سوخاری"
+                  onClick={onClose}
+                  className="px-2.5 py-1 rounded-full bg-zinc-100 hover:bg-red-50 hover:text-red-700 text-zinc-700 text-[11px] border border-zinc-200 font-medium transition-colors"
+                >
+                  پودر سوخاری پولکی
+                </Link>
+                <Link
+                  href="/products?search=کتلت"
+                  onClick={onClose}
+                  className="px-2.5 py-1 rounded-full bg-zinc-100 hover:bg-red-50 hover:text-red-700 text-zinc-700 text-[11px] border border-zinc-200 font-medium transition-colors"
+                >
+                  پودر کتلت سویا
+                </Link>
+                <Link
+                  href="/products?search=قورمه"
+                  onClick={onClose}
+                  className="px-2.5 py-1 rounded-full bg-zinc-100 hover:bg-red-50 hover:text-red-700 text-zinc-700 text-[11px] border border-zinc-200 font-medium transition-colors"
+                >
+                  سبزی قورمه
+                </Link>
+              </div>
+            </div>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        isOpen={isDrawerOpen}
+        onOpenChange={onDrawerOpenChange}
+        placement="right"
+        classNames={{
+          base: "max-w-[280px] bg-white text-zinc-900 border-l border-zinc-200 shadow-2xl",
+          backdrop: "bg-black/50 backdrop-blur-sm",
+        }}
+      >
+        <DrawerContent>
+          {(onClose) => (
+            <div className="p-6 flex flex-col justify-between h-full" dir="rtl">
+              <div>
+                <div className="flex items-center justify-between pb-5 border-b border-zinc-200 mb-6">
+                  <div className="relative h-16 w-auto max-w-[220px] flex items-center">
+                    <img
+                      src={finalLogoUrl}
+                      alt="خوش طعم کماشدون"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/logo.png";
+                      }}
+                      className="h-14 w-auto max-w-full object-contain filter drop-shadow-sm"
+                    />
                   </div>
-                )}
-              </DrawerBody>
-
-              <DrawerFooter className="border-t border-gray-100 bg-white p-5">
-                {!user?.identity ? (
-                  <button onClick={() => { onAuthOpen(); onClose(); }} className="w-full flex items-center justify-center gap-3 bg-[#ff5722] text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-orange-200 hover:shadow-orange-300 transition-all active:scale-95">
-                    <CiLogin className="size-6 stroke-[1px]" />
-                    ورود یا ثبت نام
+                  <button onClick={onClose} className="p-1 text-zinc-400 hover:text-zinc-900">
+                    <HiXMark className="size-6" />
                   </button>
-                ) : (
-                  <div className="w-full bg-gray-50 p-4 rounded-2xl flex items-center justify-between border border-gray-100">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-[#ff5722] text-white flex items-center justify-center font-bold text-lg shadow-md">
-                        {user.identity.first_name?.[0] || <FiUser />}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-gray-800">{user.identity.first_name || "کاربر عزیز"}</span>
-                        <Link href="/profile" onClick={onClose} className="text-[11px] text-[#ff5722] font-medium hover:underline">
-                          مشاهده حساب کاربری
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </DrawerFooter>
-            </>
+                </div>
+
+                <nav className="flex flex-col gap-3 text-base font-bold">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={onClose}
+                      className="py-3 px-4 rounded-xl text-zinc-900 hover:text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+
+              <div className="pt-4 border-t border-zinc-200 text-xs text-zinc-500 font-semibold text-center">
+                صنایع غذایی خوش‌طعم کماشدون
+              </div>
+            </div>
           )}
         </DrawerContent>
       </Drawer>

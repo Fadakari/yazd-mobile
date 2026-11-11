@@ -1,11 +1,12 @@
 "use client";
+
 import React from "react";
 import Card from "./Card";
 import PaginationBox from "./PaginationBox";
 import ProductType from "@/types/product";
 import { convertNumberToPersian } from "@/utils/converNumbers";
 
-function Products({
+export default function Products({
   searchParams,
   products,
   pagination = { count: 0, page: 1 },
@@ -17,24 +18,24 @@ function Products({
   href?: string;
 }) {
   return (
-    <>
-      <div className="grid grid-cols-1 xs:grid-cols-2  lg:grid-cols-3 gap-4">
-        {products.length > 0 ? (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+        {products && products.length > 0 ? (
           products.map((product) => <Card key={product.id} item={product} />)
         ) : (
-          <div className="col-span-4 text-zinc-500 bg-white shadow rounded-xs p-5">
-            <p className="px-4 py-2 rounded-xs bg-primary/20 w-full border border-primary/40 text-primary-800 text-base my-4">
-              جستجو برای این ترکیب از فیلترها با هیچ کالایی هم‌خوانی نداشت.
+          <div className="col-span-full bg-white border border-zinc-200/90 backdrop-blur-md rounded-2xl p-8 text-center space-y-4">
+            <p className="text-base text-red-700 font-bold">
+              متأسفانه برای این ترکیب از فیلترها کالایی یافت نشد.
             </p>
-            <p>تلاش کنید</p>
-            <p>- تعدادی از فیلتر ها را حذف کنید.</p>
-            <p>- در جستجو از عبارت‌های متداول‌تر استفاده کنید.</p>
+            <p className="text-xs text-zinc-500">
+              پیشنهاد می‌کنیم فیلترهای انتخابی را تغییر دهید یا واژه عمومی‌تری جستجو کنید.
+            </p>
           </div>
         )}
       </div>
 
       <div
-        className="bg-white shadow p-3 rounded-sm flex justify-between items-center"
+        className="bg-white border border-zinc-200/90 backdrop-blur-md p-4 rounded-2xl flex flex-wrap justify-between items-center gap-4 text-xs shadow-lg shadow-zinc-900/5"
         dir="rtl"
       >
         <PaginationBox
@@ -43,13 +44,14 @@ function Products({
           count={pagination?.count}
           page={Number(pagination.page) || 1}
         />
-        <div>
-          <span>مجموع نتایج : </span>
-          <span>{convertNumberToPersian(pagination.count)}</span>
+        <div className="text-zinc-700 font-medium">
+          <span>مجموع محصولات: </span>
+          <span className="text-red-700 font-black mr-1">
+            {convertNumberToPersian(pagination.count)}
+          </span>
+          <span className="text-zinc-500 mr-1">عدد</span>
         </div>
       </div>
-    </>
+    </div>
   );
 }
-
-export default Products;

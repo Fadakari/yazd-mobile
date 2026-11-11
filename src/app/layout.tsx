@@ -8,7 +8,7 @@ import { AuthModalProvider } from "@/context/AuthModalProvider";
 import AuthModal from "@/components/AuthModal";
 import { CategoriesProvider } from "@/context/CategoriesContext";
 import { CartProvider } from "@/context/CartContextProvider";
-import { dana, iranyekan, noora, pelak } from "@/utils/fonts";
+import { dana, iranyekan, noora, pelak, peyda } from "@/utils/fonts";
 import LayoutWrapper from "./LayoutWrapper";
 import ConsoleLog from "@/components/ConsoleLog";
 import Navbar from "@/components/Navbar";
@@ -99,13 +99,13 @@ export default async function RootLayout({
   // استخراج امن آرایه دسته‌بندی‌ها
   const safeCategories = Array.isArray(result) ? result : (result?.data || result?.results || []);
   return (
-    <html lang="fa-IR" dir="rtl" className="scroll-smooth bg-[#f9f9f9]">
+    <html lang="fa-IR" dir="rtl" className="scroll-smooth bg-[#f8fafc] text-[#09090b]">
       <body
       suppressHydrationWarning={true}
-        className={`${iranyekan.variable} ${pelak.variable} ${noora.variable} ${dana.variable} ${iranyekan.className} w-full min-h-screen relative antialiased text-[#212529] flex flex-col overflow-x-hidden`}
+        className={`${peyda.variable} ${iranyekan.variable} ${pelak.variable} ${noora.variable} ${dana.variable} ${peyda.className} w-full min-h-screen relative antialiased bg-[#f8fafc] text-[#09090b] flex flex-col overflow-x-hidden`}
       >
         <NextTopLoader
-          color="#ff5722"
+          color="#f59e0b"
           initialPosition={0.08}
           crawlSpeed={200}
           height={3}

@@ -7,6 +7,7 @@ import Products from "./Products";
 import FilterBox from "./FilterBox";
 import SortBox from "./SortBox";
 import { useCategories } from "@/context/CategoriesContext";
+
 type LayoutShellProps = {
   products: ProductType[];
   searchParams: any;
@@ -15,6 +16,7 @@ type LayoutShellProps = {
   brands?: any[];
   href?: string;
 };
+
 export default function LayoutShell({
   searchParams,
   products,
@@ -57,7 +59,7 @@ export default function LayoutShell({
 
   const breadcrumbItems = [
     { label: "خانه", href: "/" },
-    { label: "محصولات", href: "/products" },
+    { label: "فهرست محصولات", href: "/products" },
     ...(categoryPath
       ? categoryPath.map((cat, index) => ({
           label: cat.name,
@@ -68,12 +70,15 @@ export default function LayoutShell({
         }))
       : []),
   ];
+
   return (
-    <div className={"space-y-5 container customSm:max-w-[566px]"}>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       <BreadcrumbsBox items={breadcrumbItems} />
-      <section className="flex gap-4 w-full h-full ">
-        <FilterBox selected={selected} brands={brands} />
-        <div className="size-full space-y-5">
+      <section className="flex flex-col lg:flex-row gap-6 w-full h-full items-start">
+        <aside className="w-full lg:w-72 shrink-0">
+          <FilterBox selected={selected} brands={brands} />
+        </aside>
+        <div className="w-full flex-1 space-y-6">
           <SortBox />
           <Products
             href={href}

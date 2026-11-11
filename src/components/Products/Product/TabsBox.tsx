@@ -1,4 +1,5 @@
 "use client";
+
 import { Tabs, Tab } from "@heroui/react";
 import { FaFileAlt } from "react-icons/fa";
 import { HiChatAlt2 } from "react-icons/hi";
@@ -31,7 +32,7 @@ export default function TabsBox({
             ...attribs,
             class:
               (attribs.class || "") +
-              " text-cyan-400 spoiler-link relative no-underline",
+              " text-amber-400 hover:text-amber-300 underline",
           },
         };
       },
@@ -46,7 +47,7 @@ export default function TabsBox({
 
       const fullSrc = src.startsWith("http")
         ? src
-        : `https://mpttools.co${src}`;
+        : `${process.env.NEXT_PUBLIC_API_URL || "https://api.khooshtam.com"}${src.startsWith("/") ? src : `/${src}`}`;
 
       const widthNum = width ? parseInt(width) : 600;
       const heightNum = height ? parseInt(height) : 400;
@@ -57,52 +58,54 @@ export default function TabsBox({
           alt={alt || ""}
           width={widthNum}
           height={heightNum}
-          className="max-w-[500px] max-h-80 object-contain mx-auto"
+          className="max-w-[500px] max-h-80 object-contain mx-auto rounded-xl my-4"
         />
       );
     }
   };
 
   return (
-    <div className="flex w-full flex-col ">
+    <div className="flex w-full flex-col">
       <Tabs
         disableAnimation
         radius="none"
-        aria-label="Options"
+        aria-label="بخش‌های جزئیات محصول"
         variant="light"
-        className="w-full p-0 "
+        className="w-full p-0"
         classNames={{
-          base: "bg-[#f8f8f8] !border-b !border-[#dfdfdf] ",
-          tabList: "p-0 m-0 !-mb-1",
-          tab: "h-full w-full px-6 py-4 text-gray-600 data-[selected=true]:bg-white  data-[selected=true]:text-zinc-500 text-zinc-500",
+          base: "bg-zinc-50 border-b border-zinc-200",
+          tabList: "p-0 m-0",
+          tab: "h-full px-6 py-4 text-zinc-600 data-[selected=true]:bg-white data-[selected=true]:text-red-700 font-black transition-colors",
         }}
       >
         <Tab
-          key="photos"
+          key="description"
           title={
-            <div className="flex items-center space-x-2">
-              <FaFileAlt className="size-7 !text-zinc-500" />
-              <i className="fad fa-comments-alt"></i>
-
-              <span className="text-zinc-500 text-base">توضیات کالا</span>
+            <div className="flex items-center gap-2">
+              <FaFileAlt className="size-4" />
+              <span className="text-sm">توضیحات و مشخصات محصول</span>
             </div>
           }
           className="w-full h-full"
         >
-          <div className="prose p-5 w-full max-w-full">
-            <div>{parse(sanitizedHtml, { replace: transform })}</div>
+          <div className="prose max-w-full p-6 text-zinc-700 leading-relaxed text-sm">
+            {description_2 ? (
+              <div>{parse(sanitizedHtml, { replace: transform })}</div>
+            ) : (
+              <p className="text-slate-500 text-center py-6">توضیحات تکمیلی برای این محصول ثبت نشده است.</p>
+            )}
           </div>
         </Tab>
         <Tab
-          key="music"
+          key="comments"
           title={
-            <div className="flex items-center space-x-2">
-              <HiChatAlt2 className="size-7 !text-zinc-500" />
-              <span className="text-zinc-500 text-base">نقد و نظرات</span>
+            <div className="flex items-center gap-2">
+              <HiChatAlt2 className="size-4" />
+              <span className="text-sm">نظرات خریداران</span>
             </div>
           }
         >
-          <div className="p-5">
+          <div className="p-6">
             <Comments comments={comments} productId={productId} />
           </div>
         </Tab>

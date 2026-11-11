@@ -9,55 +9,53 @@ import { GetSiteSettings } from "@/services/siteActions";
 interface aboutT {
   description: string;
   id: number;
-
   image: string | null;
   order: number;
-
   title: string;
   video: string | null;
 }
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title
+  const siteTitle = settings?.site_title || "خوش طعم کماشدون";
   return {
     title: `درباره ما | ${siteTitle}`,
-    description:
-      `با ${siteTitle} آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.`,
+    description: `داستان و تاریخچه فعالیت ${siteTitle}؛ تعهد ما به کیفیت، نوآوری در ساخت چاشنی‌ها و خدمات برتر به مشتریان.`,
     keywords: [
       "درباره ما",
-      `${siteTitle}`,
-      `فروشگاه ${siteTitle}`,
-      `داستان ${siteTitle}`,
-      `خدمات ${siteTitle}`,
+      siteTitle,
+      "داستان برند خوش طعم",
+      "صنایع غذایی کماشدون",
     ],
     openGraph: {
-      title: "درباره ما",
-      description:
-        `با ${siteTitle} آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.`,
+      title: `درباره ما | ${siteTitle}`,
+      description: `داستان و تاریخچه فعالیت ${siteTitle}؛ تعهد ما به کیفیت و نوآوری.`,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/about-us`,
-      siteName: `${siteTitle}`,
+      siteName: siteTitle,
       locale: "fa_IR",
       type: "website",
     },
     twitter: {
       card: "summary",
-      title: "درباره ما",
-      description:
-        `با ${siteTitle} آشنا شوید؛ داستان ما، اهداف و خدمات فروشگاه ${siteTitle}.`,
+      title: `درباره ما | ${siteTitle}`,
+      description: `داستان و تاریخچه فعالیت صنایع غذایی خوش طعم.`,
     },
     robots: {
       index: true,
       follow: true,
     },
   };
-};
+}
+
 const transform = (node: DOMNode) => {
   if (node.type === "tag" && node.name === "img") {
     const { src, alt, width, height } = (node as Element).attribs;
 
     if (!src) return null;
 
-    const fullSrc = src.startsWith("http") ? src : `https://mpttools.co${src}`;
+    const fullSrc = src.startsWith("http")
+      ? src
+      : `${process.env.NEXT_PUBLIC_API_URL || "https://api.khooshtam.com"}${src.startsWith("/") ? src : `/${src}`}`;
 
     const widthNum = width ? parseInt(width) : 600;
     const heightNum = height ? parseInt(height) : 400;
@@ -65,89 +63,88 @@ const transform = (node: DOMNode) => {
     return (
       <img
         src={fullSrc}
-        alt={alt || ""}
+        alt={alt || "درباره خوش طعم"}
         width={widthNum}
         height={heightNum}
-        className="max-w-[500px] max-h-80 object-contain mx-auto"
+        className="max-w-[500px] max-h-80 object-contain mx-auto rounded-2xl my-4 border border-zinc-200"
         referrerPolicy="no-referrer"
       />
     );
   }
 };
-async function page() {
+
+export default async function Page() {
   const data = await homeAboutUsList();
   const aboutUs: aboutT[] = Array.isArray(data) ? data : [];
 
   return (
-    <div className="space-y-10">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
       <BreadcrumbsBox
         title="درباره ما"
-        items={[{ label: "خانه", href: "/" }, { label: "درباره ما" }]}
+        items={[{ label: "خانه", href: "/" }, { label: "داستان اصالت ما" }]}
       />
-      <div className="flex flex-col gap-5 bg-white p-5 shadow rounded container customSm:max-w-[566px]">
-        <h1 className="pr-2 -mb-2 font-semibold text-lg">درباره ما</h1>
-        <div className="w-full gap-3 flex">
-          <div className="bg-primary w-[7%] h-px" />
-          <div className="h-px bg-zinc-400 w-full" />
+
+      <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-10 shadow-xl space-y-8">
+        <div className="space-y-3 border-b border-zinc-200 pb-6">
+          <span className="text-xs text-red-700 font-bold tracking-wider">
+            صنایع غذایی خوش طعم کماشدون • از سال ۱۳۷۷
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-950">
+            داستان اصالت، تخصص و همراهی
+          </h1>
         </div>
+
         {[...aboutUs]
           .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
           .map((about) => {
             const sanitizedHtml = sanitizeHtml(about.description ?? "", {
-              allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+              allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "br", "p", "strong", "span"]),
               allowedAttributes: {
                 ...sanitizeHtml.defaults.allowedAttributes,
                 img: ["src", "alt", "width", "height", "class", "style"],
                 a: ["href", "name", "target", "class"],
               },
-              transformTags: {
-                a: (tagName, attribs) => {
-                  return {
-                    tagName: "a",
-                    attribs: {
-                      ...attribs,
-                      class:
-                        (attribs.class || "") +
-                        " text-cyan-400 spoiler-link relative no-underline",
-                    },
-                  };
-                },
-              },
             });
+
             return (
-              <div key={about.id} className="flex flex-col gap-3">
-                <h2 className="text-3xl font-semibold">{about.title}</h2>
+              <article key={about.id} className="space-y-6 pt-4 border-b border-zinc-200 last:border-b-0 pb-8">
+                <h2 className="text-xl sm:text-2xl font-black text-zinc-950">
+                  {about.title}
+                </h2>
+
                 {about.image && (
-                  <img
-                    width={1080}
-                    height={1920}
-                    src={about.image}
-                    alt={about.title}
-                    className="rounded-lg w-full aspect-auto max-h-full mx-auto"
-                    loading="lazy"
-                    referrerPolicy="no-referrer" /* <--- فقط همین یک خط را اضافه کن */
-                  />
+                  <div className="relative rounded-2xl overflow-hidden border border-zinc-200 shadow-md max-w-2xl mx-auto my-6">
+                    <img
+                      src={about.image}
+                      alt={about.title}
+                      className="w-full object-cover"
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
                 )}
+
                 {about.video && (
-                  <video
-                    className="w-full aspect-video rounded-xl shadow-lg object-cover"
-                    controls
-                    preload="metadata"
-                    aria-label="About section video"
-                  >
-                    <source src={about.video} type="video/mp4" />
-                    <p>Your browser does not support the video tag.</p>
-                  </video>
+                  <div className="rounded-2xl overflow-hidden border border-zinc-200 shadow-md max-w-2xl mx-auto my-6">
+                    <video
+                      className="w-full aspect-video object-cover"
+                      controls
+                      preload="metadata"
+                      aria-label="ویدیو درباره ما"
+                    >
+                      <source src={about.video} type="video/mp4" />
+                      <p>مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.</p>
+                    </video>
+                  </div>
                 )}
-                <div className="prose [&_a]:spoiler-link max-w-full">
+
+                <div className="prose max-w-none text-zinc-700 leading-relaxed text-sm sm:text-base space-y-4">
                   {parse(sanitizedHtml, { replace: transform })}
                 </div>
-              </div>
+              </article>
             );
           })}
       </div>
     </div>
   );
 }
-
-export default page;

@@ -17,7 +17,6 @@ export default function ProductPriceBox({ product }: Props) {
   let discountPrice =
     typeof product.discount_price === "number" ? product.discount_price : null;
 
-  // اگر تخفیف 0 بود، برابر با قیمت اصلی بگذار (یعنی تخفیفی نیست)
   if (discountPrice === 0) {
     discountPrice = basePrice;
   }
@@ -35,9 +34,6 @@ export default function ProductPriceBox({ product }: Props) {
   const oldTotal = basePrice + colorPrice + materialPrice;
   const finalTotal = finalPrice + colorPrice + materialPrice;
   
-  // تخفیف فقط زمانی وجود دارد که:
-  // 1. قیمت تخفیفی > 0 باشد (یعنی یک قیمت واقعی است)
-  // 2. قیمت تخفیفی < قیمت اصلی باشد
   const hasDiscount =
     discountPrice !== null && discountPrice > 0 && discountPrice < basePrice && basePrice > 0;
 
@@ -46,22 +42,22 @@ export default function ProductPriceBox({ product }: Props) {
     : 0;
 
   return (
-    <div className="px-5 pt-3 text-center space-y-2 rounded-md flex flex-col justify-center items-center">
+    <div className="text-center space-y-2 flex flex-col justify-center items-center">
       {hasDiscount && (
-        <div className="flex items-center justify-start mb-2">
-          <p className="text-base line-through text-zinc-500">
+        <div className="flex items-center justify-center gap-2 mb-1">
+          <p className="text-sm line-through text-zinc-500">
             {oldTotal.toLocaleString("fa-IR")} تومان
           </p>
 
-          <div className="text-sm text-red-600 bg-red-200 px-2.5 py-1 rounded-full mr-2 pt-1.5 font-bold">
-            <span>{discountPercent}%</span>
-          </div>
+          <span className="text-xs text-white bg-gradient-to-r from-red-600 to-rose-600 px-2.5 py-0.5 rounded-full font-black shadow-md shadow-red-500/30">
+            {discountPercent.toLocaleString("fa-IR")}٪ تخفیف
+          </span>
         </div>
       )}
 
-      <p className="font-dana font-bold text-2xl">
-        {finalTotal.toLocaleString("fa-IR")}
-        <span className="font-light text-base ml-1">تومان</span>
+      <p className="font-black text-2xl text-red-700 flex items-center justify-center gap-1.5">
+        <span>{finalTotal.toLocaleString("fa-IR")}</span>
+        <span className="font-normal text-sm text-zinc-700">تومان</span>
       </p>
     </div>
   );

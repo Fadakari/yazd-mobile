@@ -1,6 +1,7 @@
 import BlogCard from "@/components/BlogCard";
 import ErrorMessage from "@/components/ErrorMessage";
 import PaginationBox from "@/components/Products/PaginationBox";
+import BreadcrumbsBox from "@/components/Products/BreadcrumbsBox";
 import { articlesSchema, breadcrumbSchema } from "@/components/Schema";
 import { GetBlogPosts } from "@/services/blogActions";
 import { Metadata } from "next";
@@ -22,11 +23,11 @@ export async function generateMetadata({
   searchParams,
 }: PageProps): Promise<Metadata> {
   const settings = await GetSiteSettings();
-  const siteTitle = settings?.site_title
+  const siteTitle = settings?.site_title || "خوش طعم کماشدون";
   const category = (await searchParams).category;
 
-  let title = `مقالات ${siteTitle}`;
-  let description = `آخرین مقالات و اخبار مرتبط با ${siteTitle} را اینجا بخوانید.`;
+  let title = `مقالات و آموزش‌های آشپزی | ${siteTitle}`;
+  let description = `آخرین مقالات، راهنماهای آشپزی و دستور پخت‌های تخصصی با محصولات ${siteTitle}.`;
   if (category) {
     title = `مقالات دسته‌بندی ${category} | ${siteTitle}`;
     description = `مقالات مرتبط با دسته‌بندی شماره ${category} در فروشگاه ${siteTitle}.`;
@@ -36,16 +37,17 @@ export async function generateMetadata({
     title,
     description,
     keywords: [
-      "مقالات",
-      `${siteTitle}`,
-      `اخبار ${siteTitle}`,
+      "مقالات آشپزی",
+      siteTitle,
+      "دستور پخت سوخاری",
+      "طرز تهیه کتلت سویا",
       ...(category ? [`دسته‌بندی ${category}`] : []),
     ],
     openGraph: {
       title,
       description,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/articles${category ? `?category=${category}` : ""}`,
-      siteName: `${siteTitle}`,
+      siteName: siteTitle,
       locale: "fa_IR",
       type: "website",
     },
@@ -61,21 +63,28 @@ export async function generateMetadata({
   };
 }
 
-async function page({ searchParams }: PageProps) {
+export default async function Page({ searchParams }: PageProps) {
   const search = await searchParams;
-
   const result = await getCashedBlogPosts(search);
 
   if (!result || !result.data) return <ErrorMessage />;
   const posts = result.data;
+
   const breadcrumbs = [
-    { name: "خانه", url: `${process.env.NEXT_PUBLIC_SITE_URL}/` },
-    { name: "مقالات", url: `${process.env.NEXT_PUBLIC_SITE_URL}/articles` },
+    { label: "خانه", href: "/" },
+    { label: "مقالات و دانستنی‌های آشپزی" },
   ];
-  const schema = [...articlesSchema(posts), breadcrumbSchema(breadcrumbs)];
+
+  const schema = [
+    ...articlesSchema(posts),
+    breadcrumbSchema([
+      { name: "خانه", url: `${process.env.NEXT_PUBLIC_SITE_URL}/` },
+      { name: "مقالات", url: `${process.env.NEXT_PUBLIC_SITE_URL}/articles` },
+    ]),
+  ];
 
   return (
-    <>
+    <div className="space-y-6">
       <Script
         id="articles-jsonld"
         type="application/ld+json"
@@ -84,21 +93,30 @@ async function page({ searchParams }: PageProps) {
           __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
         }}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {posts.map((post) => (
+
+      <div className="space-y-1.5 mb-6">
+        <span className="text-xs text-amber-400 font-bold tracking-wider">
+          دانستنی‌ها، فوت‌وفن‌های تردی و دستورهای طبخ
+        </span>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-zinc-950">
+          مقالات و مجله آشپزی خوش‌طعم
+        </h1>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+        {posts.map((post: any) => (
           <BlogCard key={post.id} item={post} />
         ))}
       </div>
-      <div className="mt-10">
+
+      <div className="mt-12 flex justify-center">
         <PaginationBox
           href={"articles"}
           searchParams={search}
           total={+result.total_pages || 1}
           page={1}
-        />{" "}
+        />
       </div>
-    </>
+    </div>
   );
 }
-
-export default page;

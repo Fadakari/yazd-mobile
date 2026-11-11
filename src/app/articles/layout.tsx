@@ -11,32 +11,31 @@ async function layout({ children }: { children: ReactNode }) {
     ? rawCategories
     : [];
   return (
-    <>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       <BreadcrumbsBox
         title="مقالات"
-        items={[{ label: "خانه", href: "/" }, { label: "مقالات" }]}
+        items={[{ label: "خانه", href: "/" }, { label: "مقالات و دانستنی‌های آشپزی" }]}
       />
-      <div className="flex flex-col lg:flex-row gap-2 py-10 container customSm:max-w-[566px]">
-        <aside className="w-full lg:w-1/3  pl-4">
-          <h3 className="lg:flex hidden text-2xl font-semibold mb-4  gap-2 items-center">
-            <FaFilter />
-            دسته‌بندی‌ها
-          </h3>
-          <div className="hidden lg:flex">
-            <CategoryTree categories={categories} />
-          </div>
-          <div className="lg:hidden flex">
-            <CategoryTree categories={categories} isMobile />
+      <div className="flex flex-col lg:flex-row gap-8 py-4 text-zinc-900">
+        <aside className="w-full lg:w-1/4 shrink-0">
+          <div className="bg-white border border-zinc-200/90 rounded-3xl p-5 shadow-lg">
+            <h3 className="lg:flex hidden text-base sm:text-lg font-black mb-4 gap-2 items-center text-red-700 border-b border-zinc-200 pb-3">
+              <FaFilter className="size-4" />
+              <span>دسته‌بندی‌ها</span>
+            </h3>
+            <div className="hidden lg:flex flex-col">
+              <CategoryTree categories={categories} />
+            </div>
+            <div className="lg:hidden flex flex-col">
+              <CategoryTree categories={categories} isMobile />
+            </div>
           </div>
         </aside>
-        <div className="w-full">
-          <h1 className="text-4xl font-semibold mb-4 flex gap-2 items-center">
-            مقالات
-          </h1>
+        <div className="w-full lg:w-3/4">
           {children}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -28,13 +28,14 @@ function GalleryModal({ children }: { children: ReactNode }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 animate-fade"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-md animate-fade"
       onClick={handleBackdropClick}
+      dir="rtl"
     >
-      <div className="relative w-full container max-h-[90vh] overflow-auto rounded-t-lg bg-white p-6 shadow-lg animate-fade-up">
+      <div className="relative w-full container max-h-[90vh] overflow-auto rounded-t-3xl bg-white border-t border-zinc-200 text-zinc-950 p-6 shadow-2xl animate-fade-up">
         <button
           onClick={handleClose}
-          className="absolute top-2 right-3 text-2xl font-bold text-gray-500 hover:text-gray-800"
+          className="absolute top-4 left-5 text-2xl font-bold text-zinc-500 hover:text-amber-400 transition-colors"
           aria-label="Close"
         >
           &times;

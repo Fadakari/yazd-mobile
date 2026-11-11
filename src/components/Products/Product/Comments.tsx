@@ -76,10 +76,10 @@ export default function Comments({
     const isOpen = openReplies[comment.id] ?? false;
 
     return (
-      <div key={comment.id} className="p-4  rounded-md bg-white text-sm mt-3">
-        <p className="font-bold">{comment.user_full_name}</p>
+      <div key={comment.id} className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/90 text-sm mt-3 shadow-lg text-zinc-900">
+        <p className="font-bold text-red-700">{comment.user_full_name}</p>
 
-        <p className="text-gray-600 text-xs">
+        <p className="text-zinc-500 text-xs">
           {formatToPersianTimeAgo(comment.created_at)}
         </p>
         <p className="mt-2">{comment.text}</p>
@@ -90,7 +90,7 @@ export default function Comments({
               setReplyTo(comment.id);
               setText("");
             }}
-            className="text-primary-700 hover:text-primary-800 underline-offset-4 text-xs hover:underline flex items-center gap-1"
+            className="text-red-700 hover:text-red-900 underline-offset-4 text-xs hover:underline flex items-center gap-1 font-bold"
           >
             <BsChatLeftText className="size-4" /> پاسخ
           </button>
@@ -103,12 +103,12 @@ export default function Comments({
             ref={moreMenuRef}
             className="relative"
           >
-            <div className="hover:text-zinc-500 text-zinc-700">
+            <div className="hover:text-red-700 text-zinc-500 cursor-pointer">
               <IoIosMore className="size-6" />
             </div>
 
             {openMoreMenu === comment.id && (
-              <div className="absolute left-0 top-4 mt-1 z-10 bg-white border border-zinc-200 rounded shadow-md text-xs">
+                <div className="absolute left-0 top-4 mt-1 z-10 bg-white border border-zinc-200 rounded-xl shadow-xl text-xs overflow-hidden">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -156,7 +156,7 @@ export default function Comments({
           <div className="mt-4">
             <TextareaAutosize
               minRows={3}
-              className="w-full border border-zinc-300 rounded-md p-3 text-sm input"
+              className="w-full border border-zinc-300 bg-zinc-50 rounded-xl p-3 text-xs sm:text-sm text-zinc-900 focus:border-red-500 outline-none"
               placeholder="پاسخ خود را بنویسید..."
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -165,7 +165,7 @@ export default function Comments({
               <ProductButton
                 disabled={submitting}
                 onClick={handleSubmit}
-                className="btn-primary px-4 py-2 rounded-md text-sm"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 text-white font-bold text-xs"
               >
                 {submitting ? "در حال ارسال..." : "ارسال پاسخ"}
               </ProductButton>
@@ -201,7 +201,7 @@ export default function Comments({
             <>
               <TextareaAutosize
                 minRows={3}
-                className="w-full border border-zinc-300 rounded-md p-3 text-sm input"
+                className="w-full border border-zinc-300 bg-zinc-50 rounded-xl p-3 text-xs sm:text-sm text-zinc-900 focus:border-red-500 outline-none"
                 placeholder="نظر خود را بنویسید..."
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -210,7 +210,7 @@ export default function Comments({
                 <ProductButton
                   disabled={submitting}
                   onClick={handleSubmit}
-                  className="btn-primary text-white px-4 py-2 rounded-md text-sm"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 text-white font-bold text-xs"
                 >
                   {submitting ? "در حال ارسال..." : "ارسال نظر"}
                 </ProductButton>
@@ -221,7 +221,7 @@ export default function Comments({
       </div>
 
       <div>
-        <p className="text-black font-semibold text-sm mb-2">
+        <p className="text-white font-bold text-sm mb-2">
           نظرات کاربران | {comments.length} مورد
         </p>
         {comments.length === 0 ? (

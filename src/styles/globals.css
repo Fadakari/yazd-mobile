@@ -9,22 +9,47 @@
 @custom-variant dark (&:is(.dark *));
 @config "../../tailwind.config.js";
 @theme {
-  --color-primary: #e05d27;
-  --color-primary-100: #ffe6e2;
-  --color-primary-200: #ffbf99;
-  --color-primary-300: #ff9966;
-  --color-primary-400: #ff8a4d;
-  --color-primary-500: #e05d27;
-  --color-primary-600: #b31f1f;
-  --color-primary-700: #861717;
-  --color-primary-800: #590f0f;
-  --color-primary-900: #2d0808;
+  --color-primary: #dc2626;
+  --color-primary-100: #fee2e2;
+  --color-primary-200: #fecaca;
+  --color-primary-300: #fca5a5;
+  --color-primary-400: #f87171;
+  --color-primary-500: #dc2626;
+  --color-primary-600: #b91c1c;
+  --color-primary-700: #991b1b;
+  --color-primary-800: #7f1d1d;
+  --color-primary-900: #450a0a;
+  --color-accent: #f59e0b;
+  --color-accent-hover: #d97706;
+  --color-navy: #0f172a;
+  --color-culinary-cream: #f8fafc;
   --color-danger: #ef4056;
-  --font-iranyekan: "iranyekan", sans-serif;
-  --font-pelak: "pelak", sans-serif;
-  --font-dana: "dana", sans-serif;
-  --font-noora: "noora", sans-serif;
+  --font-sans: "Peyda", var(--font-peyda), "peyda", "dana", "iranyekan", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-peyda: "Peyda", var(--font-peyda), sans-serif;
+  --font-iranyekan: "iranyekan", var(--font-iranyekan), sans-serif;
+  --font-pelak: "pelak", var(--font-pelak), sans-serif;
+  --font-dana: "dana", var(--font-dana), sans-serif;
+  --font-noora: "noora", var(--font-noora), sans-serif;
   --breakpoint-xs: 360px;
+}
+
+/* اعمال تضمینی و همه‌جانبه فونت اصیل پیدا به تمام اجزا، متون، دکمه‌ها، ورودی‌ها و مودال‌های سایت */
+*,
+*::before,
+*::after,
+html,
+body,
+button,
+input,
+textarea,
+select,
+optgroup,
+option,
+h1, h2, h3, h4, h5, h6,
+p, span, a, div, li, label,
+[class*="heroui"],
+[role="dialog"] {
+  font-family: "Peyda", var(--font-peyda), "dana", "iranyekan", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 .btn {
   transition: 200ms;
@@ -62,6 +87,20 @@
   width: 48px;
   height: 48px;
 }
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(120%);
+  }
+  100% {
+    transform: translateX(-120%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.6s infinite ease-in-out;
+}
+
 
 .logo-float {
   object-fit: contain;
@@ -119,40 +158,22 @@ li::marker {
   color: rgb(148, 148, 148);
 }
 
+html {
+  font-size: 16px;
+}
+@media only screen and (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+}
+@media only screen and (min-width: 1440px) {
+  html {
+    font-size: 16.5px;
+  }
+}
 @media only screen and (min-width: 1800px) {
   html {
-    font-size: 16px;
-  }
-}
-@media only screen and (min-width: 1400px) {
-  html {
-    font-size: 15px;
-  }
-}
-
-@media only screen and (min-width: 1300px) {
-  html {
-    font-size: 15px;
-  }
-}
-@media only screen and (min-width: 1250px) {
-  html {
-    font-size: 14px;
-  }
-}
-@media only screen and (min-width: 1200px) {
-  html {
-    font-size: 14px;
-  }
-}
-@media only screen and (min-width: 1100px) {
-  html {
-    font-size: 14px;
-  }
-}
-@media only screen and (min-width: 1024px) {
-  html {
-    font-size: 14px;
+    font-size: 17px;
   }
 }
 @supports (-webkit-touch-callout: none) {
@@ -183,9 +204,6 @@ li::marker {
 }
 .btn-primary {
   @apply p-3 bg-orange-500  text-white   transition-colors ease-in-out;
-}
-html {
-  font-size: 13px;
 }
 .switch-container {
   width: 42px;

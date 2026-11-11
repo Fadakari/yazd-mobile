@@ -268,7 +268,7 @@ function PersonalInfoForm() {
                   >
                     <label
                       htmlFor={key}
-                      className="text-base sm:text-lg font-semibold text-zinc-500"
+                      className="text-xs sm:text-sm font-bold text-zinc-700"
                     >
                       {fieldLabel(key)}
                     </label>
@@ -279,7 +279,7 @@ function PersonalInfoForm() {
                         {...field}
                         autoComplete="address-level1"
                         disabled={!editableFields[key]}
-                        className="rounded-xl px-2 py-3 disabled:opacity-50 disabled:border-none border border-zinc-200"
+                        className="rounded-xl px-3 py-2.5 bg-zinc-50 text-zinc-900 disabled:opacity-50 disabled:bg-[#f8fafc]/50 border border-zinc-200 focus:border-amber-400 outline-none text-xs sm:text-sm"
                       >
                         <option value="">انتخاب کنید</option>
                         {Object.keys(provincesWithCities).map((province) => (
@@ -294,7 +294,7 @@ function PersonalInfoForm() {
                         {...field}
                         autoComplete="address-level2"
                         disabled={!editableFields[key] || !selectedProvince}
-                        className="rounded-xl px-2 py-3 disabled:opacity-50 disabled:border-none border border-zinc-200"
+                        className="rounded-xl px-3 py-2.5 bg-zinc-50 text-zinc-900 disabled:opacity-50 disabled:bg-[#f8fafc]/50 border border-zinc-200 focus:border-amber-400 outline-none text-xs sm:text-sm"
                       >
                         <option value="">انتخاب کنید</option>
                         {cities.map((city) => (
@@ -317,7 +317,7 @@ function PersonalInfoForm() {
                         type={inputTypes[key] || "text"}
                         disabled={!editableFields[key]}
                         placeholder={`${fieldLabel(key)} را وارد کنید`}
-                        className="w-full rounded-xl px-2 py-3 placeholder:text-zinc-400 disabled:opacity-50 disabled:border-none border border-zinc-200 text-right"
+                        className="w-full rounded-xl px-3 py-2.5 placeholder:text-slate-500 bg-zinc-50 text-zinc-900 disabled:opacity-50 disabled:bg-[#f8fafc]/50 border border-zinc-200 focus:border-amber-400 outline-none text-right text-xs sm:text-sm"
                       />
                     )}
 
@@ -345,13 +345,13 @@ function PersonalInfoForm() {
         <div className="col-span-2 text-left">
           <button
             type="submit"
-            className="btn-primary rounded-lg !px-7 disabled:opacity-50 disabled:pointer-events-none"
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-bold text-xs sm:text-sm disabled:opacity-40 disabled:pointer-events-none shadow-md shadow-red-500/20 transition-all"
             disabled={!isDirty || isSubmittedSuccessfully}
           >
             ویرایش اطلاعات
           </button>
         </div>
-        <div className="absolute -top-2 left-0 bg-primary-100 border-primary text-zinc-600 animate-fade border px-4 py-1 rounded-full flex items-center justify-between gap-3">
+        <div className="absolute -top-2 left-0 bg-amber-400/10 border-amber-400/30 text-amber-300 animate-fade border px-4 py-1 rounded-full flex items-center justify-between gap-3">
           <div className="flex items-center gap-1">
             <PiHandCoinsDuotone />
             <p className="text-sm font-semibold">
@@ -367,8 +367,8 @@ function PersonalInfoForm() {
         onSubmit={handleSubmitPassword(onPasswordSubmit)}
         className="flex flex-col gap-3 mt-5"
       >
-        <div className="border bg-zinc-50 p-3 rounded-lg border-zinc-300 flex flex-col gap-3">
-          <label className="text-lg font-semibold text-zinc-500">
+        <div className="border border-zinc-200 bg-zinc-50 p-5 rounded-2xl flex flex-col gap-3">
+          <label className="text-base font-bold text-amber-400">
             تغییر رمز عبور
           </label>
 
@@ -384,7 +384,7 @@ function PersonalInfoForm() {
                   className={`w-full rounded-xl px-2 py-3 border ${
                     passwordErrors.password
                       ? "border-red-500"
-                      : "border-zinc-200"
+                      : "border-zinc-200 bg-zinc-50 text-zinc-900 focus:border-amber-400 outline-none text-xs sm:text-sm"
                   }`}
                 />
                 {passwordErrors.password && (
@@ -408,7 +408,7 @@ function PersonalInfoForm() {
                   className={`w-full rounded-xl px-2 py-3 border ${
                     passwordErrors.confirm_password
                       ? "border-red-500"
-                      : "border-zinc-200"
+                      : "border-zinc-200 bg-zinc-50 text-zinc-900 focus:border-amber-400 outline-none text-xs sm:text-sm"
                   }`}
                 />
                 {passwordErrors.confirm_password && (
@@ -423,7 +423,7 @@ function PersonalInfoForm() {
         <div className="text-left">
           <button
             type="submit"
-            className="btn-primary rounded-lg !px-7 disabled:opacity-50 disabled:pointer-events-none"
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-bold text-xs sm:text-sm disabled:opacity-40 disabled:pointer-events-none shadow-md shadow-red-500/20 transition-all"
             disabled={!passwordIsDirty || isSubmittedSuccessfully}
           >
             تغییر رمز عبور

@@ -1,4 +1,5 @@
 import React from "react";
+
 const fields = [
   "نام",
   "نام خانوادگی",
@@ -10,27 +11,21 @@ const fields = [
   "شهر",
   "کد معرف",
 ];
-function Loading() {
+
+export default function Loading() {
   return (
     <div className="relative flex flex-col">
-      <div className="flex flex-col sm:grid grid-cols-1 md:grid-cols-2 gap-5 mt-2 animate-pulse">
-        {fields.map((label, index) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2 animate-pulse">
+        {fields.map((_, index) => (
           <div
             key={index}
-            className="bg-zinc-50 border p-4 border-zinc-200 rounded flex flex-col gap-2"
+            className="bg-zinc-50 border border-zinc-200 p-4 rounded-xl flex flex-col gap-2"
           >
-            <div className="h-4 w-24 bg-zinc-300 rounded"></div>
-            <div className="h-10 bg-zinc-200 rounded-xl"></div>
+            <div className="h-3 w-20 bg-slate-800 rounded"></div>
+            <div className="h-9 bg-slate-800/80 rounded-xl"></div>
           </div>
         ))}
-
-        <div className="w-full flex justify-end col-span-2">
-          <div className="w-36 h-10 bg-zinc-300 rounded-lg"></div>
-        </div>
-
       </div>
     </div>
   );
 }
-
-export default Loading;

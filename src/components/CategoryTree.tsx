@@ -21,16 +21,16 @@ export default function CategoryTree({
       <>
         <button
           onClick={() => setShowModal(true)}
-          className="btn-primary w-full my-5"
+          className="w-full my-4 py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-bold text-xs transition-all shadow-lg shadow-red-500/20"
         >
-          نمایش دسته‌بندی‌ها
+          نمایش دسته‌بندی‌های مقالات
         </button>
 
         <AnimatePresence>
           {showModal && (
             <>
               <motion.div
-                className="fixed inset-0 bg-black/40 z-40"
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -38,22 +38,23 @@ export default function CategoryTree({
               />
 
               <motion.div
-                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4 z-50 max-h-[80vh] overflow-y-auto shadow-xl transition-all ease-soft-spring"
+                className="fixed bottom-0 left-0 right-0 bg-white border-t border-zinc-200 text-zinc-950 rounded-t-3xl p-5 z-50 max-h-[80vh] overflow-y-auto shadow-2xl"
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
+                transition={{ duration: 0.35, ease: "easeInOut" }}
+                dir="rtl"
               >
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold">دسته‌بندی‌ها</h2>
+                <div className="flex justify-between items-center mb-4 pb-3 border-b border-zinc-200">
+                  <h2 className="text-base font-bold text-red-700">دسته‌بندی‌های مقالات</h2>
                   <button
                     onClick={() => setShowModal(false)}
-                    className="text-sm text-zinc-500 hover:text-zinc-800"
+                    className="text-xs text-zinc-600 hover:text-zinc-950 px-2.5 py-1 rounded-lg bg-zinc-100 font-medium"
                   >
                     بستن
                   </button>
                 </div>
-                <div className="space-y-2 py-5">
+                <div className="space-y-2 py-2">
                   {categories.map((category) => (
                     <CategoryItem key={category.id} category={category} />
                   ))}
@@ -67,7 +68,7 @@ export default function CategoryTree({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" dir="rtl">
       {categories.map((category) => (
         <CategoryItem key={category.id} category={category} />
       ))}
@@ -90,16 +91,16 @@ function CategoryItem({ category }: { category: BlogCategoryNode }) {
   }, [isOpen]);
 
   return (
-    <div className="border border-zinc-200 rounded-md bg-zinc-50 overflow-hidden">
+    <div className="border border-zinc-200 rounded-xl bg-zinc-50 overflow-hidden hover:border-red-400 transition-colors">
       {hasChildren ? (
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex w-full items-center justify-between px-3 py-4 text-sm text-zinc-700 font-medium hover:bg-zinc-100 transition-colors"
+          className="flex w-full items-center justify-between px-3.5 py-3 text-xs sm:text-sm text-zinc-800 font-medium hover:text-red-600 hover:bg-red-50/50 transition-colors"
         >
           <span>{category.title}</span>
           <ChevronLeft
             className={`h-4 w-4 text-zinc-500 transition-transform duration-200 ${
-              isOpen ? "-rotate-90" : ""
+              isOpen ? "-rotate-90 text-red-600" : ""
             }`}
           />
         </button>
@@ -107,7 +108,7 @@ function CategoryItem({ category }: { category: BlogCategoryNode }) {
         <Link
           onClick={() => setIsOpen(false)}
           href={`/articles?category=${category.slug}`}
-          className="block px-3 py-3.5 text-sm text-zinc-700 font-medium hover:bg-zinc-100 transition-colors"
+          className="block px-3.5 py-3 text-xs sm:text-sm text-zinc-800 font-medium hover:text-red-600 hover:bg-red-50/50 transition-colors"
         >
           {category.title}
         </Link>
@@ -115,12 +116,12 @@ function CategoryItem({ category }: { category: BlogCategoryNode }) {
 
       <motion.div
         animate={{ height }}
-        transition={{ duration: 0.3, ease: "linear" }}
-        style={{ overflow: "auto" }}
+        transition={{ duration: 0.25, ease: "linear" }}
+        style={{ overflow: "hidden" }}
       >
-        <div ref={contentRef} className="px-4 border-t border-zinc-200">
+        <div ref={contentRef} className="px-3 py-2 border-t border-zinc-200 bg-[#f8fafc]/50">
           {hasChildren && (
-            <div className="flex flex-col gap-3 overflow-auto py-2">
+            <div className="flex flex-col gap-2">
               {category.children.map((child) => (
                 <CategoryItem key={child.id} category={child} />
               ))}

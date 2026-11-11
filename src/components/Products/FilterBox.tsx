@@ -1,4 +1,5 @@
 "use client";
+
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { BiSearch } from "react-icons/bi";
 import { MdChevronLeft } from "react-icons/md";
@@ -130,10 +131,10 @@ export default function FilterBox({
       setHasScroll(listRef.current.scrollHeight > listRef.current.clientHeight);
     }
   }, [searchedCategories]);
+
   return (
-    <div
-      className={`h-full ${isShow ? "space-y-4" : "hidden lg:flex w-1/3"} flex-col gap-2 sticky`}
-    >
+    <div className={`w-full flex-col gap-4 ${isShow ? "flex" : "hidden lg:flex"}`}>
+      {/* Clear Filters Button */}
       {hasActiveFilter && (
         <button
           onClick={() => {
@@ -145,54 +146,45 @@ export default function FilterBox({
             });
           }}
           disabled={isPending && isClearing}
-          className="text-white bg-danger hover:bg-red-500 transition py-3 font-semibold text-base rounded-xs disabled:opacity-50 w-full"
+          className="text-white bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 transition-all py-3 font-bold text-xs rounded-xl shadow-lg shadow-red-500/20 disabled:opacity-50 w-full"
         >
-          {isPending && isClearing ? "در حال حذف..." : "حذف فیلترها"}
+          {isPending && isClearing ? "در حال پاکسازی..." : "حذف تمام فیلترها"}
         </button>
       )}
+
+      {/* Active Filters Summary */}
       {hasActiveFilter && (
-        <div className="bg-white shadow rounded-sm px-4 py-3 text-sm text-zinc-700 space-y-2 border border-zinc-100">
-          <p className="font-semibold text-zinc-600">فیلترهای فعال:</p>
-          <ul className="space-y-1  leading-6">
+        <div className="bg-white border border-zinc-200/90 backdrop-blur-md rounded-2xl p-4 text-xs text-zinc-700 space-y-2.5 shadow-md">
+          <p className="font-bold text-amber-400">فیلترهای فعال:</p>
+          <ul className="space-y-1.5 leading-5 text-[11px]">
             {activeFilters.is_available && (
-              <li className="flex items-center gap-1">
-                <span className="text-zinc-500">•</span>
-                <span className="text-zinc-800 font-medium">
-                  فقط کالاهای موجود
-                </span>
+              <li className="flex items-center gap-1.5 text-zinc-900">
+                <span className="text-amber-400 font-bold">•</span>
+                <span>فقط کالاهای موجود</span>
               </li>
             )}
             {activeFilters.category_id && (
-              <li className="flex items-center gap-1">
-                <span className="text-zinc-500">• دسته:</span>
-                <span className="text-zinc-800 font-medium">
-                  {
-                    categories?.find(
-                      (c) => c.id.toString() === activeFilters.category_id
-                    )?.name || ""
-                  }
+              <li className="flex items-center gap-1.5 text-zinc-900">
+                <span className="text-amber-400 font-bold">• دسته‌بندی:</span>
+                <span className="text-white font-semibold">
+                  {categories?.find((c) => c.id.toString() === activeFilters.category_id)?.name || ""}
                 </span>
               </li>
             )}
             {activeFilters.brand_id && (
-              <li className="flex items-center gap-1">
-                <span className="text-zinc-500">• برند:</span>
-                <span className="text-zinc-800 font-medium">
-                  {
-                    brands?.find(
-                      (b) => b.id.toString() === activeFilters.brand_id
-                    )?.name || ""
-                  }
+              <li className="flex items-center gap-1.5 text-zinc-900">
+                <span className="text-amber-400 font-bold">• برند:</span>
+                <span className="text-white font-semibold">
+                  {brands?.find((b) => b.id.toString() === activeFilters.brand_id)?.name || ""}
                 </span>
               </li>
             )}
             {activeFilters.min_price && activeFilters.max_price && (
-              <li className="flex items-center gap-1">
-                <span className="text-zinc-500">• قیمت:</span>
-                <span className="text-zinc-800 font-medium">
+              <li className="flex items-center gap-1.5 text-zinc-900">
+                <span className="text-amber-400 font-bold">• قیمت:</span>
+                <span className="text-amber-300 font-semibold">
                   {Number(activeFilters.min_price).toLocaleString("fa-IR")} تا{" "}
-                  {Number(activeFilters.max_price).toLocaleString("fa-IR")}{" "}
-                  تومان
+                  {Number(activeFilters.max_price).toLocaleString("fa-IR")} تومان
                 </span>
               </li>
             )}
@@ -200,24 +192,24 @@ export default function FilterBox({
         </div>
       )}
 
-      <div className="bg-white shadow rounded-sm px-3 py-2 flex gap-3 items-center text-zinc-700">
-        <div className="switch-container">
+      {/* Available Only Toggle */}
+      <div className="bg-white border border-zinc-200/90 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between shadow-md">
+        <span className="text-xs text-zinc-900 font-medium">نمایش کالاهای موجود</span>
+        <label className="relative inline-flex items-center cursor-pointer">
           <input
             type="checkbox"
-            className="checkbox"
-            id="checkbox"
-            checked={searchParams.get("is_available") === "true" || false}
+            className="sr-only peer"
+            checked={searchParams.get("is_available") === "true"}
             onChange={(e) => applyFilters({ is_available: e.target.checked })}
           />
-          <label className="switch" htmlFor="checkbox">
-            <span className="slider"></span>
-          </label>
-        </div>
-        <p className="text-light">نمایش کالا های موجود</p>
+          <div className="w-10 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+        </label>
       </div>
-      <div className="bg-white shadow rounded-sm px-3 py-0 text-zinc-700 relative">
+
+      {/* Categories Accordion */}
+      <div className="bg-white border border-zinc-200/90 backdrop-blur-md rounded-2xl p-4 shadow-md relative text-zinc-900">
         <GoChevronUp
-          className={`size-5 absolute top-5 left-5 transition-transform duration-300 ${
+          className={`size-5 absolute top-5 left-5 text-amber-400 transition-transform duration-300 ${
             selectedKeys.size === 1 ? "-rotate-180" : "rotate-0"
           }`}
         />
@@ -226,29 +218,30 @@ export default function FilterBox({
           onSelectionChange={setSelectedKeys}
           showDivider={false}
           hideIndicator
+          className="!px-0"
         >
-          <AccordionItem key="1" title="دسته بندی دقیق تر">
-            <div className="relative w-full flex items-center">
+          <AccordionItem
+            key="1"
+            title="دسته‌بندی محصولات"
+            classNames={{ title: "text-xs font-bold text-zinc-950 pr-1" }}
+          >
+            <div className="relative w-full flex items-center my-2">
               <input
                 value={searchCategory}
                 onChange={(e) => setSearchCategory(e.target.value)}
                 autoComplete="off"
-                autoFocus
                 type="search"
-                placeholder="جستجو ..."
-                className="p-2 pr-10 border border-zinc-300 rounded-xs w-full outline-none"
+                placeholder="جستجو در دسته‌ها..."
+                className="p-2.5 pr-9 bg-zinc-50 border border-zinc-200 rounded-xl w-full text-xs text-zinc-900 placeholder:text-zinc-500 outline-none focus:border-amber-400 transition-colors"
               />
-              <BiSearch className="size-6 absolute top-3 right-2 text-zinc-400" />
+              <BiSearch className="size-4 absolute top-3 right-3 text-amber-400 pointer-events-none" />
             </div>
-            {hasScroll && (
-              <div className="absolute bg-gradient-to-t from-black/10 to-transparent w-full h-10 bottom-0 left-0 pointer-events-none"></div>
-            )}
+
             <ul
-              className="overflow-y-auto max-h-64 text-zinc-500 pt-4 relative rounded-2xl mb-2 xl:mb-4"
+              className="overflow-y-auto max-h-56 text-zinc-700 pt-2 space-y-1 text-xs"
               ref={listRef}
             >
-              {Array.isArray(searchedCategories) &&
-              searchedCategories.length > 0 ? (
+              {Array.isArray(searchedCategories) && searchedCategories.length > 0 ? (
                 searchedCategories.map((cat) => {
                   const selectedId = searchParams.get("category_id");
                   const isParentSelected = selectedId === cat.id.toString();
@@ -257,38 +250,37 @@ export default function FilterBox({
                   );
 
                   return (
-                    <li key={cat.id} className="mb-1">
+                    <li key={cat.id} className="rounded-lg">
                       <button
                         onClick={() => applyFilters({ category_id: cat.id })}
-                        className={`py-2 flex items-center gap-1 ${
-                          isParentSelected ? "text-primary-500 font-bold" : ""
+                        className={`w-full py-2 px-2.5 rounded-lg flex items-center justify-between text-right transition-colors ${
+                          isParentSelected
+                            ? "bg-amber-400/15 text-amber-400 font-bold"
+                            : "hover:bg-white/5 text-zinc-700 hover:text-white"
                         }`}
                       >
-                        <MdChevronLeft className="size-5" />
                         <span>{cat.name}</span>
+                        <MdChevronLeft className="size-4 text-amber-400/60" />
                       </button>
 
                       {(isParentSelected || isChildSelected) &&
                         cat.children &&
                         cat.children.length > 0 && (
-                          <ul className="pl-6 border-r border-zinc-200 ml-2">
+                          <ul className="pr-4 border-r border-zinc-200 my-1 space-y-1">
                             {cat.children.map((child) => {
-                              const isChildActive =
-                                selectedId === child.id.toString();
+                              const isChildActive = selectedId === child.id.toString();
                               return (
                                 <li key={child.id}>
                                   <button
-                                    onClick={() =>
-                                      applyFilters({ category_id: child.id })
-                                    }
-                                    className={`py-1 flex items-center gap-1 text-sm ${
+                                    onClick={() => applyFilters({ category_id: child.id })}
+                                    className={`w-full py-1.5 px-2 rounded-lg flex items-center justify-between text-right text-[11px] transition-colors ${
                                       isChildActive
-                                        ? "text-primary-500 font-bold"
-                                        : ""
+                                        ? "text-amber-400 font-bold bg-amber-400/10"
+                                        : "text-zinc-500 hover:text-zinc-900"
                                     }`}
                                   >
-                                    <MdChevronLeft className="size-4" />
                                     <span>{child.name}</span>
+                                    <MdChevronLeft className="size-3" />
                                   </button>
                                 </li>
                               );
@@ -299,69 +291,78 @@ export default function FilterBox({
                   );
                 })
               ) : (
-                <>دسته بندی یافت نشد</>
+                <p className="text-center text-slate-500 py-3 text-xs">دسته‌بندی یافت نشد</p>
               )}
             </ul>
           </AccordionItem>
         </Accordion>
       </div>
 
-      <div className="relative bg-white shadow rounded-sm py-0 text-zinc-700 mt-4">
-        <GoChevronUp
-          className={`size-5 absolute top-5 left-5 transition-transform duration-300 ${
-            selectedKeysBrand.size === 1 ? "-rotate-180" : "rotate-0"
-          }`}
-        />
-        <Accordion
-          selectedKeys={selectedKeysBrand}
-          onSelectionChange={setSelectedKeysBrand}
-          showDivider={false}
-          hideIndicator
-        >
-          <AccordionItem key="1" title="برندها">
-            <div className="relative w-full flex items-center">
-              <input
-                value={searchBrand}
-                onChange={(e) => setSearchBrand(e.target.value)}
-                autoComplete="off"
-                type="search"
-                placeholder="جستجوی برند ..."
-                className="p-2 pr-10 border border-zinc-300 rounded-xs w-full outline-none"
-              />
-              <BiSearch className="size-6 absolute top-3 right-2 text-zinc-400" />
-            </div>
-            <ul className="overflow-y-auto max-h-64 text-zinc-500 pt-4 relative rounded-2xl mb-2 xl:mb-4">
-              {searchedBrands.length > 0 ? (
-                searchedBrands.map((brand) => {
-                  const selectedId = searchParams.get("brand_id");
-                  const isSelected = selectedId === brand.id.toString();
-                  return (
-                    <li key={brand.id} className="mb-1">
-                      <button
-                        onClick={() => applyFilters({ brand_id: isSelected ? null : brand.id })}
-                        className={`py-2 flex items-center gap-1 ${
-                          isSelected ? "text-primary-500 font-bold" : ""
-                        }`}
-                      >
-                        <MdChevronLeft className="size-5" />
-                        <span>{brand.name}</span>
-                      </button>
-                    </li>
-                  );
-                })
-              ) : (
-                <div className="text-center text-zinc-400 py-4 text-sm">
-                  برندی موجود نیست
-                </div>
-              )}
-            </ul>
-          </AccordionItem>
-        </Accordion>
-      </div>
+      {/* Brands Accordion (if brands available) */}
+      {brands && brands.length > 0 && (
+        <div className="bg-white border border-zinc-200/90 backdrop-blur-md rounded-2xl p-4 shadow-md relative text-zinc-900">
+          <GoChevronUp
+            className={`size-5 absolute top-5 left-5 text-amber-400 transition-transform duration-300 ${
+              selectedKeysBrand.size === 1 ? "-rotate-180" : "rotate-0"
+            }`}
+          />
+          <Accordion
+            selectedKeys={selectedKeysBrand}
+            onSelectionChange={setSelectedKeysBrand}
+            showDivider={false}
+            hideIndicator
+            className="!px-0"
+          >
+            <AccordionItem
+              key="1"
+              title="برندها و تولیدکنندگان"
+              classNames={{ title: "text-xs font-bold text-zinc-950 pr-1" }}
+            >
+              <div className="relative w-full flex items-center my-2">
+                <input
+                  value={searchBrand}
+                  onChange={(e) => setSearchBrand(e.target.value)}
+                  autoComplete="off"
+                  type="search"
+                  placeholder="جستجوی برند..."
+                  className="p-2.5 pr-9 bg-zinc-50 border border-zinc-200 rounded-xl w-full text-xs text-zinc-900 placeholder:text-zinc-500 outline-none focus:border-amber-400 transition-colors"
+                />
+                <BiSearch className="size-4 absolute top-3 right-3 text-amber-400 pointer-events-none" />
+              </div>
+              <ul className="overflow-y-auto max-h-56 text-zinc-700 pt-2 space-y-1 text-xs">
+                {searchedBrands.length > 0 ? (
+                  searchedBrands.map((brand) => {
+                    const selectedId = searchParams.get("brand_id");
+                    const isSelected = selectedId === brand.id.toString();
+                    return (
+                      <li key={brand.id}>
+                        <button
+                          onClick={() => applyFilters({ brand_id: isSelected ? null : brand.id })}
+                          className={`w-full py-2 px-2.5 rounded-lg flex items-center justify-between text-right transition-colors ${
+                            isSelected
+                              ? "bg-amber-400/15 text-amber-400 font-bold"
+                              : "hover:bg-white/5 text-zinc-700 hover:text-white"
+                          }`}
+                        >
+                          <span>{brand.name}</span>
+                          <MdChevronLeft className="size-4 text-amber-400/60" />
+                        </button>
+                      </li>
+                    );
+                  })
+                ) : (
+                  <p className="text-center text-slate-500 py-3 text-xs">برندی یافت نشد</p>
+                )}
+              </ul>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      )}
 
-      <div className="relative bg-white shadow rounded-sm py-0 text-zinc-700 mt-4">
+      {/* Price Range Accordion */}
+      <div className="bg-white border border-zinc-200/90 backdrop-blur-md rounded-2xl p-4 shadow-md relative text-zinc-900">
         <GoChevronUp
-          className={`size-5 absolute top-5 left-5 transition-transform duration-300 ${
+          className={`size-5 absolute top-5 left-5 text-amber-400 transition-transform duration-300 ${
             selectedKeys2.size === 1 ? "-rotate-180" : "rotate-0"
           }`}
         />
@@ -374,84 +375,62 @@ export default function FilterBox({
         >
           <AccordionItem
             key="1"
-            title="محدوده قیمت مورد نظر"
-            classNames={{ title: "pr-5" }}
+            title="محدوده قیمت"
+            classNames={{ title: "text-xs font-bold text-zinc-950 pr-1" }}
           >
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 applyFilters({ min_price: minInput, max_price: maxInput });
               }}
-              className="flex flex-col w-full"
+              className="flex flex-col w-full pt-2"
             >
               <Slider
-                className="max-w-md border-none px-6 mb-4"
+                className="w-full border-none px-2 mb-4"
                 maxValue={maxPrice}
                 minValue={minPrice}
                 renderThumb={(props) => (
                   <div
                     {...props}
-                    className="group p-px top-1/2 bg-zinc-400 shadow-medium rounded-full cursor-grab data-[dragging=true]:cursor-grabbing"
+                    className="p-px top-1/2 bg-amber-400 shadow-md rounded-full cursor-grab data-[dragging=true]:cursor-grabbing"
                   >
-                    <span className="transition-transform bg-white shadow-small rounded-full size-6 block scale-50 group-data-[dragging=true]:scale-70" />
+                    <span className="bg-slate-950 rounded-full size-4 block" />
                   </div>
                 )}
                 classNames={{
-                  filler: "bg-zinc-400",
-                  track: "bg-zinc-300 h-1 rounded-sm !border-none",
+                  filler: "bg-gradient-to-r from-red-600 to-amber-500",
+                  track: "bg-zinc-200 h-1.5 rounded-full !border-none",
                 }}
                 hideValue
                 value={reverseValue(value)}
                 onChange={handleSliderChange}
                 dir="rtl"
-                aria-label="Volume"
+                aria-label="محدوده قیمت"
               />
 
-              <div className="flex w-full justify-between items-center border-t border-b border-zinc-200 my-2 px-3">
-                <div className="flex flex-col items-center gap-2 text-default-500 font-medium text-small w-full p-5 border-l border-zinc-200">
-                  <label htmlFor="min-price-input">از</label>
-                  <NumberInput
-                    id="min-price-input"
-                    aria-label="min-price-input"
-                    value={minInput}
-                    onValueChange={handleMinChange}
-                    hideStepper
-                    size="sm"
-                    classNames={{
-                      inputWrapper: "input !rounded-full",
-                      input: "input font-dana  border-none",
-                    }}
-                    minValue={minPrice}
-                    maxValue={maxPrice}
-                  />
-                  <p>تومان</p>
+              <div className="flex w-full justify-between items-center bg-zinc-50 rounded-xl p-3 my-2 text-xs border border-zinc-200">
+                <div className="flex flex-col items-center gap-1 w-1/2 border-l border-zinc-200 pl-2">
+                  <span className="text-[11px] text-zinc-500">از</span>
+                  <span className="font-black text-red-700 text-xs">
+                    {minInput.toLocaleString("fa-IR")}
+                  </span>
+                  <span className="text-[10px] text-zinc-500">تومان</span>
                 </div>
-                <div className="h-full w-5 bg-zinc-200" />
-                <div className="flex flex-col items-center gap-2 text-default-500 font-medium text-small w-full p-5">
-                  <label htmlFor="max-price-input">تا</label>
-                  <NumberInput
-                    aria-label="max-price-input"
-                    id="max-price-input"
-                    size="sm"
-                    value={maxInput}
-                    onValueChange={handleMaxChange}
-                    hideStepper
-                    classNames={{
-                      inputWrapper: "input !rounded-full",
-                      input: "input font-dana border-none",
-                    }}
-                    minValue={minPrice}
-                    maxValue={maxPrice}
-                  />
-                  <p>تومان</p>
+                <div className="flex flex-col items-center gap-1 w-1/2 pr-2">
+                  <span className="text-[11px] text-zinc-500">تا</span>
+                  <span className="font-black text-red-700 text-xs">
+                    {maxInput.toLocaleString("fa-IR")}
+                  </span>
+                  <span className="text-[10px] text-zinc-500">تومان</span>
                 </div>
               </div>
+
               <button
-                className="btn btn-primary mx-auto p-3 font-light rounded-xs disabled:opacity-50"
+                className="w-full mt-2 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 text-white font-bold text-xs shadow-md shadow-red-500/20 hover:from-red-500 hover:to-amber-500 transition-all disabled:opacity-50"
                 type="submit"
                 disabled={isPending}
               >
-                {isPending ? "در حال اعمال..." : "اعمال محدوده قیمت"}
+                {isPending ? "در حال اعمال..." : "اعمال فیلتر قیمت"}
               </button>
             </form>
           </AccordionItem>

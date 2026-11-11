@@ -1,5 +1,31 @@
 import localFont from "next/font/local";
 
+export const peyda = localFont({
+    variable: "--font-peyda",
+    src: [
+        {
+            path: "../../public/fonts/PeydaWebFaNum-Regular.woff2",
+            weight: "400",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/PeydaWebFaNum-Medium.woff2",
+            weight: "500",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/PeydaWebFaNum-Bold.woff2",
+            weight: "700",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/PeydaWebFaNum-Black.woff2",
+            weight: "900",
+            style: "normal",
+        },
+    ],
+});
+
 export const iranyekan = localFont({
     variable: "--font-iranyekan",
     src: [

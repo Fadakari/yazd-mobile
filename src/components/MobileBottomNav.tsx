@@ -36,7 +36,7 @@ export default function MobileBottomNav() {
           <FiShoppingCart className="size-6" />
           {cart && cart.total_items > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border-2 border-white">
-              {cart.total_items}
+              {cart.total_items.toLocaleString('fa-IR')}
             </span>
           )}
         </div>
@@ -58,7 +58,7 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-3 left-3 right-3 bg-white/60 backdrop-blur-lg border border-white/60 z-50 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] pb-[env(safe-area-inset-bottom)] transition-all duration-500">
+    <div className="lg:hidden fixed bottom-3 left-3 right-3 bg-white/95 backdrop-blur-xl border border-zinc-200 z-50 rounded-2xl shadow-[0_4px_25px_rgba(0,0,0,0.1)] pb-[env(safe-area-inset-bottom)] transition-all duration-300">
       <nav className="flex items-center justify-between h-[64px] px-2">
         {navItems.map((item) => {
           const isActive = item.active;
@@ -79,13 +79,13 @@ export default function MobileBottomNav() {
               {/* نشانگر فعال بودن (خط بالای آیکون) */}
               <div 
                 className={`absolute top-0 w-6 h-1 rounded-full transition-all duration-300 ${
-                  isActive ? "bg-[#ff5722] opacity-100 shadow-[0_2px_8px_rgba(255,87,34,0.4)]" : "bg-transparent opacity-0"
+                  isActive ? "bg-red-600 opacity-100 shadow-[0_2px_8px_rgba(220,38,38,0.4)]" : "bg-transparent opacity-0"
                 }`}
               />
               
               <div 
                 className={`transition-all duration-300 transform ${
-                  isActive ? "text-[#ff5722] -translate-y-0.5" : "text-gray-600"
+                  isActive ? "text-red-600 -translate-y-0.5" : "text-zinc-500"
                 }`}
               >
                 {item.icon}
@@ -93,7 +93,7 @@ export default function MobileBottomNav() {
               
               <span 
                 className={`text-[10px] font-bold transition-all duration-300 ${
-                  isActive ? "text-[#ff5722] opacity-100" : "text-gray-600 opacity-80"
+                  isActive ? "text-red-700 font-black opacity-100" : "text-zinc-500 opacity-80"
                 }`}
               >
                 {item.label}

@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { ReactNode } from "react";
+import { FiChevronLeft, FiHome } from "react-icons/fi";
 
 type BreadcrumbItem = {
   label: string;
-  href?: string; // اگر نباشد یعنی مرحله‌ی فعلی است و لینک نیست
+  href?: string;
 };
 
 type BreadcrumbsBoxProps = {
@@ -13,42 +16,59 @@ type BreadcrumbsBoxProps = {
   className?: string;
 };
 
-function BreadcrumbsBox({
+export default function BreadcrumbsBox({
   title,
   items,
-  separator = "/",
+  separator,
   className = "",
 }: BreadcrumbsBoxProps) {
-  if (!items.length) return null;
+  if (!items || items.length === 0) return null;
 
   return (
-    <div className={`pb-16 ${className}`}>
-      <div className="py-5 w-full shadow absolute right-0 bg-white">
-        <div className="container mx-auto flex items-center gap-3">
-          {/* {title && <strong className="text-base">{title}</strong>} */}
-          <div className="text-sm text-zinc-500 flex items-center gap-1 flex-wrap">
-            {items.map((item, idx) => (
-              <span key={idx} className="flex items-center gap-1">
-                {idx > 0 && <span>{separator}</span>}
+    <nav
+      aria-label="مسیر راهنما"
+      className={`w-full bg-white border border-zinc-200/90 backdrop-blur-md rounded-2xl px-5 py-3 mb-6 shadow-lg shadow-zinc-900/5 ${className}`}
+    >
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="text-xs sm:text-sm text-zinc-500 flex items-center gap-1.5 flex-wrap">
+          <Link
+            href="/"
+            className="flex items-center gap-1 text-zinc-600 hover:text-red-600 transition-colors"
+          >
+            <FiHome className="size-3.5 text-red-600" />
+            <span className="hidden sm:inline">خانه</span>
+          </Link>
+
+          {items.map((item, idx) => {
+            if (idx === 0 && (item.href === "/" || item.label === "خانه")) return null;
+            return (
+              <span key={idx} className="flex items-center gap-1.5">
+                <span className="text-zinc-400">
+                  {separator || <FiChevronLeft className="size-3" />}
+                </span>
                 {item.href ? (
                   <Link
                     href={item.href}
-                    className="hover:text-zinc-700 transition-colors"
+                    className="hover:text-red-600 text-zinc-700 font-medium transition-colors"
                   >
                     {item.label}
                   </Link>
                 ) : (
-                  <span className="text-zinc-700 font-medium">
+                  <span className="text-red-700 font-bold">
                     {item.label}
                   </span>
                 )}
               </span>
-            ))}
-          </div>
+            );
+          })}
         </div>
+
+        {title && (
+          <span className="text-xs text-zinc-500 font-medium hidden md:inline truncate max-w-[280px]">
+            {title}
+          </span>
+        )}
       </div>
-    </div>
+    </nav>
   );
 }
-
-export default BreadcrumbsBox;
