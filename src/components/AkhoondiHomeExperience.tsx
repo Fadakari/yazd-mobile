@@ -93,9 +93,9 @@ function ProductCard({ product, index, featured = false }: { product: Product; i
 }
 
 export default function AkhoondiHomeExperience({
-  logo, banners, categories, sections, blogs,
+  banners, categories, sections, blogs,
 }: {
-  logo: string; banners: Banner[]; categories: Category[]; sections: ProductSection[]; blogs: Blog[];
+  banners: Banner[]; categories: Category[]; sections: ProductSection[]; blogs: Blog[];
 }) {
   const heroRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
