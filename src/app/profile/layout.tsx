@@ -41,9 +41,9 @@ async function Layout({ children }: { children: ReactNode }) {
     redirect(redirectUrl);
   }
   return (
-    <section className="flex flex-col md:flex-row gap-5 h-full p-5 container customSm:max-w-[566px]">
+    <section className="flex flex-col md:flex-row gap-5 h-full py-6 container max-w-[1440px]">
       <ProfileSideBar links={links} />
-      <div className="md:w-3/4 bg-white h-full p-5 rounded-2xl shadow border border-zinc-200">
+      <div className="min-w-0 md:w-3/4 bg-[#fffefa] h-full p-4 sm:p-6 rounded-[1.4rem] shadow-[0_8px_24px_rgba(37,41,35,.06)] border border-[#ded9ce]">
         {children}
       </div>
     </section>
