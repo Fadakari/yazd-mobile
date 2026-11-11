@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSite } from "@/context/SiteContext";
 import { ReactNode, useMemo, useRef } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
@@ -97,6 +98,14 @@ export default function AkhoondiHomeExperience({
 }: {
   banners: Banner[]; categories: Category[]; sections: ProductSection[]; blogs: Blog[];
 }) {
+  const { logo: backendLogo } = useSite();
+  const logo = (() => {
+    const value = typeof backendLogo === "string" ? backendLogo.trim() : "";
+    if (!value || value === "لوگو دریافت نشد") return "";
+    if (/^https?:\/\//i.test(value)) return value;
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+    return baseUrl ? `${baseUrl}${value.startsWith("/") ? value : `/${value}`}` : "";
+  })();
   const heroRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
