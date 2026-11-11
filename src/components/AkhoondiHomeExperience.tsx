@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, ReactNode, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import {
@@ -94,6 +95,7 @@ export default function AkhoondiHomeExperience({
   const [query, setQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const { cart } = useCart();
+  const cartCount = cart?.total_items ?? 0;
   const { user } = useUser();
   const { onOpen: onAuthOpen }: any = useAuthModal();
   const heroRef = useRef<HTMLElement>(null);
@@ -135,7 +137,7 @@ export default function AkhoondiHomeExperience({
           </form>
           <div className="flex items-center gap-2">
             <button onClick={() => user?.identity ? router.push("/profile") : onAuthOpen()} aria-label="حساب کاربری" className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#1c1b25] bg-[#ffb8a6] transition-transform hover:-rotate-12"><UserRound size={18} /></button>
-            <Link href="/profile/cart" aria-label="سبد خرید" className="relative grid h-10 w-10 place-items-center rounded-full border-2 border-[#1c1b25] bg-[#d9ff59] transition-transform hover:rotate-12"><ShoppingBag size={18} />{cart?.total_items > 0 && <span className="absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-[#ff593d] px-1 text-[10px] font-black text-white">{cart.total_items}</span>}</Link>
+            <Link href="/profile/cart" aria-label="سبد خرید" className="relative grid h-10 w-10 place-items-center rounded-full border-2 border-[#1c1b25] bg-[#d9ff59] transition-transform hover:rotate-12"><ShoppingBag size={18} />{cartCount > 0 && <span className="absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-[#ff593d] px-1 text-[10px] font-black text-white">{cartCount}</span>}</Link>
             <button onClick={() => setMenuOpen(v => !v)} className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#1c1b25] bg-[#283cff] text-white lg:hidden">{menuOpen ? <X /> : <Menu />}</button>
           </div>
         </div>
