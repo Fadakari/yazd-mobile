@@ -10,7 +10,7 @@ function BlogCard({ item }: { item: Article }) {
   return (
     <article
       key={item.id}
-      className="bg-white  rounded-3xl border border-zinc-300 hover:-translate-y-3 transition-all ease-soft-spring duration-300 group/card w-full h-full flex flex-col overflow-hidden "
+      className="bg-[#fffefa] rounded-[1.4rem] border border-[#ded9ce] shadow-[0_8px_24px_rgba(37,41,35,.06)] group/card w-full h-full flex flex-col overflow-hidden "
     >
       <Link
         href={`/article/${item.slug}`}
@@ -24,16 +24,16 @@ function BlogCard({ item }: { item: Article }) {
             height={220}
             src={item.thumbnail}
             alt={item.title}
-            className="w-full h-56 object-cover rounded-t-lg group-hover/card:brightness-110 transition-all ease-linear duration-500"
+            className="w-full h-56 object-cover rounded-t-[1.35rem]"
             loading="lazy"
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
           />
         ) : (
-          <div className="w-full h-56 bg-zinc-200 rounded-md flex items-center justify-center">
+          <div className="w-full h-56 bg-[#eeebe3] rounded-md flex items-center justify-center">
             <CiImageOff className="size-15" />
           </div>
         )}
-        <div className="absolute top-3 left-3 bg-white px-5 py-1 rounded-lg shadow font-medium font-dana">
+        <div className="absolute top-3 left-3 bg-[#f7f5ef] px-4 py-2 rounded-full border border-[#ded9ce] font-medium font-dana">
           {item.created_at_relative}
         </div>
       </Link>
@@ -42,7 +42,7 @@ function BlogCard({ item }: { item: Article }) {
           {item.title}
         </h3>
         <p className="w-full line-clamp-1">{item.introduction}</p>
-        <div className="flex items-center justify-around flex-wrap gap-5 text-zinc-600 mt-5 text-sm">
+        <div className="flex items-center justify-around flex-wrap gap-5 text-[#777568] mt-5 text-sm">
           <div className="flex flex-col items-center font-medium">
             <IoTimeOutline className="size-7" />
             {item.reading_time}
@@ -52,7 +52,7 @@ function BlogCard({ item }: { item: Article }) {
             {item.category?.title || "بدون دسته‌بندی"}
           </div>
         </div>
-        <hr className=" text-zinc-300 my-4" />
+        <hr className=" text-[#ded9ce] my-4" />
         <Link
           href={`/article/${item.slug}`}
           className="font-bold text-lg flex items-center gap-1 justify-center group/link hover:underline
