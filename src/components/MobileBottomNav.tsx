@@ -35,7 +35,7 @@ export default function MobileBottomNav() {
         <div className="relative flex items-center justify-center">
           <FiShoppingCart className="size-6" />
           {cart && cart.total_items > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border-2 border-white">
+            <span className="absolute -top-2 -right-2 bg-[#a65e43] text-white text-[10px] font-semibold h-4 min-w-4 flex items-center justify-center rounded-full border-2 border-[#f7f5ef]">
               {cart.total_items}
             </span>
           )}
