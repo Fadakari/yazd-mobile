@@ -78,6 +78,7 @@ export default function Navbar({ logo }: { logo: string }) {
               </div>)}
             </div>}
           </div>
+        <Link href="/products/offers" className="rounded-full border border-[#252923] bg-[#d9c6b4] px-4 py-2.5 text-[#252923] transition-colors hover:bg-[#c8b995]">تخفیف‌های ویژه</Link>
         </nav>
 
         <form onSubmit={submitSearch} className="hidden max-w-[260px] flex-1 items-center gap-2 rounded-full border-2 border-[#252923] bg-white px-3 py-2 md:flex">
