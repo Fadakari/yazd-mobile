@@ -4,7 +4,7 @@ import React, { FormEvent, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowUpLeft, Menu, Search, ShoppingBag, UserRound, ChevronDown, Phone, Instagram, BookOpen, House, Tag } from "lucide-react";
+import { ArrowUpLeft, Menu, Search, ShoppingBag, UserRound, ChevronDown, Phone, Instagram, X, BookOpen, House, Tag } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { useAuthModal } from "@/context/AuthModalProvider";
 import { useCategories } from "@/context/CategoriesContext";
@@ -18,6 +18,13 @@ export default function Navbar({ logo }: { logo: string }) {
   const { user } = useUser();
   const { cart } = useCart();
   const categories = useCategories();
+  const finalLogoUrl = (() => {
+    if (!logo || !logo.trim() || logo === "لوگو دریافت نشد") return "/assets/logo-abaj.png";
+    if (logo.startsWith("http")) return logo;
+    if (logo === "/logo.png" || logo.startsWith("/assets/")) return logo;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.yazd-mobile.ir";
+    return `${baseUrl}${logo.startsWith("/") ? logo : `/${logo}`}`;
+  })();
   const { onOpen: onAuthOpen }: any = useAuthModal();
   const [menuOpen, setMenuOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
@@ -44,7 +51,7 @@ export default function Navbar({ logo }: { logo: string }) {
       <div className="mx-auto flex min-h-[76px] max-w-[1500px] items-center justify-between gap-3 px-3 py-2 sm:px-6 lg:min-h-[88px] lg:px-10">
         <Link href="/" aria-label="صفحه اصلی گروه آخوندی" className="flex shrink-0 items-center gap-3">
           <span className="relative grid h-14 w-14 place-items-center overflow-hidden rounded-2xl border-2 border-[#252923] bg-[#c8b995] shadow-[3px_3px_0_#252923] sm:h-[62px] sm:w-[62px] lg:h-[68px] lg:w-[68px]">
-            {logo ? <Image src={logo} alt="گروه آخوندی" fill sizes="68px" priority className="object-contain p-1.5" /> : <span className="text-xl font-black text-[#252923]">A</span>}
+            {<Image src={finalLogoUrl} alt="گروه آخوندی" fill sizes="68px" priority className="object-contain p-1.5" />}
           </span>
           <span className="hidden leading-tight sm:block">
             <b className="block text-base font-black tracking-wide text-[#252923] lg:text-lg">AKHOONDI</b>
@@ -87,7 +94,7 @@ export default function Navbar({ logo }: { logo: string }) {
           </div>
           <button onClick={() => user?.identity ? router.push("/profile") : onAuthOpen()} aria-label="حساب کاربری" className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#d9c6b4] text-[#252923] transition-transform hover:scale-105 lg:hidden"><UserRound size={18} /></button>
           <Link href="/profile/cart" aria-label="سبد خرید" className="relative grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#c8b995] text-[#252923] lg:hidden"><ShoppingBag size={18} />{cart?.total_items > 0 && <span className="absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-[#a65e43] px-1 text-[10px] font-black text-white">{cart.total_items}</span>}</Link>
-          <button onClick={() => setMenuOpen(v => !v)} aria-label={menuOpen ? "بستن منو" : "باز کردن منو"} className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#59634f] text-white xl:hidden"><Menu size={19} /></button>
+          <button onClick={() => setMenuOpen(v => !v)} aria-label={menuOpen ? "بستن منو" : "باز کردن منو"} className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#59634f] text-white xl:hidden">{menuOpen ? <X size={19} /> : <Menu size={19} />}</button>
         </div>
       </div>
 
