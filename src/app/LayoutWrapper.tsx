@@ -25,12 +25,12 @@ export default function LayoutWrapper({ children, navbar, footer }: Props) {
   }
 
   return (
-    <>
+    <div className="akhoondi-site min-h-screen w-full overflow-x-clip bg-[#f7f5ef] text-[#252923]">
       <FixedSocialLinks />
       {navbar}
-      <main className="flex-1 w-full mx-auto pb-20 px-2 lg:px-0 h-full">{children}</main>
+      <main className="akhoondi-content mx-auto min-h-[55vh] w-full flex-1 px-3 pb-24 sm:px-5 lg:px-0">{children}</main>
       <MobileBottomNav />
       {footer}
-    </>
+    </div>
   );
 }
