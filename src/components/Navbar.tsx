@@ -38,7 +38,7 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
       <button className={`
         flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-300
         ${isOpen
-                ? "bg-[\#41483b] text-white shadow-md shadow-[#59634f]/10"
+                ? "bg-[#41483b] text-white shadow-md shadow-[#59634f]/10"
                 : "bg-[#59634f] text-white"
               }
       `}>
@@ -62,7 +62,7 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
                 <li key={cat.id} className="group/item relative">
                   <Link
                     href={`/products/?category_id=${cat.id}`}
-                    className="flex items-center justify-between px-4 py-3 text-gray-700 text-sm font-medium hover:text-[\#41483b] hover:bg-[#eeebe3] rounded-lg transition-colors"
+                    className="flex items-center justify-between px-4 py-3 text-gray-700 text-sm font-medium hover:text-[#41483b] hover:bg-[#eeebe3] rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <span className="w-2 h-2 rounded-full bg-gray-300 group-hover/item:bg-[#59634f] transition-colors" />
@@ -80,7 +80,7 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
                           <li key={child.id}>
                             <Link
                               href={`/products/?category_id=${child.id}`}
-                              className="block px-3 py-2.5 text-sm text-gray-700 hover:text-[\#41483b] hover:bg-white hover:border-l-2 hover:border-l-[#59634f] rounded-md transition-colors"
+                              className="block px-3 py-2.5 text-sm text-gray-700 hover:text-[#41483b] hover:bg-white hover:border-l-2 hover:border-l-[#59634f] rounded-md transition-colors"
                             >
                               {child.name}
                             </Link>
