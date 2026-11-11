@@ -58,7 +58,7 @@ export default async function UserDashboard() {
   };
 
   return (
-    <div className="sm:p-5 md:p-10 space-y-2 font-pelak text-gray-900">
+    <div className="ak-dashboard space-y-2 font-pelak text-gray-900 sm:p-3 md:p-5">
       <section className="w-full">
         <h2 className="text-3xl font-bold mb-6 text-gray-800">سوابق من</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 rounded-2xl  sm:p-2 md:p-8 max-sm:mb-10 w-full">
