@@ -585,3 +585,82 @@ html {
   .akhoondi-site .akhoondi-content h1 { font-size: clamp(1.5rem, 7vw, 2rem); }
   .akhoondi-site .akhoondi-content h2 { overflow-wrap: anywhere; }
 }
+
+
+/* AKHOONDI — unified editorial / retail components */
+:root { --ak-ink: #252923; --ak-olive: #59634f; --ak-olive-deep: #41483b; --ak-paper: #f7f5ef; --ak-card: #fffefa; --ak-sand: #e6e2d8; --ak-champagne: #c8b995; --ak-clay: #a65e43; --ak-line: #d8d2c7; }
+.ak-profile-shell { align-items: stretch; }
+.ak-profile-panel h1, .ak-profile-panel h2, .ak-profile-panel h3 { color: var(--ak-ink); font-weight: 900; letter-spacing: -.02em; }
+.ak-profile-panel h1, .ak-profile-panel > div > h1 { font-size: clamp(1.35rem, 2vw, 2rem); line-height: 1.5; }
+.ak-profile-panel input:not([type=checkbox]), .ak-profile-panel select, .akhoondi-orders select {
+  min-height: 44px; border: 2px solid var(--ak-line) !important; border-radius: 12px !important;
+  background: #fffefa !important; color: var(--ak-ink) !important; padding-inline: 12px;
+}
+.ak-profile-panel button, .akhoondi-orders button { transition: transform .2s ease, box-shadow .2s ease, background .2s ease; }
+.ak-profile-panel button:active, .akhoondi-orders button:active { transform: translateY(1px); }
+.ak-profile-panel .grid > a, .ak-profile-panel .grid > div {
+  border: 2px solid var(--ak-ink) !important; border-radius: 1.2rem !important;
+  background: var(--ak-sand) !important; box-shadow: 4px 5px 0 var(--ak-ink) !important;
+  transition: transform .25s ease, box-shadow .25s ease !important;
+}
+.ak-profile-panel .grid > a:hover, .ak-profile-panel .grid > div:hover {
+  transform: translateY(-3px); box-shadow: 6px 8px 0 var(--ak-ink) !important;
+}
+.ak-profile-panel ul.divide-y > li { border-color: var(--ak-line) !important; border-radius: 12px; }
+.ak-profile-panel ul.divide-y > li:hover { background: var(--ak-sand) !important; }
+.ak-profile-panel .bg-green-100, .ak-profile-panel .bg-blue-100, .ak-profile-panel .bg-yellow-100,
+.ak-profile-panel .bg-red-100, .ak-profile-panel .bg-purple-100 {
+  border: 1px solid rgba(37,41,35,.1); border-radius: 999px !important;
+}
+.ak-profile-panel .bg-green-100 { background: #e1e8dc !important; color: #41483b !important; }
+.ak-profile-panel .bg-blue-100 { background: #e4e8e4 !important; color: #41483b !important; }
+.ak-profile-panel .bg-yellow-100, .ak-profile-panel .bg-purple-100 { background: #eee5d3 !important; color: #655b3f !important; }
+.ak-profile-panel .bg-red-100 { background: #f0e0d9 !important; color: #8c4935 !important; }
+
+.ak-profile-panel .akhoondi-orders { color: var(--ak-ink); }
+.ak-profile-panel .akhoondi-orders thead { background: var(--ak-olive-deep) !important; color: #fffefa; }
+.ak-profile-panel .akhoondi-orders th { padding: 15px 16px; font-size: 12px; font-weight: 900; white-space: nowrap; }
+.ak-profile-panel .akhoondi-orders td { padding: 14px 16px; font-size: 13px; font-weight: 700; }
+.ak-profile-panel .akhoondi-orders tbody tr { background: #fffefa; }
+.ak-profile-panel .akhoondi-orders tbody tr:nth-child(even) { background: #f1eee6; }
+.ak-profile-panel .akhoondi-orders tbody tr:hover { background: #e6e2d8; }
+.ak-profile-panel .akhoondi-orders .bg-yellow-100 { background: #eee5d3 !important; color: #655b3f !important; }
+.ak-profile-panel .akhoondi-orders .bg-slate-100 { background: #e4e8e4 !important; color: #41483b !important; }
+.ak-profile-panel .akhoondi-orders .bg-green-100 { background: #e1e8dc !important; color: #41483b !important; }
+.ak-profile-panel .akhoondi-orders .bg-red-100 { background: #f0e0d9 !important; color: #8c4935 !important; }
+.ak-profile-panel .akhoondi-orders > div:last-child button,
+.ak-profile-panel .akhoondi-orders > div:last-child > div { border: 1px solid var(--ak-line); border-radius: 999px; background: var(--ak-sand); color: var(--ak-ink); font-weight: 800; padding: 8px 13px; }
+.ak-profile-panel .akhoondi-orders > div:last-child button:disabled { opacity: .4; }
+
+.ak-cart-page ul { border: 2px solid var(--ak-ink) !important; border-radius: 1.4rem !important; background: var(--ak-paper); box-shadow: 5px 6px 0 var(--ak-ink); }
+.ak-cart-page ul > li { border-color: var(--ak-line) !important; }
+.ak-cart-page > div[class*="shadow"] { border: 2px solid var(--ak-ink) !important; border-radius: 1.4rem !important; background: var(--ak-paper); box-shadow: 5px 6px 0 var(--ak-ink) !important; }
+.ak-cart-page .btn-primary { border: 2px solid var(--ak-ink); background: var(--ak-champagne) !important; color: var(--ak-ink) !important; border-radius: 999px !important; box-shadow: 3px 4px 0 var(--ak-ink); font-weight: 900; }
+.ak-cart-page .btn-primary:hover { background: #d9c6b4 !important; }
+
+.akhoondi-site .akhoondi-listing > section:first-of-type { border: 2px solid var(--ak-ink); box-shadow: 6px 7px 0 var(--ak-ink); }
+.akhoondi-site .akhoondi-listing .bg-white, .akhoondi-site .akhoondi-listing .bg-gray-50 { border-radius: 1rem; }
+.akhoondi-site .article-content { line-height: 2.15; font-size: 1rem; }
+.akhoondi-site .article-content h1, .akhoondi-site .article-content h2, .akhoondi-site .article-content h3 { margin-top: 2rem; margin-bottom: .8rem; }
+.akhoondi-site .article-content img { border: 2px solid var(--ak-ink); border-radius: 1.25rem; box-shadow: 4px 5px 0 var(--ak-ink); }
+.akhoondi-site .article-content blockquote { border-right: 4px solid var(--ak-clay); border-left: 0; border-radius: 0 1rem 1rem 0; background: var(--ak-sand); padding: 1rem 1.25rem; }
+.akhoondi-site .article-content table { overflow: hidden; border: 1px solid var(--ak-line); border-radius: 12px; }
+.akhoondi-site .article-content th { background: var(--ak-olive-deep); color: #fff; }
+
+.akhoondi-site .invoice-card { border: 2px solid var(--ak-ink); box-shadow: 5px 6px 0 var(--ak-ink); }
+.akhoondi-site .invoice-meta span { background: var(--ak-champagne); color: var(--ak-ink); }
+.akhoondi-site .invoice-table th { background: var(--ak-olive-deep); color: #fff; }
+.akhoondi-site .invoice-total { color: var(--ak-olive-deep); }
+
+@media (max-width: 767px) {
+  .ak-profile-shell { padding-top: 1rem; padding-bottom: 1.5rem; }
+  .ak-profile-panel { padding: 1rem; }
+  .ak-profile-panel .grid { gap: .9rem !important; }
+  .ak-profile-panel ul.divide-y > li { padding-inline: .5rem; }
+  .ak-cart-page { padding: .25rem !important; }
+  .ak-cart-page ul { padding: .75rem !important; }
+  .akhoondi-site .article-content { font-size: .95rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .group\/product, .group\/article { transition-duration: .01ms !important; }
+}
