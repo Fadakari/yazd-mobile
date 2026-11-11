@@ -38,8 +38,8 @@ export default async function Page() {
   ];
 
   return (
-    <div>
-      <h1 className="flex items-center gap-1 font-semibold text-xl mb-5">
+    <div className="ak-orders-page">
+      <h1 className="mb-6 flex items-center gap-3 rounded-2xl border-2 border-[#252923] bg-[#e6e2d8] px-5 py-4 text-xl font-black shadow-[3px_4px_0_#252923]">
         <MdShoppingCartCheckout className="size-8 text-primary" />
         <span className="pt-1">سفارشات</span>
       </h1>
