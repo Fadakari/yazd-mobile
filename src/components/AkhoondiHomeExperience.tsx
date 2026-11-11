@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, type ReactNode } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowLeft, ArrowUpLeft, MoveUpLeft, MoveLeft, Sparkles, Plus, ArrowDown } from "lucide-react";
+import { ArrowUpLeft, MoveUpLeft, ArrowDown } from "lucide-react";
 
 type Product = {
   id: number;
@@ -24,7 +24,7 @@ type ProductSection = { id: number; title: string; type: string; products: Produ
 const money = (value?: number) =>
   typeof value === "number" && value > 0 ? new Intl.NumberFormat("fa-IR").format(value) : null;
 
-function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+function Reveal({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
   const reduced = useReducedMotion();
   return (
     <motion.div
