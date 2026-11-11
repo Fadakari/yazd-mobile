@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowLeft, ArrowUpLeft, Search, ShoppingBag, UserRound, Menu, X,
-  MoveUpLeft, Plus, Phone, ChevronLeft, Sparkles, Instagram,
+  MoveUpLeft, Plus, Phone, ChevronLeft,
 } from "lucide-react";
 import { useCart } from "@/context/CartContextProvider";
 import { useUser } from "@/context/UserContext";
@@ -136,14 +136,14 @@ export default function AkhoondiHomeExperience({
       </header>
 
       {/* Compact first-screen hero: header + hero are designed as one viewport composition. */}
-      <section ref={heroRef} className="relative mx-auto mt-3 min-h-[min(590px,calc(100svh-92px))] max-w-[1600px] px-3 sm:mt-5 sm:min-h-[min(640px,calc(100svh-112px))] sm:px-6 lg:px-10">
+      <section ref={heroRef} className="relative mx-auto mt-3 min-h-[min(590px,calc(100svh_-_92px))] max-w-[1600px] px-3 sm:mt-5 sm:min-h-[min(640px,calc(100svh_-_112px))] sm:px-6 lg:px-10">
         <div className="absolute inset-0 overflow-hidden rounded-[1.35rem] bg-[#42483b] sm:rounded-[1.8rem]">
           {hero?.image ? <motion.div style={{ y: heroY }} className="absolute inset-0"><Image src={hero.image} alt={hero.alt || "گروه آخوندی"} fill priority sizes="100vw" className="object-cover object-center" /></motion.div> : <div className="absolute inset-0 bg-[linear-gradient(115deg,#343a31_0%,#777b67_52%,#c3b7a3_100%)]" />}
           <div className="absolute inset-0 bg-gradient-to-l from-[#20251f]/85 via-[#20251f]/55 to-[#20251f]/10" />
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#20251f]/40 to-transparent" />
           <div className="absolute bottom-8 left-8 hidden h-36 w-36 rounded-full border border-white/30 lg:block" />
         </div>
-        <div className="relative flex min-h-[min(590px,calc(100svh-92px))] flex-col justify-between px-5 py-6 text-white sm:min-h-[min(640px,calc(100svh-112px))] sm:px-10 sm:py-8 lg:px-16 lg:py-10">
+        <div className="relative flex min-h-[min(590px,calc(100svh_-_92px))] flex-col justify-between px-5 py-6 text-white sm:min-h-[min(640px,calc(100svh_-_112px))] sm:px-10 sm:py-8 lg:px-16 lg:py-10">
           <div className="flex items-center justify-between gap-4">
             <span className="text-[9px] font-medium tracking-[.24em] text-white/80 sm:text-[10px]">FURNITURE · OBJECTS · INTERIORS</span>
             <span className="flex items-center gap-2 text-[10px] font-medium text-white/80"><span className="h-px w-7 bg-[#c9a989]" /> طراحی برای ماندن</span>
