@@ -28,13 +28,13 @@ export default function CartDrawer({ cart }: { cart: CartFormat }) {
         color="warning"
         content={cart.items.length.toLocaleString("fa-IR")}
         placement="bottom-right"
-        classNames={{ badge: "font-dana text-white bg-primary pt-1" }}
+        classNames={{ badge: "font-dana border-2 border-[#252923] text-white bg-[#a65e43] pt-1" }}
       >
         <ProductButton
           aria-label="cart"
           title="سبد خرید"
           onClick={onOpen}
-          className="group-hover:bg-primary/50 group-active:bg-primary/50 p-2 rounded-lg"
+          className="rounded-full border-2 border-[#252923] bg-[#c8b995] p-2 text-[#252923] shadow-[3px_3px_0_#252923] transition-all group-hover:bg-[#d9c6b4]"
         >
           <FaBasketShopping className="size-8 text-zinc-700" />
         </ProductButton>
@@ -46,10 +46,10 @@ export default function CartDrawer({ cart }: { cart: CartFormat }) {
         onOpenChange={onOpenChange}
         radius="none"
       >
-        <DrawerContent className="bg-zinc-100">
+        <DrawerContent className="border-l-2 border-[#252923] bg-[#f7f5ef]">
           {(onClose) => (
             <>
-              <DrawerHeader className="flex justify-between bg-primary-600 text-white px-6 py-3 border-b border-zinc-300">
+              <DrawerHeader className="flex justify-between border-b-2 border-[#252923] bg-[#41483b] px-6 py-4 text-white">
                 <p className="text-2xl font-bold">سبد خرید</p>
                 <button onClick={onClose}>
                   <HiXMark className="size-8" />
@@ -61,7 +61,7 @@ export default function CartDrawer({ cart }: { cart: CartFormat }) {
                   cart.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-start gap-3 p-2 rounded-lg"
+                      className="flex items-start gap-3 rounded-2xl border-2 border-[#252923] bg-[#f7f5ef] p-3 shadow-[3px_4px_0_#252923]"
                     >
                       <div className="relative bg-white rounded-xl shadow-md">
                         {item.product.cover_image ? (
@@ -73,7 +73,7 @@ export default function CartDrawer({ cart }: { cart: CartFormat }) {
                             className="w-40 h-24 object-contain rounded-lg overflow-hidden"
                           />
                         ) : (
-                          <div className="w-full h-24 bg-zinc-200 rounded-md flex items-center justify-center">
+                          <div className="flex h-24 w-full items-center justify-center rounded-xl bg-[#e6e2d8]">
                             <CiImageOff className="size-14" />
                           </div>
                         )}
@@ -112,7 +112,7 @@ export default function CartDrawer({ cart }: { cart: CartFormat }) {
 
                       <div className="flex flex-col w-full gap-2 pr-1">
                         <div className="flex flex-col w-full gap-2 pr-1">
-                          <p className="font-semibold text-zinc-700 text-lg">
+                          <p className="text-lg font-black text-[#252923]">
                             {item.product.name}
                           </p>
                           <div className="flex gap-2 items-center">
