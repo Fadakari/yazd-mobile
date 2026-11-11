@@ -24,7 +24,7 @@ function Page() {
   const { cart, loading } = useCart();
 
   return (
-    <div className="grid md:grid-cols-5 items-start gap-5 p-2 sm:p-4 w-full min-w-0">
+    <div className="ak-cart-page grid w-full min-w-0 items-start gap-5 p-2 sm:p-4 md:grid-cols-5">
       {loading ? (
         <div className="col-span-3 w-full h-full p-5 flex items-center justify-center">
           درحال دریافت اطلاعات سبد خرید ...{" "}
