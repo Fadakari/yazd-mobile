@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, ReactNode, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowUpLeft, ArrowDown, Search, ShoppingBag, UserRound, Sparkles,
   MoveUpLeft, Star, Menu, X, Plus, Instagram, Phone, ChevronLeft,
@@ -38,6 +38,18 @@ function Reveal({ children, delay = 0, className = "", direction = "up" }: {
       whileInView={{ opacity: 1, x: 0, y: 0, scale: 1, rotate: 0 }}
       viewport={{ once: true, amount: .12 }}
       transition={{ duration: reduced ? 0 : .72, delay, ease: [.16, 1, .3, 1] }}>
+      {children}
+    </motion.div>
+  );
+}
+
+function ScrollParallax({ children, className = "" }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [28, -28]);
+  return (
+    <motion.div ref={ref} style={{ y }} className={className}>
       {children}
     </motion.div>
   );
@@ -99,8 +111,11 @@ export default function AkhoondiHomeExperience({
   const heroRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 150]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, reduced ? 1 : 1.13]);
+  const smoothHeroProgress = useSpring(scrollYProgress, { stiffness: 85, damping: 24, mass: .35 });
+  const { scrollYProgress: pageScrollProgress } = useScroll();
+  const smoothPageProgress = useSpring(pageScrollProgress, { stiffness: 110, damping: 28, mass: .25 });
+  const heroY = useTransform(smoothHeroProgress, [0, 1], [0, reduced ? 0 : 150]);
+  const heroScale = useTransform(smoothHeroProgress, [0, 1], [1, reduced ? 1 : 1.13]);
   const hero = banners[0];
   const secondaryBanners = banners.slice(1);
   const allProducts = useMemo(() => sections.flatMap(s => s.products).filter((p, i, all) => all.findIndex(x => x.id === p.id) === i), [sections]);
@@ -113,6 +128,7 @@ export default function AkhoondiHomeExperience({
 
   return (
     <main dir="rtl" className="relative isolate -mx-2 -mt-0 overflow-hidden bg-[#f7f5ef] text-[#252923] [--ink:#252923] [--blue:#59634f]">
+      <motion.div aria-hidden="true" style={{ scaleX: smoothPageProgress }} className="fixed inset-x-0 top-0 z-[100] h-1 origin-right bg-[#a65e43]" />
       <div className="pointer-events-none absolute inset-x-0 top-[900px] -z-0 h-[1200px] opacity-40" style={{ backgroundImage: "radial-gradient(#59634f 1px, transparent 1px)", backgroundSize: "22px 22px" }} />
 
       {/* The homepage has its own single, functional header. */}
@@ -219,7 +235,7 @@ export default function AkhoondiHomeExperience({
       {secondaryBanners.map((banner, i) => <section key={banner.id} className="relative z-10 mx-auto my-20 max-w-[1500px] px-5 sm:px-10 lg:px-16">
         <Reveal direction={i % 2 ? "left" : "right"}>
           <Link href={banner.link || "/products"} className="group relative block aspect-[16/8] min-h-[260px] overflow-hidden rounded-[2rem] border-2 border-[#252923] bg-[#d9c6b4] shadow-[8px_8px_0_#252923] sm:aspect-[16/6]">
-            <Image src={banner.image} alt={banner.alt || "گروه آخوندی"} fill sizes="100vw" className="object-cover transition-transform duration-1000 group-hover:scale-110" />
+            <ScrollParallax className="absolute inset-0"><Image src={banner.image} alt={banner.alt || "گروه آخوندی"} fill sizes="100vw" className="object-cover transition-transform duration-1000 group-hover:scale-110" /></ScrollParallax>
             <div className="absolute inset-0 bg-gradient-to-l from-[#20251f]/55 via-transparent to-transparent" />
             <span className="absolute right-6 top-6 rounded-full bg-[#c8b995] px-4 py-2 text-xs font-black text-[#252923]">AKHOONDI SPECIAL / 0{i + 2}</span>
             <span className="absolute bottom-6 right-6 text-3xl font-black text-white drop-shadow-lg sm:bottom-10 sm:right-10 sm:text-5xl">فضای تازه، حس تازه ✳</span>
@@ -267,7 +283,7 @@ export default function AkhoondiHomeExperience({
           {blogs.slice(0, 3).map((blog, i) => <Reveal key={blog.id} delay={i * .1} direction={i === 1 ? "scale" : "up"}>
             <Link href={`/article/${blog.slug}`} className="group block">
               <div className={`relative aspect-[.92/1] overflow-hidden rounded-[1.35rem] border border-[#d8d2c7] shadow-[0_8px_24px_rgba(37,41,35,.08)] transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-[0_14px_32px_rgba(37,41,35,.14)] ${["bg-[#d9c6b4]","bg-[#e6e2d8]","bg-[#c8b995]"][i]}`}>
-                {blog.image && <Image src={blog.image} alt={blog.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-110" />}
+                {blog.image && <ScrollParallax className="absolute inset-0"><Image src={blog.image} alt={blog.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-110" /></ScrollParallax>}
                 <span className="absolute right-4 top-4 rounded-full border-2 border-[#252923] bg-[#c8b995] px-4 py-2 text-[10px] font-black">{blog.date || "AKHOONDI JOURNAL"}</span>
                 <span className="absolute bottom-4 left-4 grid h-12 w-12 place-items-center rounded-full border-2 border-[#252923] bg-[#59634f] text-white"><ArrowUpLeft /></span>
               </div>
