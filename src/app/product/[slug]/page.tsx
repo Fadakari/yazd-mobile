@@ -204,8 +204,8 @@ export default async function Page({
         ]}
       />
       <ProductProvider product={data}>
-        <div className="container customSm:max-w-[566px]">
-          <div className="bg-white shadow-lg shadow-black/10 rounded-[5px] px-5 py-4 w-full mt-7 text-sm ">
+        <div className="akhoondi-product-page container max-w-[1440px] py-5">
+          <div className="bg-[#fffefa] border border-[#ded9ce] shadow-[0_10px_28px_rgba(37,41,35,.07)] rounded-[1.4rem] px-4 sm:px-6 py-5 w-full mt-5 text-sm ">
             <div className="flex flex-col md:flex-row justify-between">
               <div className="w-full md:w-1/3 h-full flex">
                 <ProductSlider images={images} alt={data.name} />
@@ -219,7 +219,7 @@ export default async function Page({
                     <span>دسته :‌</span>{" "}
                     <Link
                       href={`/products/?category_id=${categoryFind?.id}`}
-                      className="text-cyan-400 spoiler-link relative"
+                      className="text-[#59634f] spoiler-link relative"
                     >
                       {data.category}
                     </Link>
@@ -243,7 +243,7 @@ export default async function Page({
               </div>
               
               <div className="w-5/12 h-full space-y-3 lg:block hidden">
-                <div className="bg-zinc-100 border border-zinc-200 p-5 text-center space-y-4 rounded-md">
+                <div className="bg-[#eeebe3] border border-[#ded9ce] p-5 text-center space-y-4 rounded-[1.1rem]">
                   <ProductPriceBox product={data} />
 
                   {data.stock <= 5 && data.stock > 0 && (
@@ -279,7 +279,7 @@ export default async function Page({
                               className="bg-white border border-zinc-200 rounded-lg p-3 flex flex-col gap-1 shadow-sm text-sm"
                             >
                               <div className="flex items-center gap-2 font-bold text-zinc-800">
-                                <span className="text-cyan-600">🚚</span>
+                                <span className="text-[#59634f]">🚚</span>
                                 {method.name}
                               </div>
                               <p className="text-xs text-zinc-500 mr-6">
@@ -345,7 +345,7 @@ export default async function Page({
             />
           </div>
           
-          <div className="bg-white shadow-lg shadow-black/10 rounded-[5px] w-full mt-7 text-sm">
+          <div className="bg-[#fffefa] border border-[#ded9ce] shadow-[0_10px_28px_rgba(37,41,35,.07)] rounded-[1.4rem] w-full mt-7 text-sm">
             <TabsBox
               comments={comments}
               productId={data.id}
