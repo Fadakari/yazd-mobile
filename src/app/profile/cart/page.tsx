@@ -24,7 +24,7 @@ function Page() {
   const { cart, loading } = useCart();
 
   return (
-    <div className="grid md:grid-cols-5 items-start gap-5 p-4  overflow-y-auto h-[600px] ]  w-full">
+    <div className="grid md:grid-cols-5 items-start gap-5 p-2 sm:p-4 w-full min-w-0">
       {loading ? (
         <div className="col-span-3 w-full h-full p-5 flex items-center justify-center">
           درحال دریافت اطلاعات سبد خرید ...{" "}
@@ -145,7 +145,7 @@ function CartLi({ item }: { item: CartItem }) {
     <>
       <li className="flex items-center justify-between p-4 relative">
         {loading && (
-          <div className="absolute top-0 right-0 size-full bg-white/80 flex items-center justify-center cursor-wait">
+          <div className="absolute top-0 right-0 size-full bg-[#fffefa]/80 flex items-center justify-center cursor-wait">
             <Spinner size="lg" />
           </div>
         )}
