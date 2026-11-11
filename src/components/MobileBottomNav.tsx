@@ -58,8 +58,8 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-3 left-3 right-3 bg-white/60 backdrop-blur-lg border border-white/60 z-50 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] pb-[env(safe-area-inset-bottom)] transition-all duration-500">
-      <nav className="flex items-center justify-between h-[64px] px-2">
+    <div className="lg:hidden fixed bottom-2 left-2 right-2 z-50 rounded-2xl border border-[#d8d2c7] bg-[#f7f5ef]/90 shadow-[0_8px_32px_rgba(41,46,39,0.13)] backdrop-blur-xl pb-[env(safe-area-inset-bottom)] transition-all duration-500">
+      <nav className="flex h-[62px] items-center justify-around px-1">
         {navItems.map((item) => {
           const isActive = item.active;
           const isProfile = item.href === "/profile";
@@ -74,18 +74,18 @@ export default function MobileBottomNav() {
                   onAuthOpen();
                 }
               }}
-              className="relative flex flex-col items-center justify-center w-[60px] h-[56px] space-y-1.5 transition-all duration-300 active:scale-90 active:bg-white/30 rounded-2xl"
+              className={`relative flex h-[54px] min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl transition-all duration-300 active:scale-95 ${isActive ? "bg-[#e9e4da]" : "hover:bg-[#eeebe3]"}`}
             >
               {/* نشانگر فعال بودن (خط بالای آیکون) */}
               <div 
                 className={`absolute top-0 w-6 h-1 rounded-full transition-all duration-300 ${
-                  isActive ? "bg-[#ff5722] opacity-100 shadow-[0_2px_8px_rgba(255,87,34,0.4)]" : "bg-transparent opacity-0"
+                  isActive ? "bg-[#a65e43] opacity-100" : "bg-transparent opacity-0"
                 }`}
               />
               
               <div 
                 className={`transition-all duration-300 transform ${
-                  isActive ? "text-[#ff5722] -translate-y-0.5" : "text-gray-600"
+                  isActive ? "text-[#a65e43] -translate-y-0.5" : "text-[#777568]"
                 }`}
               >
                 {item.icon}
@@ -93,7 +93,7 @@ export default function MobileBottomNav() {
               
               <span 
                 className={`text-[10px] font-bold transition-all duration-300 ${
-                  isActive ? "text-[#ff5722] opacity-100" : "text-gray-600 opacity-80"
+                  isActive ? "text-[#8d513d] opacity-100" : "text-[#777568] opacity-80"
                 }`}
               >
                 {item.label}
