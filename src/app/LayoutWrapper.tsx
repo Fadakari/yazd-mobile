@@ -21,7 +21,7 @@ export default function LayoutWrapper({ children, navbar, footer }: Props) {
   // Homepage owns its complete visual shell (header, navigation and footer).
   // Keep the store-wide shell untouched on every internal route.
   if (isHome) {
-    return <div className="min-h-screen w-full flex-1 overflow-x-hidden">{children}</div>;
+    return <div className="min-h-screen w-full flex-1 overflow-x-hidden pb-20 lg:pb-0">{children}<MobileBottomNav /></div>;
   }
 
   return (
