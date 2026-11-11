@@ -1,33 +1,20 @@
 import React from "react";
-const fields = [
-  "نام",
-  "نام خانوادگی",
-  "شماره تلفن",
-  "آدرس",
-  "کد پستی",
-  "تاریخ تولد",
-  "استان",
-  "شهر",
-  "کد معرف",
-];
+
+const fields = ["نام", "نام خانوادگی", "شماره تلفن", "آدرس", "کد پستی", "تاریخ تولد", "استان", "شهر", "کد معرف"];
+
 function Loading() {
   return (
     <div className="relative flex flex-col">
-      <div className="flex flex-col sm:grid grid-cols-1 md:grid-cols-2 gap-5 mt-2 animate-pulse">
-        {fields.map((label, index) => (
-          <div
-            key={index}
-            className="bg-zinc-50 border p-4 border-zinc-200 rounded flex flex-col gap-2"
-          >
-            <div className="h-4 w-24 bg-zinc-300 rounded"></div>
-            <div className="h-10 bg-zinc-200 rounded-xl"></div>
+      <div className="mt-4 grid animate-pulse grid-cols-1 gap-4 sm:grid-cols-2">
+        {fields.map((label) => (
+          <div key={label} className="flex flex-col gap-3 rounded-2xl border-2 border-[#252923] bg-[#f7f5ef] p-4 shadow-[3px_4px_0_#252923]">
+            <div className="h-3 w-24 rounded-full bg-[#c8b995]" />
+            <div className="h-11 rounded-xl border border-[#d8d2c7] bg-[#e6e2d8]" />
           </div>
         ))}
-
-        <div className="w-full flex justify-end col-span-2">
-          <div className="w-36 h-10 bg-zinc-300 rounded-lg"></div>
+        <div className="col-span-1 flex w-full justify-end sm:col-span-2">
+          <div className="h-11 w-36 rounded-full bg-[#c8b995]" />
         </div>
-
       </div>
     </div>
   );
