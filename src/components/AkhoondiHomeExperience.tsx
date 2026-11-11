@@ -67,7 +67,7 @@ function ProductCard({ product, index, featured = false }: { product: Product; i
       <Link href={`/product/${product.slug}`} className="block">
         <div className={`relative isolate overflow-hidden rounded-[1.35rem] border border-[#d8d2c7] bg-[#eeebe3] shadow-[0_8px_24px_rgba(37,41,35,.08)] transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-[0_14px_32px_rgba(37,41,35,.14)] ${featured ? "aspect-[1.25/1] md:aspect-[2.15/1]" : "aspect-[.86/1]"}`}>
           <div className="absolute -left-12 -top-12 h-44 w-44 rounded-full bg-[#d9c6b4] transition-transform duration-700 group-hover:scale-[1.7]" />
-          <div className="absolute bottom-[-18%] right-[-12%] h-52 w-52 rounded-full border-[22px] border-[#c8b995]/70 transition-transform duration-700 group-hover:rotate-12" />
+          <div className="absolute bottom-[-18%] right-[-12%] h-52 w-52 rounded-full border-[22px] border-[#c8b995]/70 transition-transform duration-700 group-hover:scale-105" />
           {product.image && <Image src={product.image} alt={product.title} fill sizes="(max-width: 768px) 50vw, 30vw" className="relative z-[1] object-contain p-4 transition-transform duration-700 group-hover:scale-[1.06]" />}
           <span className="absolute right-4 top-4 z-[2] grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#c8b995] text-xs font-black">{String(index + 1).padStart(2, "0")}</span>
           {product.discount ? <span className="absolute left-4 top-4 z-[2] -rotate-6 rounded-full bg-[#a65e43] px-3 py-2 text-xs font-black text-white">{product.discount}٪ تخفیف</span> : null}
@@ -134,13 +134,13 @@ export default function AkhoondiHomeExperience({
             <Search className="h-4 w-4 shrink-0" /><input value={query} onChange={e => setQuery(e.target.value)} placeholder="دنبال چی می‌گردی؟" className="min-w-0 flex-1 bg-transparent px-2 text-xs font-bold outline-none placeholder:text-[#aaa69d]" />
           </form>
           <div className="flex items-center gap-2">
-            <button onClick={() => user?.identity ? router.push("/profile") : onAuthOpen()} aria-label="حساب کاربری" className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#d9c6b4] transition-transform hover:-rotate-12"><UserRound size={18} /></button>
-            <Link href="/profile/cart" aria-label="سبد خرید" className="relative grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#c8b995] transition-transform hover:scale-[1.01]2"><ShoppingBag size={18} />{cart?.total_items > 0 && <span className="absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-[#a65e43] px-1 text-[10px] font-black text-white">{cart.total_items}</span>}</Link>
+            <button onClick={() => user?.identity ? router.push("/profile") : onAuthOpen()} aria-label="حساب کاربری" className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#d9c6b4] transition-transform hover:scale-105"><UserRound size={18} /></button>
+            <Link href="/profile/cart" aria-label="سبد خرید" className="relative grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#c8b995] transition-transform hover:scale-105"><ShoppingBag size={18} />{cart?.total_items > 0 && <span className="absolute -right-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-[#a65e43] px-1 text-[10px] font-black text-white">{cart.total_items}</span>}</Link>
             <button onClick={() => setMenuOpen(v => !v)} className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#252923] bg-[#59634f] text-white lg:hidden">{menuOpen ? <X /> : <Menu />}</button>
           </div>
         </div>
         {menuOpen && <motion.nav initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto mt-3 grid max-w-[1500px] grid-cols-2 gap-2 rounded-2xl border-2 border-[#252923] bg-white p-4 text-sm font-black shadow-[4px_4px_0_#252923] lg:hidden">
-          {[["فروشگاه","/products"],["درباره ما","/about-us"],["مجله","/articles"],["تماس با ما","/contact-info"]].map(([label, href]) => <Link key={href} href={href} onClick={() => setMenuOpen(false)} className="rounded-xl bg-[#fff1e8] p-3">{label}</Link>)}
+          {[["فروشگاه","/products"],["درباره ما","/about-us"],["مجله","/articles"],["تماس با ما","/contact-info"]].map(([label, href]) => <Link key={href} href={href} onClick={() => setMenuOpen(false)} className="rounded-xl bg-[#eeebe3] p-3">{label}</Link>)}
           <form onSubmit={submitSearch} className="col-span-2 flex items-center gap-2 rounded-xl border-2 border-[#252923] p-3"><Search size={17} /><input value={query} onChange={e => setQuery(e.target.value)} placeholder="جست‌وجو در محصولات" className="min-w-0 flex-1 bg-transparent outline-none" /></form>
         </motion.nav>}
       </header>
@@ -148,14 +148,14 @@ export default function AkhoondiHomeExperience({
       {/* Compact editorial hero: bold composition without exceeding the first viewport. */}
       <section ref={heroRef} className="relative mx-auto mt-5 h-[min(620px,calc(100svh-112px))] min-h-[430px] max-w-[1600px] px-4 sm:px-8 lg:px-12">
         <div className="absolute inset-x-4 inset-y-0 overflow-hidden rounded-[2.2rem] border-2 border-[#252923] bg-[#59634f] shadow-[8px_9px_0_#252923] sm:inset-x-8 lg:inset-x-12">
-          {hero?.image ? <motion.div style={{ y: heroY, scale: heroScale }} className="absolute inset-0"><Image src={hero.image} alt={hero.alt || "گروه آخوندی"} fill priority sizes="100vw" className="object-cover" /></motion.div> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_40%,#d9c6b4_0_12%,transparent_12.5%),radial-gradient(circle_at_70%_40%,#c8b995_0_26%,transparent_26.5%),linear-gradient(125deg,#59634f,#6d78ff_55%,#d9c6b4)]" />}
+          {hero?.image ? <motion.div style={{ y: heroY, scale: heroScale }} className="absolute inset-0"><Image src={hero.image} alt={hero.alt || "گروه آخوندی"} fill priority sizes="100vw" className="object-cover" /></motion.div> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_40%,#d9c6b4_0_12%,transparent_12.5%),radial-gradient(circle_at_70%_40%,#c8b995_0_26%,transparent_26.5%),linear-gradient(125deg,#59634f,#6c7565_55%,#d9c6b4)]" />}
           <div className="absolute inset-0 bg-gradient-to-l from-[#20251f]/80 via-[#20251f]/30 to-transparent" />
           <div className="absolute -left-16 top-20 h-64 w-64 rounded-full border-[32px] border-[#c8b995]/70" />
         </div>
         <div className="relative z-10 flex h-full min-h-0 flex-col justify-between px-5 py-6 text-white sm:px-10 sm:py-9 lg:px-16">
           <div className="flex items-center justify-between gap-4">
             <span className="rounded-full border border-white/60 bg-white/10 px-4 py-2 text-[9px] font-semibold tracking-[.18em] backdrop-blur-md sm:text-[11px]">FURNITURE WITH ATTITUDE ✳</span>
-            <span className="hidden -rotate-6 rounded-2xl border-2 border-[#252923] bg-[#c8b995] px-5 py-3 text-sm font-black text-[#252923] shadow-[4px_4px_0_#252923] sm:block">MAKE ROOM<br />FOR GOOD DESIGN</span>
+            <span className="hidden rounded-2xl border-2 border-[#252923] bg-[#c8b995] px-5 py-3 text-sm font-black text-[#252923] shadow-[4px_4px_0_#252923] sm:block">MAKE ROOM<br />FOR GOOD DESIGN</span>
           </div>
           <div className="max-w-[760px] pb-3 pt-3 sm:pb-5 sm:pt-6">
             <Reveal direction="right">
@@ -172,7 +172,7 @@ export default function AkhoondiHomeExperience({
             <span>AKHOONDI / EST. DESIGN</span><span className="flex items-center gap-2">پایین‌تر رو ببین <ArrowDown size={16} className="animate-bounce" /></span><span>01 — 06</span>
           </div>
         </div>
-        <motion.div animate={reduced ? {} : { y: [0, -12, 0], rotate: [-8, -2, -8] }} transition={{ duration: 5, repeat: Infinity }} className="absolute -bottom-4 left-6 z-20 hidden h-20 w-20 place-items-center rounded-full border border-white/50 bg-[#a65e43] text-center text-[10px] font-bold leading-4 text-white shadow-lg sm:left-12 sm:grid sm:h-24 sm:w-24 sm:text-xs">GOOD<br />VIBES<br />ONLY ✳</motion.div>
+        <motion.div animate={reduced ? {} : { y: [0, -6, 0] }} transition={{ duration: 5, repeat: Infinity }} className="absolute -bottom-4 left-6 z-20 hidden h-20 w-20 place-items-center rounded-full border border-white/50 bg-[#a65e43] text-center text-[10px] font-bold leading-4 text-white shadow-lg sm:left-12 sm:grid sm:h-24 sm:w-24 sm:text-xs">GOOD<br />VIBES<br />ONLY ✳</motion.div>
       </section>
 
       <div className="relative z-10 mt-8"><Marquee /></div>
@@ -223,7 +223,7 @@ export default function AkhoondiHomeExperience({
             <div className="absolute inset-0 bg-gradient-to-l from-[#20251f]/55 via-transparent to-transparent" />
             <span className="absolute right-6 top-6 rounded-full bg-[#c8b995] px-4 py-2 text-xs font-black text-[#252923]">AKHOONDI SPECIAL / 0{i + 2}</span>
             <span className="absolute bottom-6 right-6 text-3xl font-black text-white drop-shadow-lg sm:bottom-10 sm:right-10 sm:text-5xl">فضای تازه، حس تازه ✳</span>
-            <span className="absolute bottom-6 left-6 grid h-14 w-14 place-items-center rounded-full border-2 border-[#252923] bg-[#a65e43] text-white transition-transform group-hover:rotate-12"><ArrowUpLeft size={24} /></span>
+            <span className="absolute bottom-6 left-6 grid h-14 w-14 place-items-center rounded-full border-2 border-[#252923] bg-[#a65e43] text-white transition-transform group-hover:scale-105"><ArrowUpLeft size={24} /></span>
           </Link>
         </Reveal>
       </section>)}
