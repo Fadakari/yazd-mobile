@@ -169,16 +169,16 @@ export default function CartDrawer({ cart }: { cart: CartFormat }) {
               </DrawerBody>
 
               {cart.items.length > 0 && (
-                <DrawerFooter className="flex flex-col gap-4 w-full px-4 pb-4">
-                  <div className="flex items-center justify-between text-xl font-semibold">
-                    <p className="text-zinc-600">جمع کل:</p>
+                <DrawerFooter className="flex w-full flex-col gap-4 border-t-2 border-[#252923] bg-[#e6e2d8] px-4 pb-4 pt-4">
+                  <div className="flex items-center justify-between text-lg font-black text-[#252923]">
+                    <p className="text-[#777568]">جمع کل:</p>
                     <p>{cart.total_price.toLocaleString("fa-IR")} تومان</p>
                   </div>
 
                   <Link
                     href="/profile/cart"
                     onClick={onClose}
-                    className="btn-primary w-full rounded-xl text-center font-semibold py-3"
+                    className="w-full rounded-full border-2 border-[#252923] bg-[#c8b995] py-3 text-center font-black text-[#252923] shadow-[3px_4px_0_#252923] transition-colors hover:bg-[#d9c6b4]"
                   >
                     مشاهده سبد خرید
                   </Link>
