@@ -42,18 +42,18 @@ export default function Card({
     <div
       key={item.id}
       title={item.name}
-      className={`relative bg-white rounded-2xl shadow-md sm:shadow-lg p-3 sm:p-4 flex flex-col justify-between gap-3 h-full transition hover:shadow-xl ${className ?? ""}`}
+      className={`relative bg-[#fffefa] border border-[#ded9ce] rounded-[1.35rem] shadow-[0_8px_24px_rgba(37,41,35,.07)] p-3 sm:p-4 flex flex-col justify-between gap-3 h-full transition hover:shadow-xl ${className ?? ""}`}
     >
       {hasDiscount && (
         <div className="absolute top-3 left-3 z-10">
-          <span className="bg-red-100 text-red-500 px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl text-[10px] sm:text-xs md:text-sm font-bold">
+          <span className="bg-[#f0e4dd] text-[#a65e43] px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl text-[10px] sm:text-xs md:text-sm font-bold">
             {discountPercent.toLocaleString("fa-IR")}% تخفیف
           </span>
         </div>
       )}
 
       <div className="flex flex-col gap-2">
-        <div className="h-40 sm:h-52 md:h-60 flex justify-center items-center overflow-hidden rounded-xl">
+        <div className="h-36 sm:h-48 md:h-56 flex justify-center items-center overflow-hidden rounded-xl">
           {!imgError && item.cover_image ? (
             <Image
               src={item.cover_image}
@@ -70,7 +70,7 @@ export default function Card({
         </div>
 
         <div className="text-center sm:text-start">
-          <p className="font-bold text-base sm:text-lg text-zinc-800 line-clamp-2">
+          <p className="font-bold text-base sm:text-lg text-[#252923] line-clamp-2">
             {item.name}
           </p>
           {item.category && (
@@ -81,7 +81,7 @@ export default function Card({
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-100 rounded-lg p-2 sm:p-3 mt-auto gap-2 sm:gap-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-[#eeebe3] rounded-xl p-2 sm:p-3 mt-auto gap-2 sm:gap-0">
         <div className="text-center sm:text-start">
           {isAvailable ? (
             <>
@@ -109,10 +109,10 @@ export default function Card({
 
         <Link
           href={href ? href : `/product/${item.slug}`}
-          className={`btn flex justify-center items-center gap-2 py-2.5 sm:py-3.5 px-4 sm:px-5 rounded-2xl text-sm sm:text-md transition ${
+          className={`btn flex justify-center items-center gap-2 py-2.5 sm:py-3.5 px-4 sm:px-5 rounded-full text-sm sm:text-md transition ${
             isAvailable
-              ? "bg-orange-500 hover:bg-orange-600 text-white"
-              : "!bg-orange-400 text-white"
+              ? "bg-[#59634f] hover:bg-[#41483b] text-white"
+              : "!bg-[#9b9b8d] text-white"
           }`}
         >
           <ShoppingBasket className="size-5 sm:size-6" />
