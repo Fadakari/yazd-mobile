@@ -18,7 +18,7 @@ export default function LayoutWrapper({ children, navbar, footer }: Props) {
   const isHome = pathname === "/";
 
   if (isMarketer) return <>{children}</>;
-  if (isPayment) return <div className="akhoondi-site min-h-screen bg-[#f7f5ef] text-[#252923]">{children}</div>;
+  if (isPayment) return <div className="akhoondi-site min-h-screen w-full overflow-x-clip bg-[#f7f5ef] text-[#252923]"><FixedSocialLinks />{navbar}<main className="akhoondi-content mx-auto min-h-[55vh] w-full flex-1 px-3 pb-24 sm:px-5 lg:px-0">{children}</main><MobileBottomNav />{footer}</div>;
 
   // Homepage owns its complete visual shell (header, navigation and footer).
   // Keep the store-wide shell untouched on every internal route.
