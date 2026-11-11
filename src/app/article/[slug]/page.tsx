@@ -141,9 +141,9 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
 
         <div
           id="article-content"
-          className="flex flex-col md:flex-row gap-8 p-5 font-pelak container max-w-full md:max-w-[1140px] customSm:max-w-[566px]"
+          className="flex flex-col md:flex-row gap-6 py-6 font-pelak container max-w-[1440px]"
         >
-          <div className="w-full md:w-3/4 bg-white py-6 px-5 md:py-10 md:px-20 shadow-xl rounded-2xl">
+          <div className="min-w-0 w-full md:w-3/4 bg-[#fffefa] border border-[#ded9ce] py-6 px-5 md:py-10 md:px-12 lg:px-16 shadow-[0_10px_28px_rgba(37,41,35,.07)] rounded-[1.4rem]">
             <h1 className="text-2xl md:text-3xl font-semibold">{data.title}</h1>
             <div className="flex flex-wrap items-center gap-4 text-primary-700 mt-3">
               <p className="flex items-center gap-1 text-sm md:text-base">
@@ -177,9 +177,9 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
             </div>
           </div>
 
-          <aside className="w-full md:w-1/4 flex flex-col gap-5 sticky top-20">
+          <aside className="w-full min-w-0 md:w-1/4 flex flex-col gap-5 self-start md:sticky md:top-20">
             <div className="bg-white shadow md:shadow-2xl p-4 rounded-xl">
-              <h2 className="text-2xl md:text-3xl py-4 font-pelak text-[#d55931] font-bold">
+              <h2 className="text-2xl md:text-3xl py-4 font-pelak text-[#59634f] font-bold">
                 دسته بندی ها
               </h2>
               <ul className="font-pelak text-sm md:text-base">
