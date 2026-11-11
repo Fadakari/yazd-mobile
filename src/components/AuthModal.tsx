@@ -174,9 +174,12 @@ export default function AuthModal() {
             }
             className="flex min-h-full w-full flex-col sm:min-h-0"
           >
-            <ModalHeader className="flex items-center justify-between">
-              <p>ورود | ثبت‌نام</p>
-              <button type="button" onClick={onClose}>
+            <ModalHeader className="flex items-center justify-between border-b-2 border-[#252923] bg-[#59634f] px-6 py-6 text-white sm:px-8">
+              <div className="flex items-center gap-3">
+                <span className="grid h-12 w-12 place-items-center rounded-2xl border-2 border-[#252923] bg-[#c8b995] text-xl font-black text-[#252923] shadow-[3px_3px_0_#252923]">A</span>
+                <div><p className="text-lg font-black">ورود | ثبت‌نام</p><p className="mt-1 text-[11px] font-bold text-white/70">به دنیای طراحی آخوندی خوش آمدید</p></div>
+              </div>
+              <button type="button" onClick={onClose} className="grid h-9 w-9 place-items-center rounded-full border border-white/30 bg-white/10 transition-colors hover:bg-white/20">
                 <HiXMark className="size-6" />
               </button>
             </ModalHeader>
