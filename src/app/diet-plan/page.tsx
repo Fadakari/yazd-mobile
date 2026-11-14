@@ -32,7 +32,6 @@ import { addToast } from "@heroui/toast";
 
 import { useUser } from "@/context/UserContext";
 import {
-  DEFAULT_DIET_PLANS,
   getDietPlans,
   submitDietOrder,
   checkDietDiscount,
@@ -153,9 +152,10 @@ export default function DietPlanPage() {
   // آنالیز BMI
   const [bmiResult, setBmiResult] = useState<BmiAnalysis | null>(null);
 
-  // پلن‌ها
-  const [plans, setPlans] = useState<DietPlan[]>(DEFAULT_DIET_PLANS);
-  const [selectedPlanId, setSelectedPlanId] = useState<number>(1);
+  // پلن‌های داینامیک سرور (بدون دیتای فیک)
+  const [plans, setPlans] = useState<DietPlan[]>([]);
+  const [isLoadingPlans, setIsLoadingPlans] = useState<boolean>(true);
+  const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
 
   // تخفیف
   const [discountCode, setDiscountCode] = useState<string>("");
@@ -166,15 +166,28 @@ export default function DietPlanPage() {
     percentage: number;
   } | null>(null);
 
-  // ثبت و ارسال
+  // ارسال فرم
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  // بارگذاری پلن‌ها از API یا فال‌بک
+  // بارگذاری پلن‌های رژیم از بک‌اند
   useEffect(() => {
     async function loadPlans() {
-      const remotePlans = await getDietPlans();
-      if (remotePlans && remotePlans.length > 0) {
-        setPlans(remotePlans);
+      setIsLoadingPlans(true);
+      try {
+        const remotePlans = await getDietPlans();
+        if (remotePlans && remotePlans.length > 0) {
+          setPlans(remotePlans);
+          setSelectedPlanId(remotePlans[0].id);
+        } else {
+          setPlans([]);
+          setSelectedPlanId(null);
+        }
+      } catch (err) {
+        console.error("Failed to load plans:", err);
+        setPlans([]);
+        setSelectedPlanId(null);
+      } finally {
+        setIsLoadingPlans(false);
       }
     }
     loadPlans();
@@ -194,11 +207,13 @@ export default function DietPlanPage() {
 
   // پلن انتخاب شده فعلی
   const selectedPlan = useMemo(() => {
-    return plans.find((p) => p.id === selectedPlanId) || plans[0] || DEFAULT_DIET_PLANS[0];
+    if (!selectedPlanId) return null;
+    return plans.find((p) => p.id === selectedPlanId) || null;
   }, [plans, selectedPlanId]);
 
   // محاسبه مبالغ
   const finalPriceToman = useMemo(() => {
+    if (!selectedPlan) return 0;
     const base = selectedPlan.price_toman;
     if (appliedDiscount) {
       return Math.max(0, base - appliedDiscount.amount);
@@ -207,8 +222,9 @@ export default function DietPlanPage() {
   }, [selectedPlan, appliedDiscount]);
 
   const finalPriceRial = useMemo(() => {
+    if (!selectedPlan) return 0;
     return finalPriceToman * 10;
-  }, [finalPriceToman]);
+  }, [selectedPlan, finalPriceToman]);
 
   // محاسبه BMI و وزن ایده‌آل
   const calculateBmi = () => {
@@ -261,13 +277,23 @@ export default function DietPlanPage() {
       return;
     }
 
+    if (!selectedPlan) {
+      addToast({
+        title: "پلن انتخاب نشده است",
+        description: "لطفاً ابتدا یک پلن رژیم انتخاب نمایید.",
+        color: "warning",
+      });
+      return;
+    }
+
     setIsApplyingDiscount(true);
     try {
       const res = await checkDietDiscount(discountCode, selectedPlan.price_toman);
-      if (res && res.valid) {
+      if (res) {
+        const discountAmt = res.discount_amount || (res.discount_percentage ? Math.round(selectedPlan.price_toman * (res.discount_percentage / 100)) : 0);
         setAppliedDiscount({
           code: discountCode.trim(),
-          amount: res.discount_amount || 0,
+          amount: discountAmt,
           percentage: res.discount_percentage || 0,
         });
         addToast({
@@ -290,6 +316,15 @@ export default function DietPlanPage() {
   // ثبت نهایی و اتصال به درگاه
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!selectedPlan) {
+      addToast({
+        title: "عدم فعال بودن پلن‌ها",
+        description: "در حال حاضر پلن فعالی توسط سرور برای خرید ارائه نشده است.",
+        color: "warning",
+      });
+      return;
+    }
 
     if (!fullName.trim()) {
       addToast({
@@ -327,12 +362,6 @@ export default function DietPlanPage() {
 
       const result = await submitDietOrder(payload);
 
-      addToast({
-        title: "سفارش با موفقیت ثبت شد",
-        description: "در حال انتقال به درگاه پرداخت اینترنتی شاپرک...",
-        color: "primary",
-      });
-
       if (result.redirect_url) {
         if (result.redirect_url.startsWith("http")) {
           window.location.href = result.redirect_url;
@@ -340,12 +369,16 @@ export default function DietPlanPage() {
           router.push(result.redirect_url);
         }
       } else {
-        router.push(`/payment/success?order_id=${result.order_id || "DIET"}&type=diet`);
+        addToast({
+          title: "وضعیت سرور",
+          description: result.message || "اطلاعات ثبت شد.",
+          color: "primary",
+        });
       }
     } catch (err: any) {
       addToast({
-        title: "خطا در ثبت سفارش",
-        description: err.message || "متأسفانه امکان اتصال به درگاه وجود ندارد.",
+        title: "عدم برقراری ارتباط با سرور",
+        description: err.message || "امکان اتصال به درگاه پرداخت در حال حاضر وجود ندارد.",
         color: "danger",
       });
     } finally {
@@ -751,7 +784,7 @@ export default function DietPlanPage() {
           </div>
         </section>
 
-        {/* --- ۴. انتخاب برنامه سلامتی (پلن‌ها) --- */}
+        {/* --- ۴. انتخاب برنامه سلامتی (پلن‌ها از بک‌اند) --- */}
         <section className="bg-white rounded-3xl border border-gray-100 shadow-xs p-6 md:p-10">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-black text-[#12465a] mb-2">برنامه‌های سلامتی</h2>
@@ -760,151 +793,176 @@ export default function DietPlanPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {plans.map((plan) => {
-              const isSelected = selectedPlan.id === plan.id;
-
-              return (
+          {isLoadingPlans ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {[1, 2, 3, 4].map((i) => (
                 <div
-                  key={plan.id}
-                  onClick={() => setSelectedPlanId(plan.id)}
-                  className={`relative flex flex-col justify-between p-6 rounded-3xl border-2 transition-all duration-300 cursor-pointer ${
-                    isSelected
-                      ? "border-[#12465a] bg-gradient-to-b from-[#12465a]/5 to-transparent shadow-lg shadow-[#12465a]/10 scale-[1.02]"
-                      : "border-gray-100 bg-white hover:border-gray-200 hover:shadow-xs"
-                  }`}
-                >
-                  {/* بج VIP یا محبوب */}
-                  {plan.is_vip && (
-                    <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-900 text-[10px] font-black px-3 py-1 rounded-full shadow-xs flex items-center gap-1">
-                      <FaStar className="size-3 text-stone-900" />
-                      <span>پکیج طلایی VIP</span>
-                    </div>
-                  )}
-
-                  <div>
-                    {/* نشانگر دوره (۱، ۳، ۶، VIP) */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div
-                        className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner ${
-                          plan.is_vip
-                            ? "bg-gradient-to-tr from-amber-400 to-yellow-300 text-stone-900"
-                            : isSelected
-                            ? "bg-[#12465a] text-white"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
-                      >
-                        {plan.badge}
-                      </div>
-
-                      <div
-                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                          isSelected ? "border-[#12465a] bg-[#12465a]" : "border-gray-300 bg-white"
-                        }`}
-                      >
-                        {isSelected && <FiCheck className="size-3 text-white stroke-[3]" />}
-                      </div>
-                    </div>
-
-                    <h3 className="text-base font-black text-gray-800 mb-1.5 line-clamp-1">
-                      {plan.title}
-                    </h3>
-                    <p className="text-xs text-gray-500 line-clamp-2 min-h-8 mb-4">
-                      {plan.subtitle}
-                    </p>
-
-                    {/* ویژگی‌های پلن */}
-                    {plan.features && plan.features.length > 0 && (
-                      <ul className="flex flex-col gap-2 mb-6 border-t border-gray-100 pt-3">
-                        {plan.features.slice(0, 3).map((f, i) => (
-                          <li key={i} className="flex items-start gap-2 text-[11px] text-gray-600">
-                            <span className="text-[#0bb2c9] text-xs font-bold">✦</span>
-                            <span>{f}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-
-                  {/* قیمت به ریال و تومان */}
-                  <div className="pt-4 border-t border-gray-100 text-center">
-                    <div className="text-xl font-black text-[#12465a] tracking-tight">
-                      {plan.price_rial.toLocaleString("fa-IR")}{" "}
-                      <span className="text-xs font-normal text-gray-500">ریال</span>
-                    </div>
-                    <div className="text-xs text-gray-400 mt-0.5">
-                      ({plan.price_toman.toLocaleString("fa-IR")} تومان)
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* کد تخفیف */}
-          <div className="mt-10 pt-8 border-t border-gray-100 max-w-lg mx-auto">
-            <label className="block text-xs font-bold text-gray-600 mb-2 text-center">
-              کد تخفیف (اگر کد تخفیف دارید در قسمت پایین وارد کنید)
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={discountCode}
-                onChange={(e) => setDiscountCode(e.target.value)}
-                placeholder="مثلاً FAKHR10"
-                dir="ltr"
-                className="flex-1 h-12 px-4 rounded-2xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#12465a] outline-none text-sm font-mono text-center transition-all uppercase"
-              />
-              <button
-                type="button"
-                onClick={handleApplyDiscount}
-                disabled={isApplyingDiscount}
-                className="h-12 px-6 rounded-2xl bg-gray-800 hover:bg-[#12465a] text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
-              >
-                {isApplyingDiscount ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <>
-                    <FiPercent className="size-3.5" />
-                    <span>ثبت کد</span>
-                  </>
-                )}
-              </button>
+                  key={i}
+                  className="h-72 rounded-3xl bg-gray-100 animate-pulse border border-gray-200"
+                />
+              ))}
             </div>
+          ) : plans.length === 0 ? (
+            <div className="p-8 md:p-12 text-center bg-gray-50/80 border border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center gap-3">
+              <FiAlertCircle className="size-9 text-amber-500" />
+              <p className="text-sm font-bold text-gray-700">
+                پلن‌های رژیم غذایی در حال حاضر در حال پیکربندی توسط سرور می‌باشند.
+              </p>
+              <p className="text-xs text-gray-500">
+                به محض تعریف و فعال‌سازی پلن‌ها در پنل مدیریت، این بخش به صورت خودکار فعال خواهد شد.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {plans.map((plan) => {
+                  const isSelected = selectedPlan?.id === plan.id;
 
-            {appliedDiscount && (
-              <div className="mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between">
-                <span>
-                  تخفیف اعمال شده ({appliedDiscount.percentage}٪):{" "}
-                  <b>{appliedDiscount.amount.toLocaleString("fa-IR")} تومان</b>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAppliedDiscount(null);
-                    setDiscountCode("");
-                  }}
-                  className="text-emerald-700 hover:text-red-500 font-bold"
-                >
-                  حذف
-                </button>
+                  return (
+                    <div
+                      key={plan.id}
+                      onClick={() => setSelectedPlanId(plan.id)}
+                      className={`relative flex flex-col justify-between p-6 rounded-3xl border-2 transition-all duration-300 cursor-pointer ${
+                        isSelected
+                          ? "border-[#12465a] bg-gradient-to-b from-[#12465a]/5 to-transparent shadow-lg shadow-[#12465a]/10 scale-[1.02]"
+                          : "border-gray-100 bg-white hover:border-gray-200 hover:shadow-xs"
+                      }`}
+                    >
+                      {/* بج VIP */}
+                      {plan.is_vip && (
+                        <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-900 text-[10px] font-black px-3 py-1 rounded-full shadow-xs flex items-center gap-1">
+                          <FaStar className="size-3 text-stone-900" />
+                          <span>پکیج طلایی VIP</span>
+                        </div>
+                      )}
+
+                      <div>
+                        {/* نشانگر دوره */}
+                        <div className="flex items-center justify-between mb-4">
+                          <div
+                            className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner ${
+                              plan.is_vip
+                                ? "bg-gradient-to-tr from-amber-400 to-yellow-300 text-stone-900"
+                                : isSelected
+                                ? "bg-[#12465a] text-white"
+                                : "bg-gray-100 text-gray-600"
+                            }`}
+                          >
+                            {plan.badge || plan.duration_months}
+                          </div>
+
+                          <div
+                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                              isSelected ? "border-[#12465a] bg-[#12465a]" : "border-gray-300 bg-white"
+                            }`}
+                          >
+                            {isSelected && <FiCheck className="size-3 text-white stroke-[3]" />}
+                          </div>
+                        </div>
+
+                        <h3 className="text-base font-black text-gray-800 mb-1.5 line-clamp-1">
+                          {plan.title}
+                        </h3>
+                        {plan.subtitle && (
+                          <p className="text-xs text-gray-500 line-clamp-2 min-h-8 mb-4">
+                            {plan.subtitle}
+                          </p>
+                        )}
+
+                        {/* ویژگی‌های پلن */}
+                        {plan.features && plan.features.length > 0 && (
+                          <ul className="flex flex-col gap-2 mb-6 border-t border-gray-100 pt-3">
+                            {plan.features.slice(0, 3).map((f, i) => (
+                              <li key={i} className="flex items-start gap-2 text-[11px] text-gray-600">
+                                <span className="text-[#0bb2c9] text-xs font-bold">✦</span>
+                                <span>{f}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      {/* قیمت به ریال و تومان */}
+                      <div className="pt-4 border-t border-gray-100 text-center">
+                        <div className="text-xl font-black text-[#12465a] tracking-tight">
+                          {plan.price_rial.toLocaleString("fa-IR")}{" "}
+                          <span className="text-xs font-normal text-gray-500">ریال</span>
+                        </div>
+                        <div className="text-xs text-gray-400 mt-0.5">
+                          ({plan.price_toman.toLocaleString("fa-IR")} تومان)
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            )}
-          </div>
 
-          {/* کادر مبلغ قابل پرداخت برجسته */}
-          <div className="mt-8 p-5 md:p-6 rounded-2xl border-2 border-dashed border-[#12465a]/30 bg-[#12465a]/5 text-center">
-            <div className="text-xs md:text-sm text-gray-600 font-bold mb-1">
-              مبلغ قابل پرداخت برای شما:
-            </div>
-            <div className="text-2xl md:text-3xl font-black text-[#12465a] tracking-tight">
-              {finalPriceRial.toLocaleString("fa-IR")}{" "}
-              <span className="text-sm font-bold">ریال</span>
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              معادل {finalPriceToman.toLocaleString("fa-IR")} تومان
-            </div>
-          </div>
+              {/* کد تخفیف */}
+              <div className="mt-10 pt-8 border-t border-gray-100 max-w-lg mx-auto">
+                <label className="block text-xs font-bold text-gray-600 mb-2 text-center">
+                  کد تخفیف (اگر کد تخفیف دارید در قسمت پایین وارد کنید)
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={discountCode}
+                    onChange={(e) => setDiscountCode(e.target.value)}
+                    placeholder="کد تخفیف را وارد کنید"
+                    dir="ltr"
+                    className="flex-1 h-12 px-4 rounded-2xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#12465a] outline-none text-sm font-mono text-center transition-all uppercase"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyDiscount}
+                    disabled={isApplyingDiscount}
+                    className="h-12 px-6 rounded-2xl bg-gray-800 hover:bg-[#12465a] text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  >
+                    {isApplyingDiscount ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <>
+                        <FiPercent className="size-3.5" />
+                        <span>ثبت کد</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {appliedDiscount && (
+                  <div className="mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between">
+                    <span>
+                      تخفیف اعمال شده ({appliedDiscount.percentage}٪):{" "}
+                      <b>{appliedDiscount.amount.toLocaleString("fa-IR")} تومان</b>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAppliedDiscount(null);
+                        setDiscountCode("");
+                      }}
+                      className="text-emerald-700 hover:text-red-500 font-bold"
+                    >
+                      حذف
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* کادر مبلغ قابل پرداخت برجسته */}
+              <div className="mt-8 p-5 md:p-6 rounded-2xl border-2 border-dashed border-[#12465a]/30 bg-[#12465a]/5 text-center">
+                <div className="text-xs md:text-sm text-gray-600 font-bold mb-1">
+                  مبلغ قابل پرداخت برای شما:
+                </div>
+                <div className="text-2xl md:text-3xl font-black text-[#12465a] tracking-tight">
+                  {finalPriceRial.toLocaleString("fa-IR")}{" "}
+                  <span className="text-sm font-bold">ریال</span>
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  معادل {finalPriceToman.toLocaleString("fa-IR")} تومان
+                </div>
+              </div>
+            </>
+          )}
         </section>
 
         {/* --- ۵. روش پرداخت و ثبت نهایی --- */}
@@ -957,14 +1015,16 @@ export default function DietPlanPage() {
             <div className="pt-4 flex flex-col items-center gap-3">
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full md:w-3/4 py-4 rounded-2xl bg-[#12465a] hover:bg-[#0bb2c9] text-white font-black text-base shadow-lg shadow-[#12465a]/20 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer active:scale-98"
+                disabled={isSubmitting || !selectedPlan || plans.length === 0}
+                className="w-full md:w-3/4 py-4 rounded-2xl bg-[#12465a] hover:bg-[#0bb2c9] text-white font-black text-base shadow-lg shadow-[#12465a]/20 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:scale-98"
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="size-5 animate-spin" />
-                    <span>در حال اتصال به درگاه پرداخت...</span>
+                    <span>در حال برقراری ارتباط با سرور...</span>
                   </>
+                ) : plans.length === 0 ? (
+                  <span>در انتظار فعال‌سازی پلن‌ها توسط سرور</span>
                 ) : (
                   <>
                     <FiCreditCard className="size-5" />
