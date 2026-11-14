@@ -22,11 +22,11 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const category = (await searchParams).category;
 
-  let title = "مقالات یزد موبایل";
-  let description = "آخرین مقالات و اخبار مرتبط با یزد موبایل را اینجا بخوانید.";
+  let title = "مقالات آموزش فخر";
+  let description = "آخرین مقالات و اخبار مرتبط با آموزش فخر را اینجا بخوانید.";
   if (category) {
-    title = `مقالات دسته‌بندی ${category} | یزد موبایل`;
-    description = `مقالات مرتبط با دسته‌بندی شماره ${category} در فروشگاه یزد موبایل.`;
+    title = `مقالات دسته‌بندی ${category} | آموزش فخر`;
+    description = `مقالات مرتبط با دسته‌بندی شماره ${category} در فروشگاه آموزش فخر.`;
   }
 
   return {
@@ -34,15 +34,15 @@ export async function generateMetadata({
     description,
     keywords: [
       "مقالات",
-      "یزد موبایل",
-      "اخبار یزد موبایل",
+      "آموزش فخر",
+      "اخبار آموزش فخر",
       ...(category ? [`دسته‌بندی ${category}`] : []),
     ],
     openGraph: {
       title,
       description,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/articles${category ? `?category=${category}` : ""}`,
-      siteName: "یزد موبایل",
+      siteName: "آموزش فخر",
       locale: "fa_IR",
       type: "website",
     },

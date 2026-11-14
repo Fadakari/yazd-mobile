@@ -19,7 +19,7 @@ const getCategories = cache(async () => {
 // دریافت داده‌های بخش‌های اسلایدر
 const getSliderSections = cache(async () => {
   try {
-    const res = await fetch("https://api.abajstore.ir/home/sliders-index/", {
+    const res = await fetch("https://api.rejimfakhr.com/home/sliders-index/", {
       
     });
     if (!res.ok) return [];
@@ -127,15 +127,15 @@ export async function generateMetadata({
 
     const categoryTitle = category?.name || "دسته‌بندی انتخاب‌شده";
 
-    const title = `${categoryTitle} | خرید انواع ${categoryTitle} با بهترین قیمت | یزد موبایل`;
-    const description = `خرید اینترنتی ${categoryTitle} از فروشگاه یزد موبایل با بهترین قیمت و ارسال سریع. بررسی و فیلتر محصولات ${categoryTitle}.`;
+    const title = `${categoryTitle} | خرید انواع ${categoryTitle} با بهترین قیمت | آموزش فخر`;
+    const description = `خرید اینترنتی ${categoryTitle} از فروشگاه آموزش فخر با بهترین قیمت و ارسال سریع. بررسی و فیلتر محصولات ${categoryTitle}.`;
 
     return {
       title,
       description,
       keywords: [
         categoryTitle,
-        "فروشگاه یزد موبایل",
+        "فروشگاه آموزش فخر",
         "خرید آنلاین",
         "قیمت مناسب",
       ],
@@ -143,7 +143,7 @@ export async function generateMetadata({
         title,
         description,
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/products?category_id=${categoryId}`,
-        siteName: "یزد موبایل",
+        siteName: "آموزش فخر",
         locale: "fa_IR",
         type: "website",
       },
@@ -160,24 +160,24 @@ export async function generateMetadata({
   }
 
   return {
-    title: "خرید محصولات | یزد موبایل",
+    title: "خرید محصولات | آموزش فخر",
     description:
-      "مشاهده و خرید جدیدترین محصولات با بهترین قیمت از فروشگاه یزد موبایل. فیلتر بر اساس قیمت، موجودی، ویژگی و ...",
-    keywords: ["فروشگاه یزد موبایل", "خرید آنلاین", "محصولات", "قیمت مناسب"],
+      "مشاهده و خرید جدیدترین محصولات با بهترین قیمت از فروشگاه آموزش فخر. فیلتر بر اساس قیمت، موجودی، ویژگی و ...",
+    keywords: ["فروشگاه آموزش فخر", "خرید آنلاین", "محصولات", "قیمت مناسب"],
     openGraph: {
-      title: "خرید محصولات | فروشگاه یزد موبایل",
+      title: "خرید محصولات | فروشگاه آموزش فخر",
       description:
-        "فروشگاه یزد موبایل ارائه‌دهنده انواع محصولات با بهترین قیمت و تضمین کیفیت. خرید آنلاین آسان و سریع.",
+        "فروشگاه آموزش فخر ارائه‌دهنده انواع محصولات با بهترین قیمت و تضمین کیفیت. خرید آنلاین آسان و سریع.",
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/products`,
-      siteName: "یزد موبایل",
+      siteName: "آموزش فخر",
       locale: "fa_IR",
       type: "website",
     },
     twitter: {
       card: "summary",
-      title: "خرید محصولات | یزد موبایل",
+      title: "خرید محصولات | آموزش فخر",
       description:
-        "محصولات متنوع با قیمت مناسب از فروشگاه اینترنتی یزد موبایل. خرید سریع، امن و مطمئن.",
+        "محصولات متنوع با قیمت مناسب از فروشگاه اینترنتی آموزش فخر. خرید سریع، امن و مطمئن.",
     },
     robots: {
       index: true,

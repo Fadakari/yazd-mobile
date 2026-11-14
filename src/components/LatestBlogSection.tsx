@@ -26,7 +26,7 @@ interface Props {
   title?: string;
 }
 
-export default function LatestBlogSection({ posts, title = "مجله خبری یزد موبایل" }: Props) {
+export default function LatestBlogSection({ posts, title = "مجله خبری آموزش فخر" }: Props) {
   
   if (!posts || posts.length === 0) {
     return (
@@ -61,7 +61,7 @@ export default function LatestBlogSection({ posts, title = "مجله خبری ی
           <path fill="currentColor" d="M44.7,-76.4C58.9,-69.2,71.8,-59.1,81.6,-46.6C91.4,-34.1,98.1,-19.2,95.8,-5.3C93.5,8.6,82.2,21.5,70.6,32.3C59,43.1,47.1,51.8,35,59.2C22.9,66.6,10.6,72.7,-1.2,74.8C-13,76.9,-27.6,75,-40.4,68.2C-53.2,61.4,-64.2,49.7,-71.6,36.5C-79,23.3,-82.8,8.6,-80.6,-5C-78.4,-18.6,-70.2,-31.1,-60.5,-41.4C-50.8,-51.7,-39.6,-59.8,-27.6,-68.3C-15.6,-76.8,-2.8,-85.7,8.6,-82.8C20,-79.9,30.5,-73.6,44.7,-76.4Z" transform="translate(100 100)" />
         </svg>
         <div className="absolute bottom-10 left-10 w-32 h-32 rounded-full border-[20px] border-gray-100 opacity-60"></div>
-        <div className="absolute top-20 left-1/4 w-4 h-4 bg-orange-400 rounded-full"></div>
+        <div className="absolute top-20 left-1/4 w-4 h-4 bg-[#12465a] rounded-full"></div>
         <div className="absolute top-1/2 right-10 w-2 h-2 bg-gray-400 rounded-full"></div>
       </div>
 
@@ -70,15 +70,15 @@ export default function LatestBlogSection({ posts, title = "مجله خبری ی
         {/* --- هدر بخش --- */}
         <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
           <div className="flex flex-col gap-2">
-             <span className="text-orange-500 font-bold text-sm tracking-wider flex items-center gap-2">
-                <span className="w-8 h-[2px] bg-orange-500 inline-block"></span>
+             <span className="text-[#12465a] font-bold text-sm tracking-wider flex items-center gap-2">
+                <span className="w-8 h-[2px] bg-[#12465a] inline-block"></span>
                 وبلاگ و دانستنی‌ها
              </span>
              <h2 className="text-3xl md:text-4xl font-black text-gray-800 leading-tight">
                {title}
              </h2>
           </div>
-          <Link href="/articles" className="group flex items-center gap-2 px-6 py-3 rounded-full border border-gray-200 bg-white text-gray-600 font-bold hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all duration-300 shadow-sm hover:shadow-orange-500/30">
+          <Link href="/articles" className="group flex items-center gap-2 px-6 py-3 rounded-full border border-gray-200 bg-white text-gray-600 font-bold hover:bg-[#12465a] hover:text-white hover:border-[#12465a] transition-all duration-300 shadow-sm hover:shadow-[#12465a]/30">
              مشاهده آرشیو مقالات
              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 rotate-180 transition-transform group-hover:-translate-x-1">
                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
@@ -106,7 +106,7 @@ export default function LatestBlogSection({ posts, title = "مجله خبری ی
                 <div className="relative w-full h-60 overflow-hidden">
                    {/* تگ دسته بندی */}
                    <div className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-md px-3 py-1 rounded-lg text-xs font-bold text-gray-800 shadow-sm flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                      <span className="w-2 h-2 rounded-full bg-[#12465a] animate-pulse"></span>
                       {post.category || "تکنولوژی"}
                    </div>
                    
@@ -134,7 +134,7 @@ export default function LatestBlogSection({ posts, title = "مجله خبری ی
                    <svg className="absolute -left-4 -top-4 w-24 h-24 text-gray-50 rotate-12 -z-10 group-hover:text-orange-50 transition-colors" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21L14.017 18C14.017 16.8954 13.1216 16 12.017 16H9C9.00012 13.1707 11.0083 11.0186 12.9818 10.1983C13.562 9.95721 14.017 9.42998 14.017 8.80004V4.94164C14.017 4.14856 13.2359 3.58557 12.4901 3.82914C6.96349 5.6346 3 10.7431 3 16C3 18.7614 5.23858 21 8.00004 21H14.017ZM19.017 21L19.017 18C19.017 16.8954 18.1216 16 17.017 16H15C15 12.4697 16.2526 10.0381 17.9818 9.19833C18.562 8.95721 19.017 8.42998 19.017 7.80004V4.94164C19.017 4.14856 18.2359 3.58557 17.4901 3.82914C12.8715 5.33777 9.77889 8.93128 9.13322 13.064C9.55837 12.3789 10.2974 12 11.517 12H12.017C14.2261 12 16.017 13.7909 16.017 16V19C16.017 20.1046 16.9124 21 18.017 21H19.017Z"></path></svg>
 
                    <Link href={`/article/${post.slug}`}>
-                      <h3 className="text-xl font-black text-gray-800 mb-3 leading-snug line-clamp-2 transition-colors group-hover:text-orange-600">
+                      <h3 className="text-xl font-black text-gray-800 mb-3 leading-snug line-clamp-2 transition-colors group-hover:text-[#12465a]">
                          {post.title}
                       </h3>
                    </Link>
@@ -158,7 +158,7 @@ export default function LatestBlogSection({ posts, title = "مجله خبری ی
                       </div>
 
                       {/* زمان مطالعه */}
-                      <div className="flex items-center gap-1.5 text-orange-500 bg-orange-50 px-2 py-1 rounded-md text-[11px] font-bold">
+                      <div className="flex items-center gap-1.5 text-[#12465a] bg-[#12465a]/10 px-2 py-1 rounded-md text-[11px] font-bold">
                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
                          </svg>
@@ -168,7 +168,7 @@ export default function LatestBlogSection({ posts, title = "مجله خبری ی
                 </div>
 
                 {/* نوار پایین رنگی */}
-                <div className="h-1 w-0 bg-orange-500 transition-all duration-500 group-hover:w-full ease-in-out"></div>
+                <div className="h-1 w-0 bg-[#12465a] transition-all duration-500 group-hover:w-full ease-in-out"></div>
               </article>
             </SwiperSlide>
           ))}

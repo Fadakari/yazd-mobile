@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { convertNumberToPersian } from "@/utils/converNumbers";
 import ShippingMethodSelector from "./ShippingMethodSelector";
+import { Loader2, ShieldCheck, CreditCard } from "lucide-react";
 
 interface FormData {
   discount_code: string;
@@ -22,6 +23,7 @@ const CreateOrder = () => {
   const { cart } = useCart();
   const [formData, setFormData] = useState<FormData>({ discount_code: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [redirectingToGateway, setRedirectingToGateway] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [checkingDiscount, setCheckingDiscount] = useState(false);
@@ -146,13 +148,32 @@ const CreateOrder = () => {
       );
 
     const responses = await Promise.all(requests);
-    setIsSubmitting(false);
 
     const allSuccessful = responses.every((res) => res && res.success);
     if (allSuccessful) {
       const orderId = responses[0]?.data?.id;
-      await goToGateways(orderId);
+      setRedirectingToGateway(true);
+      addToast({
+        title: "سفارش شما با موفقیت ثبت شد",
+        description: "در حال انتقال به درگاه پرداخت شاپرک (بانک سامان)...",
+        color: "success",
+      });
+
+      try {
+        await goToGateways(orderId);
+      } catch (err: any) {
+        setIsSubmitting(false);
+        setRedirectingToGateway(false);
+        addToast({
+          title: "خطا در اتصال به درگاه پرداخت",
+          description:
+            err?.message ||
+            "سفارش شما با موفقیت ثبت شد اما اتصال به درگاه پرداخت برقرار نشد. می‌توانید از بخش «سفارش‌های من» در پروفایل پرداخت را تکمیل کنید.",
+          color: "danger",
+        });
+      }
     } else {
+      setIsSubmitting(false);
       const failed = responses.find((res) => !res.success);
       addToast({
         title: "خطا در ثبت سفارش",
@@ -311,13 +332,60 @@ const CreateOrder = () => {
 
           <button
             type="submit"
-            className="btn btn-primary w-full mt-4 font-semibold py-3"
-            disabled={isSubmitting || Object.keys(errors).length > 0}
+            className="btn btn-primary w-full mt-4 font-semibold py-3.5 flex items-center justify-center gap-2 text-base shadow-lg transition-all"
+            disabled={isSubmitting || redirectingToGateway || Object.keys(errors).length > 0}
           >
-            {isSubmitting ? "در حال ثبت..." : "ثبت نهایی"}
+            {redirectingToGateway ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>در حال انتقال به درگاه بانک...</span>
+              </>
+            ) : isSubmitting ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>در حال ثبت سفارش...</span>
+              </>
+            ) : (
+              <span>ثبت و پرداخت آنلاین</span>
+            )}
           </button>
         </div>
       </form>
+
+      {/* مودال شفاف هدایت امن به درگاه شاپرک */}
+      {redirectingToGateway && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-fade">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl flex flex-col items-center gap-5 border border-cyan-100">
+            <div className="relative">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#12465a] to-[#0bb2c9] flex items-center justify-center text-white shadow-lg shadow-[#0bb2c9]/30">
+                <CreditCard className="w-10 h-10 animate-pulse" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow">
+                <Loader2 className="w-6 h-6 text-[#0bb2c9] animate-spin" />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-xl font-black text-[#12465a]">سفارش شما با موفقیت ثبت شد</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                در حال انتقال امن به درگاه پرداخت شاپرک (بانک سامان) هستید...
+              </p>
+              <p className="text-xs text-gray-400">
+                لطفاً شکیبا باشید و صفحه را نبندید.
+              </p>
+            </div>
+
+            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-gradient-to-r from-[#12465a] to-[#0bb2c9] h-full rounded-full w-full animate-pulse"></div>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full font-medium">
+              <ShieldCheck className="w-4 h-4" />
+              <span>اتصال مستقیم و امن به شاپرک</span>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

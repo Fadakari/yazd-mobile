@@ -1,121 +1,145 @@
 "use client";
 
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { GoArrowLeft } from "react-icons/go";
+
+// Swiper Styles
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/effect-fade";
 
 export interface SliderItem {
   id: number;
   image: string;
-  mobileImage?: string;
-  title: string;
-  subtitle: string;
-  description: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
   link: string;
 }
 
-interface Props {
-  slides: SliderItem[];
-}
-
-export default function MainHeroSlider({ slides }: Props) {
-  const [prevEl, setPrevEl] = useState<HTMLElement | null>(null);
-  const [nextEl, setNextEl] = useState<HTMLElement | null>(null);
+export default function MainHeroSlider({ slides }: { slides: SliderItem[] }) {
+  if (!slides || slides.length === 0) return null;
 
   return (
-    <div className="relative w-full group">
+    <div className="w-full h-full relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-[#12465a] via-[#1a5b73] to-[#12465a] shadow-2xl dir-rtl">
+      
+      {/* --- پس‌زمینه و هاله‌های نوری دکوراتیو --- */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* هاله نوری بالا سمت چپ */}
+        <div className="absolute -top-32 -left-20 w-96 h-96 bg-[#0bb2c9] rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-pulse"></div>
+        {/* هاله نوری پایین سمت راست */}
+        <div className="absolute -bottom-32 -right-20 w-96 h-96 bg-[#0bb2c9] rounded-full mix-blend-screen filter blur-[100px] opacity-20"></div>
+        {/* پترن نقطه‌ای ظریف روی کل بک‌گراند (اختیاری) */}
+        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+      </div>
+
       <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
-        spaceBetween={10}
-        slidesPerView={1}
-        autoplay={{ delay: 5000, disableOnInteraction: false }}
-        pagination={{ clickable: true, el: ".dp-slider-pagination" }}
-        navigation={{
-          prevEl,
-          nextEl,
+        modules={[Autoplay, Pagination, EffectFade]}
+        effect="fade"
+        fadeEffect={{ crossFade: true }}
+        pagination={{ 
+          clickable: true, 
+          bulletClass: 'hero-bullet', 
+          bulletActiveClass: 'hero-bullet-active' 
         }}
-        className="w-full h-full rounded-[2rem] overflow-hidden dp-carousel-slider1st"
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        className="w-full h-full z-10 hero-main-swiper"
       >
-        {slides.map((slide) => (
-          <SwiperSlide key={slide.id} className="relative w-full h-full">
-            <div className="relative w-full h-[300px] md:h-[400px] lg:h-[300px]">
-              <Image
-                src={slide.image}
-                alt={slide.title}
-                fill
-                className="object-contain hidden md:block"
-                priority
-                sizes="100vw" // اضافه شده برای رفع وارنینگ
-              />
-              <Image
-                src={slide.mobileImage || slide.image}
-                alt={slide.title}
-                fill
-                className="object-contain block md:hidden"
-                priority
-                sizes="100vw" // اضافه شده برای رفع وارنینگ
-              />
-
-              <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-r from-transparent via-transparent to-black/30 p-8 flex flex-col justify-center items-start text-white dp-carousel-slider-text-content">
-                <h1 className="text-3xl md:text-5xl font-bold mb-2 fade-in-up">
-                  {slide.title}
-                </h1>
-                <h5 className="text-lg md:text-xl font-light mb-1 fade-in-up delay-100">
-                  {slide.subtitle}
-                </h5>
-                <h4 className="text-xl md:text-2xl font-medium mb-6 fade-in-up delay-200">
-                  {slide.description}
-                </h4>
-
-                {/*  */}
-                {/* <Link
-                  href={slide.link}
-                  className="dp-cs-link text-black px-8 py-3 bg-amber-600/40 backdrop-blur-[15px] rounded-full font-bold hover:bg-orange-500/80 hover:text-white transition-all duration-300 fade-in-up delay-300 shadow-lg"
-                >
-                  مشاهده
-                </Link> */}
+        {slides.map((slide, index) => (
+          <SwiperSlide key={slide.id || index}>
+            <div className="flex flex-col lg:flex-row items-center justify-between w-full h-full px-6 lg:px-16 py-10 pt-1 lg:py-0">
+              
+              {/* --- سمت راست (تصویر محصول/شخص) --- */}
+              {/* در سایت‌های فارسی (RTL)، اولین المان flex در سمت راست قرار می‌گیرد */}
+              <div className="w-full lg:w-1/2 h-[220px] lg:h-full relative flex items-center justify-center lg:justify-start z-10 mb-8 lg:mb-0">
+                <div className="relative w-full h-full max-w-[380px] lg:max-w-[450px]">
+                  <Image
+                    src={slide.image}
+                    alt={slide.title || "پیشنهاد ویژه آموزش فخر"}
+                    fill
+                    className="object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-700 ease-out"
+                    priority={index === 0}
+                  />
+                </div>
               </div>
+
+              {/* --- سمت چپ (متن و دکمه CTA) --- */}
+              <div className="w-full lg:w-1/2 flex flex-col justify-center items-center lg:items-start text-center lg:text-right text-white space-y-5 lg:space-y-7 z-10">
+                
+                {/* تگ کوچک بالای تیتر */}
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full text-[#0bb2c9] text-xs font-black tracking-widest inline-block shadow-sm">
+                  {slide.subtitle || "تغذیه سالم با آموزش فخر"}
+                </div>
+
+                {/* تیتر اصلی */}
+                <h2 className="text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.4] drop-shadow-lg text-white">
+                  {slide.title || "بهترین تجربه خرید محصولات رژیمی و سالم"}
+                </h2>
+
+                {/* توضیحات */}
+                <p className="text-sm lg:text-base text-gray-200/90 leading-loose max-w-md font-medium">
+                  {slide.description || "انواع محصولات رژیمی، پروتئینی، بدون قند و سالم را با بالاترین کیفیت، ضمانت سلامت و ارسال سریع تهیه کنید!"}
+                </p>
+                
+                {/* دکمه با خط‌چین دکوراتیو */}
+                <div className="relative mt-0 pt-0">
+                  <Link 
+                    href={slide.link} 
+                    className="relative z-10 flex items-center lg:ms-15 lg:mb-0 ms-0 mb-6 gap-3 bg-[#0bb2c9] text-white px-8 py-3.5 rounded-full font-bold shadow-[0_8px_25px_rgba(11,178,201,0.4)] hover:bg-[#0a9eaf] hover:shadow-[0_10px_30px_rgba(11,178,201,0.6)] hover:-translate-y-1 transition-all duration-300 group"
+                  >
+                    <span>مشاهده پیشنهادات</span>
+                    <span className="bg-white/20 p-1.5 rounded-full group-hover:-translate-x-1 transition-transform">
+                      <GoArrowLeft className="text-xl" />
+                    </span>
+                  </Link>
+
+                  {/* وکتور خط‌چین فلش‌دار (SVG) که از عکس نمونه الهام گرفته شده */}
+                  <div className="hidden lg:block absolute -right-15 top-1/2 -translate-y-1/2 opacity-60">
+                    <svg width="80" height="40" viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M98 30 Q 50 -10 2 20" stroke="white" strokeWidth="2" strokeDasharray="6 6" strokeLinecap="round" fill="none" />
+                      <path d="M12 10 L2 20 L12 30" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    </svg>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
 
-      <div
-        ref={(node) => setNextEl(node)}
-        className="dp-slider-next absolute top-1/2 left-4 z-10 w-10 h-10 bg-white/20 backdrop-blur-md hover:bg-white text-white hover:text-black rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 -translate-y-1/2 opacity-0 group-hover:opacity-100"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="22"
-          height="16"
-          viewBox="0 0 22 16"
-          fill="currentColor"
-        >
-          <path d="M12.6542 15.0209L6.50534 8.68754C6.2819 8.49587 6.18737 8.24587 6.18737 8.00004C6.18737 7.75421 6.28139 7.50504 6.46933 7.31254L12.6542 0.979206C13.0495 0.577956 13.7026 0.561289 14.1151 0.940039C14.5319 1.32046 14.5448 1.95587 14.1538 2.35421L8.64089 8.00004L14.1581 13.6459C14.5488 14.0443 14.5341 14.6771 14.1178 15.06C13.7026 15.4375 13.0495 15.4209 12.6542 15.0209Z"></path>
-        </svg>
-      </div>
-
-      <div
-        ref={(node) => setPrevEl(node)}
-        className="dp-slider-prev absolute top-1/2 right-4 z-10 w-10 h-10 bg-white/20 backdrop-blur-md hover:bg-white text-white hover:text-black rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 -translate-y-1/2 opacity-0 group-hover:opacity-100"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="22"
-          height="16"
-          viewBox="0 0 22 16"
-          fill="currentColor"
-        >
-          <path d="M9.34534 0.979128L15.4942 7.31246C15.7176 7.50413 15.8121 7.75413 15.8121 7.99996C15.8121 8.24579 15.7181 8.49496 15.5302 8.68746L9.34534 15.0208C8.95003 15.422 8.2969 15.4387 7.8844 15.06C7.46761 14.6795 7.45472 14.0441 7.84573 13.6458L13.3586 7.99996L7.84144 2.35413C7.45068 1.95571 7.46546 1.32288 7.88172 0.939961C8.2969 0.562461 8.95003 0.579128 9.34534 0.979128Z"></path>
-        </svg>
-      </div>
-
-      <div className="dp-slider-pagination flex justify-center gap-2 absolute bottom-4 left-0 right-0 z-10"></div>
+      {/* --- استایل‌های گلوبال برای نقطه‌های اسلایدر (Pagination) --- */}
+      <style jsx global>{`
+        .hero-main-swiper .swiper-pagination {
+          bottom: 20px !important;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 6px;
+        }
+        .hero-bullet {
+          width: 8px;
+          height: 8px;
+          background-color: rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hero-bullet:hover {
+          background-color: rgba(255, 255, 255, 0.6);
+        }
+        .hero-bullet-active {
+          width: 32px;
+          background-color: #0bb2c9;
+          border-radius: 12px;
+          box-shadow: 0 0 10px rgba(11, 178, 201, 0.5);
+        }
+      `}</style>
     </div>
   );
 }

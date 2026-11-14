@@ -465,47 +465,92 @@ export async function goToGateways(id: number | string) {
         const res = await fetch(`/internal-api/shop/pay/${id}`, {
             method: "POST",
             credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
-
-        if (!res.ok) {
-            console.error("[DEBUG] Response not OK", res.status);
-            throw new Error(`HTTP ${res.status}`);
-        }
 
         const result = await res.json();
 
+        if (!res.ok) {
+            console.error("[DEBUG] Response not OK", res.status, result);
+            const errorMessage = result.message || result.error || `خطا در دریافت درگاه پرداخت (${res.status})`;
+            throw new Error(errorMessage);
+        }
+
+        // ذخیره کد پیگیری جهت استفاده‌های بعدی یا استعلام
         if (result.tc) {
-            localStorage.setItem("tc", result.tc);
+            try {
+                localStorage.setItem("tc", result.tc);
+                localStorage.setItem("last_payment_tc", result.tc);
+                localStorage.setItem(`order_tc_${id}`, result.tc);
+            } catch (storageErr) {
+                console.warn("[PAYMENT] Could not save tc to localStorage", storageErr);
+            }
         }
 
         if (result.gateway_url) {
-            const { url, params, method } = result.gateway_url;
-
-            if (method === "GET") {
-                const queryString = new URLSearchParams(params).toString();
-                window.location.href = `${url}?${queryString}`;
-            } else {
-                const form = document.createElement("form");
-                form.method = method;
-                form.action = url;
-
-                Object.entries(params).forEach(([key, value]) => {
-                    const input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = key;
-                    input.value = String(value);
-                    form.appendChild(input);
-                });
-
-                document.body.appendChild(form);
-                form.submit();
+            // حالت استاندارد بک‌اند جدید: آدرس به صورت رشته مستقیم برمی‌گردد
+            if (typeof result.gateway_url === "string") {
+                window.location.href = result.gateway_url;
+                return { success: true, gateway_url: result.gateway_url, tc: result.tc };
             }
-        } else {
-            console.error("[DEBUG] Gateway URL missing in response");
-            alert("خطا در گرفتن لینک پرداخت");
+
+            // سازگاری با فرمت قدیمی آبجکتی در صورت وجود
+            if (typeof result.gateway_url === "object" && result.gateway_url.url) {
+                const { url, params = {}, method = "GET" } = result.gateway_url;
+
+                if (String(method).toUpperCase() === "GET") {
+                    const queryString = new URLSearchParams(params).toString();
+                    const targetUrl = queryString ? `${url}?${queryString}` : url;
+                    window.location.href = targetUrl;
+                    return { success: true, gateway_url: targetUrl, tc: result.tc };
+                } else {
+                    const form = document.createElement("form");
+                    form.method = method;
+                    form.action = url;
+
+                    Object.entries(params).forEach(([key, value]) => {
+                        const input = document.createElement("input");
+                        input.type = "hidden";
+                        input.name = key;
+                        input.value = String(value);
+                        form.appendChild(input);
+                    });
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    return { success: true, gateway_url: url, tc: result.tc };
+                }
+            }
         }
-    } catch (err) {
+
+        console.error("[DEBUG] Gateway URL missing in response", result);
+        throw new Error(result.message || "آدرس درگاه پرداخت از سرور دریافت نشد.");
+    } catch (err: any) {
         console.error("[DEBUG] Payment error caught:", err);
-        alert("خطا در اتصال به درگاه پرداخت");
+        throw err;
+    }
+}
+
+export async function verifyGatewayPayment(tc: string) {
+    try {
+        const res = await fetch(`/internal-api/shop/pay/verify`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ tc }),
+        });
+
+        const result = await res.json();
+        if (!res.ok) {
+            throw new Error(result.message || "خطا در استعلام پرداخت");
+        }
+        return result;
+    } catch (err: any) {
+        console.error("[DEBUG] Verify gateway error:", err);
+        throw err;
     }
 }

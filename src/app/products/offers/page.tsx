@@ -33,16 +33,16 @@ export default async function ProductsPage({ searchParams }: any) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "تخفیف‌های شگفت‌انگیز | فروشگاه یزد موبایل";
+  const title = "تخفیف‌های شگفت‌انگیز | فروشگاه آموزش فخر";
   const description =
-    "جدیدترین پیشنهادهای ویژه و تخفیف‌های شگفت‌انگیز فروشگاه یزد موبایل! خرید محصولات منتخب با قیمت باورنکردنی و ارسال سریع.";
+    "جدیدترین پیشنهادهای ویژه و تخفیف‌های شگفت‌انگیز فروشگاه آموزش فخر! خرید محصولات منتخب با قیمت باورنکردنی و ارسال سریع.";
   const keywords = [
     "تخفیف ویژه",
     "پیشنهاد شگفت‌انگیز",
     "حراج",
     "فروش ویژه",
     "قیمت باورنکردنی",
-    "فروشگاه یزد موبایل",
+    "فروشگاه آموزش فخر",
     "خرید آنلاین ارزان",
   ];
 
@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/amazing-offers`,
-      siteName: "یزد موبایل",
+      siteName: "آموزش فخر",
       locale: "fa_IR",
       type: "website",
     },

@@ -8,10 +8,14 @@ import ShegeftAngizSlider, { ProductCardType } from "@/components/ShegeftAngizSl
 import LatestBlogSection, { BlogPostItem } from "@/components/LatestBlogSection";
 import NewProductsSlider, { NewProductItem } from "@/components/NewProductsSlider";
 import { GetShopCategoriesTreeList } from "@/services/shopActions"; // <--- ایمپورت جدید
+import CourseCard from "@/components/CourseCard";
+import AiGallerySection from "@/components/AiGallerySection";
+import FaqSection from "@/components/FaqSection";
+import { GetActiveLogo } from "@/services/siteActions";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
-  title: "یزد موبایل | صفحه اصلی",
+  title: "آموزش فخر | صفحه اصلی",
 };
 
 // --- اینترفیس‌های API ---
@@ -50,7 +54,7 @@ interface ApiSection {
 async function getHomeData(): Promise<ApiSection[]> {
   try {
     const res = await fetch(
-      "https://api.abajstore.ir/home/sliders-index/",
+      "https://api.rejimfakhr.com/home/sliders-index/",
       {
         next: {
           revalidate: 300,
@@ -70,7 +74,7 @@ async function getHomeData(): Promise<ApiSection[]> {
 // در فایل page.tsx
 async function getLatestArticles(): Promise<BlogPostItem[]> {
   try {
-    const res = await fetch("https://api.abajstore.ir/blog/posts/", { 
+    const res = await fetch("https://api.rejimfakhr.com/blog/posts/", { 
         
         next: {
           revalidate: 300
@@ -122,30 +126,13 @@ function flattenCategories(categories: any[], defaultIcon: string): CategoryItem
   }));
 }
 
-// تابع جدید برای دریافت لوگوی سایت
-async function getActiveLogo(): Promise<string> {
-  try {
-    // آدرس API را مطابق ناوبار تنظیم کردم
-    const res = await fetch("https://api.abajstore.ir/home/active-logo/", { 
-      next: { revalidate: 3600 } // کش برای ۱ ساعت
-    });
-    
-    if (!res.ok) return "/logo.png"; // عکس پیش‌فرض در صورت خطا
-    
-    const data = await res.json();
-    const active = Array.isArray(data) ? data[0] : data;
-    return active?.image || "/logo.png";
-  } catch (error) {
-    return "/logo.png";
-  }
-}
 
 export default async function Home() {
   // دریافت موازی دیتا (شامل لیست درختی دسته‌بندی‌ها)
   const homeDataPromise = getHomeData();
   const blogDataPromise = getLatestArticles();
   const categoriesTreePromise = GetShopCategoriesTreeList(); // <--- فراخوانی سرویس دسته‌بندی
-  const logoPromise = getActiveLogo();
+  const logoPromise = GetActiveLogo();
   
 const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all([
     homeDataPromise, 
@@ -242,7 +229,7 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
         {bannerSectionToRender ? (
           <div>
             <div className="grid grid-cols-12 gap-4 lg:h-[350px]">
-              <div className="col-span-12 lg:col-span-9 h-[300px] md:h-[420px] lg:h-full">
+              <div className="col-span-12 lg:col-span-12 h-[300px] md:h-[420px] lg:h-full">
                 {(() => {
                   const slides: SliderItem[] = (bannerSectionToRender.banner_image || []).map((b: any) => ({
                     id: b.id,
@@ -259,9 +246,7 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
                   );
                 })()}
               </div>
-              <div className="hidden lg:block lg:col-span-3 h-full overflow-hidden">
-                {verticalOffers.length > 0 && <AmazingOfferSlider offers={verticalOffers} />}
-              </div>
+              
             </div>
           </div>
         ) : null}
@@ -305,16 +290,16 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
                 allApiProducts.push(...products);
 
                 return (
-                  <div key={`slider-${section.id}`}>
-                    <NewProductsSlider
-                      title={section.title || "محصولات"}
-                      highlightTitle=""
-                      products={products}
-                      viewAllLink="/products"
-                      sectionId={section.id}
-                      sectionType="product"
-                    />
-                  </div>
+                  <section key={`courses-${section.id}`} className="container mx-auto px-4 py-8">
+                    <div className="flex items-center justify-between mb-8">
+                        <h2 className="text-2xl font-black text-[#12465a]">{section.title}</h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {products.map((p) => (
+                        <CourseCard key={p.id} item={p} />
+                      ))}
+                    </div>
+                  </section>
                 );
               }
 
@@ -330,16 +315,7 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
 
                 return (
                   <div key={`slider-${section.id}`}>
-                    <NewProductsSlider
-                      title={section.title || "دسته‌بندی"}
-                      highlightTitle=""
-                      products={products}
-                      viewAllLink="/products"
-                      categoryId={categoryId}
-                      sort="newest"
-                      sectionId={section.id}
-                      sectionType="category"
-                    />
+                    <AiGallerySection apiData={apiData} />
                   </div>
                 );
               }
@@ -372,6 +348,8 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
 
       {/* شگفت‌انگیز */}
       {shegeftAngizData.length > 0 && <ShegeftAngizSlider products={shegeftAngizData} />}
+
+      <FaqSection />
 
       {/* بلاگ */}
       <LatestBlogSection posts={blogPosts} />

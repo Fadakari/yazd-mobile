@@ -3,6 +3,8 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { goToGateways } from "@/services/shopActions";
+import { addToast } from "@heroui/toast";
+import { Loader2 } from "lucide-react";
 
 type OrderItem = {
   id: string;
@@ -35,6 +37,28 @@ export default function NiceOrdersTable({ items }: { items?: OrderItem[] }) {
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
+  const [payingOrderId, setPayingOrderId] = useState<string | number | null>(null);
+
+  const handlePay = async (orderId: string | number) => {
+    setPayingOrderId(orderId);
+    try {
+      addToast({
+        title: "در حال اتصال به درگاه",
+        description: "در حال انتقال به درگاه پرداخت شاپرک (بانک سامان)...",
+        color: "primary",
+      });
+      await goToGateways(orderId);
+    } catch (err: any) {
+      setPayingOrderId(null);
+      addToast({
+        title: "خطا در اتصال به درگاه",
+        description:
+          err?.message ||
+          "امکان اتصال به درگاه پرداخت وجود ندارد. لطفاً لحظاتی دیگر مجدداً تلاش کنید.",
+        color: "danger",
+      });
+    }
+  };
 
   // Filtering
   const filtered = useMemo(() => {
@@ -208,10 +232,18 @@ export default function NiceOrdersTable({ items }: { items?: OrderItem[] }) {
                     {item.status === "pending" && (
                       <button
                         type="button"
-                        onClick={() => goToGateways(item.order_id)}
-                        className="px-3 py-1 bg-blue-600 text-white rounded-full text-xs hover:bg-blue-700"
+                        disabled={payingOrderId === item.order_id}
+                        onClick={() => handlePay(item.order_id)}
+                        className="px-3 py-1.5 bg-[#12465a] hover:bg-[#0bb2c9] text-white rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-60 shadow-sm"
                       >
-                        پرداخت
+                        {payingOrderId === item.order_id ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>در حال انتقال...</span>
+                          </>
+                        ) : (
+                          "پرداخت"
+                        )}
                       </button>
                     )}
                   </td>

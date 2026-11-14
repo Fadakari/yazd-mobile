@@ -38,25 +38,25 @@ export async function generateMetadata({
     const data = await GetBlogBySlug(decodedSlug);
     if (!data) {
       return {
-        title: "مقاله یافت نشد | یزد موبایل",
+        title: "مقاله یافت نشد | آموزش فخر",
       };
     }
     return {
-      title: `${data.title} | یزد موبایل`,
+      title: `${data.title} | آموزش فخر`,
       description: data.introduction,
-      keywords: [data.title, "مقاله یزد موبایل", `مقاله ${data.title}`],
+      keywords: [data.title, "مقاله آموزش فخر", `مقاله ${data.title}`],
       openGraph: {
         title: data.title,
         description: data.introduction,
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/article/${data.slug}`,
-        siteName: "یزد موبایل",
+        siteName: "آموزش فخر",
         locale: "fa_IR",
         type: "article",
         publishedTime: data.published_at || data.created_at,
         modifiedTime: data.updated_at,
         images: [
           {
-            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://yazd-mobile.ir'}/logo.png`,
+            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://rejimfakhr.com'}/logo.png`,
             alt: data.title || "مقاله",
             width: 1200,
             height: 630,
@@ -78,7 +78,7 @@ export async function generateMetadata({
   } catch (error: any) {
     console.error("Metadata Error:", error?.message);
     // اگر اینجا ارور بده، این تایتل رو نشون میده و سرور رو منفجر نمیکنه
-    return { title: "خطای سرور (سئو) | یزد موبایل" };
+    return { title: "خطای سرور (سئو) | آموزش فخر" };
   }
 }
 
@@ -198,7 +198,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
                     <li key={post.id} className="flex items-start gap-4">
                       <Link href={`/article/${post.slug}`}>
                         <Image
-                          src={post.thumbnail ? (post.thumbnail.startsWith('http') ? post.thumbnail : `https://api.abajstore.ir${post.thumbnail}`) : "/logo.png"}
+                          src={post.thumbnail ? (post.thumbnail.startsWith('http') ? post.thumbnail : `https://api.rejimfakhr.com${post.thumbnail}`) : "/logo.png"}
                           alt={post.title || "مطلب جدید"}
                           width={100}
                           height={100}

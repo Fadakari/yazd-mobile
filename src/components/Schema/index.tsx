@@ -32,7 +32,7 @@ export const articleSchema = (article: Article) => {
     dateModified: dateModifiedISO,
     author: {
       "@type": "Organization",
-      name: "یزد موبایل",
+      name: "آموزش فخر",
     },
     description: article.introduction || article.title,
     image: article.thumbnail,
@@ -53,7 +53,7 @@ export const productSchema = (product: ProductType) => {
       product.description_1 || product.description_2 || product.name
     ),
     sku: product.slug,
-    brand: "یزد موبایل",
+    brand: "آموزش فخر",
     offers: {
       "@type": "Offer",
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${product.slug}`,

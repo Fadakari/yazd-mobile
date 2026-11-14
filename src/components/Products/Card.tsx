@@ -50,7 +50,7 @@ export default function Card({
           {!imgError && item.cover_image ? (
             <Image
               src={item.cover_image}
-              alt={`${item.name} - یزد موبایل`}
+              alt={`${item.name} - آموزش فخر`}
               width={400}
               height={300}
               className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"

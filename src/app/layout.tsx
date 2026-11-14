@@ -17,12 +17,12 @@ import NextTopLoader from 'nextjs-toploader';
 import { GetActiveLogo } from "@/services/siteActions";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://yazd-mobile.ir"),
-  title: "یزد موبایل | فروشگاه آنلاین با تضمین کیفیت",
+  metadataBase: new URL("https://rejimfakhr.com"),
+  title: "آموزش فخر | فروشگاه آنلاین با تضمین کیفیت",
   description:
-    "یزد موبایل، فروشگاه تخصصی با بهترین قیمت و تضمین کیفیت. ارسال سریع، تخفیف‌های ویژه، و مقالات آموزشی تخصصی.",
+    "آموزش فخر، فروشگاه تخصصی با بهترین قیمت و تضمین کیفیت. ارسال سریع، تخفیف‌های ویژه، و مقالات آموزشی تخصصی.",
   keywords: [
-    "یزد موبایل",
+    "آموزش فخر",
     "فروشگاه آنلاین",
     "خرید آنلاین",
     "قیمت مناسب",
@@ -30,16 +30,16 @@ export const metadata: Metadata = {
     "تخفیف ویژه",
   ],
   openGraph: {
-    title: "یزد موبایل",
-    description: "خرید آنلاین با تضمین کیفیت و ارسال سریع از یزد موبایل",
+    title: "آموزش فخر",
+    description: "خرید آنلاین با تضمین کیفیت و ارسال سریع از آموزش فخر",
     url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
-    siteName: "یزد موبایل",
+    siteName: "آموزش فخر",
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`,
         width: 1200,
         height: 630,
-        alt: "یزد موبایل",
+        alt: "آموزش فخر",
       },
     ],
     locale: "fa_IR",
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "یزد موبایل",
-    description: "خرید آنلاین با تضمین کیفیت و ارسال سریع از یزد موبایل",
+    title: "آموزش فخر",
+    description: "خرید آنلاین با تضمین کیفیت و ارسال سریع از آموزش فخر",
     images: [`${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`],
   },
   icons: {
@@ -121,7 +121,7 @@ export default async function RootLayout({
                 {/* تغییر مهم: پاس دادن نوبار و فوتر به عنوان پراپ */}
                 <LayoutWrapper
                   navbar={<Navbar logo={logo} />}
-                  footer={<Footer />}
+                  footer={<Footer logo={logo} />}
                 >
                   <Providers>{children}</Providers>
                 </LayoutWrapper>

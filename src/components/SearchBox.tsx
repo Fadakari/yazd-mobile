@@ -59,7 +59,7 @@ function SearchInput({
       <RiSearch2Line className="size-6 absolute right-5 text-zinc-400" />
       <input
         type="search"
-        placeholder="جستجو در یزد موبایل.."
+        placeholder="جستجو در آموزش فخر.."
         autoComplete="off"
         name="search"
         id="search"
@@ -71,7 +71,7 @@ function SearchInput({
         onClick={onOpen}
         className="block sm:hidden input !bg-white !rounded-full !border-zinc-200 !pr-10 w-full text-sm lg:text-base text-right"
       >
-        جستجو در یزد موبایل..
+        جستجو در آموزش فخر..
       </button>
       <Modal
         isDismissable={false}
@@ -106,7 +106,7 @@ function SearchInput({
               <div className="relative">
                 <input
                   type="search"
-                  placeholder="جستجو در یزد موبایل.."
+                  placeholder="جستجو در آموزش فخر.."
                   autoComplete="off"
                   name="search"
                   id="search"

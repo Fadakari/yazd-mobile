@@ -8,8 +8,8 @@ import { useRef } from "react";
 const products = [
   {
     id: 1,
-    title: "ساعت هوشمند شیائومی",
-    subtitle: "Mibro Lite XPAW004 Smartwatch",
+    title: "ماچا و محصولات رژیمی",
+    subtitle: "Organic Diet & Fitness Products",
     img: "assets/image/product/wach1.jpg",
     newPrice: "3,175,000 تومان",
     oldPrice: "6,500,000 تومان",
@@ -19,8 +19,8 @@ const products = [
   },
   {
     id: 2,
-    title: "ساعت هوشمند شیائومی",
-    subtitle: "Mibro Lite XPAW004 Smartwatch",
+    title: "ماچا و محصولات رژیمی",
+    subtitle: "Organic Diet & Fitness Products",
     img: "assets/image/product/wach4.jpg",
     newPrice: "3,175,000 تومان",
     oldPrice: "6,500,000 تومان",
@@ -30,8 +30,8 @@ const products = [
   },
   {
     id: 3,
-    title: "ساعت هوشمند شیائومی",
-    subtitle: "Mibro Lite XPAW004 Smartwatch",
+    title: "ماچا و محصولات رژیمی",
+    subtitle: "Organic Diet & Fitness Products",
     img: "assets/image/product/wach2.jpg",
     newPrice: "3,175,000 تومان",
     oldPrice: "6,500,000 تومان",
