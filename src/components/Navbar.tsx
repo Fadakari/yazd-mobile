@@ -528,6 +528,7 @@ export default function Navbar({ logo }: { logo: string }) {
 
   const navLinks = [
     { name: "خانه", href: "/" },
+    { name: "دریافت برنامه رژیم", href: "/diet-plan" },
     { name: "فروشگاه", href: "/products" },
     { name: "وبلاگ", href: "/articles" },
     { name: "درباره‌ما", href: "/about-us" },
