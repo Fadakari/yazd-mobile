@@ -362,11 +362,20 @@ export default function DietPlanPage() {
 
       const result = await submitDietOrder(payload);
 
-      if (result.redirect_url) {
-        if (result.redirect_url.startsWith("http")) {
-          window.location.href = result.redirect_url;
-        } else {
-          router.push(result.redirect_url);
+      const redirectUrl =
+        result.gateway_url ||
+        result.redirect_url ||
+        result.payment_url ||
+        result.url ||
+        result.data?.gateway_url ||
+        result.data?.redirect_url ||
+        result.data?.payment_url;
+
+      if (redirectUrl) {
+        if (typeof redirectUrl === "string" && redirectUrl.startsWith("http")) {
+          window.location.href = redirectUrl;
+        } else if (typeof redirectUrl === "string") {
+          router.push(redirectUrl);
         }
       } else {
         addToast({
