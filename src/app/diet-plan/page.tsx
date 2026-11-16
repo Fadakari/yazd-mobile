@@ -27,7 +27,7 @@ import {
   FaFemale,
   FaMale,
   FaFire,
-  FaClock as FaClockIcon,
+  FaClock,
   FaBalanceScale,
   FaRunning,
   FaHeartbeat,

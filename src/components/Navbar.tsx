@@ -528,7 +528,7 @@ export default function Navbar({ logo }: { logo: string }) {
 
   const navLinks = [
     { name: "خانه", href: "/" },
-    { name: "دریافت برنامه رژیم", href: "/diet-plan" },
+    { name: "دریافت رژیم", href: "/diet-plan" },
     { name: "فروشگاه", href: "/products" },
     { name: "وبلاگ", href: "/articles" },
     { name: "درباره‌ما", href: "/about-us" },
@@ -558,7 +558,7 @@ export default function Navbar({ logo }: { logo: string }) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="relative group py-2 hover:text-[#0bb2c9] transition-colors"
+                    className="relative group py-2 hover:text-[#0bb2c9] transition-colors whitespace-nowrap"
                   >
                     {item.name}
                   </Link>
