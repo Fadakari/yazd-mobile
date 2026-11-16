@@ -13,22 +13,41 @@ import {
   FiAlertCircle,
   FiPlus,
   FiMinus,
+  FiTarget,
+  FiTrendingUp,
+  FiTrendingDown,
+  FiAward,
+  FiZap,
+  FiInfo,
+  FiClock,
+  FiArrowRight,
+  FiMaximize2,
 } from "react-icons/fi";
 import {
   FaFemale,
   FaMale,
   FaFire,
-  FaClock,
+  FaClock as FaClockIcon,
   FaBalanceScale,
   FaRunning,
   FaHeartbeat,
   FaBaby,
   FaStar,
+  FaUserMd,
+  FaWeight,
+  FaDumbbell,
 } from "react-icons/fa";
 import { GiMuscleUp, GiAvocado, GiWeightScale } from "react-icons/gi";
 import { MdOutlinePregnantWoman } from "react-icons/md";
 import { Loader2 } from "lucide-react";
 import { addToast } from "@heroui/toast";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/react";
 
 import { useUser } from "@/context/UserContext";
 import {
@@ -151,6 +170,7 @@ export default function DietPlanPage() {
 
   // آنالیز BMI
   const [bmiResult, setBmiResult] = useState<BmiAnalysis | null>(null);
+  const [isBmiModalOpen, setIsBmiModalOpen] = useState<boolean>(false);
 
   // پلن‌های داینامیک سرور (بدون دیتای فیک)
   const [plans, setPlans] = useState<DietPlan[]>([]);
@@ -226,44 +246,182 @@ export default function DietPlanPage() {
     return finalPriceToman * 10;
   }, [selectedPlan, finalPriceToman]);
 
-  // محاسبه BMI و وزن ایده‌آل
+  // محاسبه تخصصی BMI، درجه چاقی، وزن ایده‌آل و وضعیت متابولیک بدن
   const calculateBmi = () => {
-    if (!height || !weight) return;
+    if (!height || !weight || !age) return;
     const heightInMeters = height / 100;
     const bmiVal = parseFloat((weight / (heightInMeters * heightInMeters)).toFixed(1));
 
+    // تعیین دسته‌بندی و درجه چاقی بر اساس رده‌بندی سازمان بهداشت جهانی (WHO)
     let status: BmiAnalysis["status"] = "normal";
-    let statusText = "وزن طبیعی و ایده‌آل";
+    let statusText = "وزن کاملاً نرمال و سلامت";
+    let obesityGrade = "فاقد چاقی (توده سلامت استاندارد)";
     let statusColor = "#10b981"; // سبز
+    let badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+    let healthRiskLevel = "بسیار پایین (محدوده استاندارد سلامت)";
+    let healthRiskColor = "#10b981";
+    let suggestedDietType = "maintenance";
+    let suggestedDietName = "رژیم تثبیت وزن یا ورزشکاری";
+    let recommendationTitle = "حفظ تعادل متابولیک و تقویت بافت عضلانی";
+    let recommendationText =
+      "تبریک! شاخص توده بدنی و وضعیت وزن شما در ایده‌آل‌ترین سطح استاندارد بین‌المللی قرار دارد. برای حفظ این آمادگی و تناسب اندام، رژیم تثبیت وزن یا برنامه تغذیه سلامت و ورزشی بهترین گزینه برای شماست.";
 
     if (bmiVal < 18.5) {
       status = "underweight";
-      statusText = "کمبود وزن";
+      statusText = "کمبود وزن (لاغری)";
+      obesityGrade = "فاقد چاقی (کمبود توده بدنی)";
       statusColor = "#3b82f6"; // آبی
+      badgeClass = "bg-blue-50 text-blue-700 border-blue-200";
+      healthRiskLevel = "ریسک فقر مواد مغذی و ضعف عضلانی";
+      healthRiskColor = "#3b82f6";
+      suggestedDietType = "weight_gain";
+      suggestedDietName = "رژیم افزایش وزن و عضله‌سازی";
+      recommendationTitle = "نیاز به دریافت کالری مازاد باکیفیت و عضله‌سازی";
+      recommendationText =
+        "شاخص توده بدنی شما نشان‌دهنده کمبود وزن است. برای رسیدن به وزن ایده‌آل، نیاز به یک رژیم پرکالریِ مغذی همراه با پروتئین کافی و کربوهیدرات‌های پیچیده دارید تا وزن اضافه شده به صورت توده عضلانی سالم باشد نه چربی مضر.";
     } else if (bmiVal >= 25 && bmiVal < 30) {
       status = "overweight";
-      statusText = "اضافه وزن";
-      statusColor = "#f59e0b"; // نارنجی
-    } else if (bmiVal >= 30) {
-      status = "obese";
-      statusText = "چاقی و اضافه وزن مفرط";
+      statusText = "اضافه وزن (پیش‌چاقی)";
+      obesityGrade = "اضافه وزن خفیف تا متوسط (مرحله پیش‌چاقی)";
+      statusColor = "#f59e0b"; // زرد/نارنجی
+      badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+      healthRiskLevel = "متوسط (افزایش خفیف ریسک متابولیک)";
+      healthRiskColor = "#f59e0b";
+      suggestedDietType = "weight_loss";
+      suggestedDietName = "رژیم اصولی کاهش وزن";
+      recommendationTitle = "پیشگیری از ورود به درجات چاقی با اصلاح تغذیه";
+      recommendationText =
+        "وزن فعلی شما کمی بالاتر از حد سلامت است. با یک رژیم اصولی و متناسب با سفره خانواده می‌توانید ظرف چند هفته به وزن ایده‌آل برسید و از پیشروی به مراحل چاقی و خطرات قلبی عروقی جلوگیری کنید.";
+    } else if (bmiVal >= 30 && bmiVal < 35) {
+      status = "obese_1";
+      statusText = "چاقی درجه ۱ (متوسط)";
+      obesityGrade = "چاقی بالینی درجه یک (Class I)";
+      statusColor = "#f97316"; // نارنجی تند
+      badgeClass = "bg-orange-50 text-orange-700 border-orange-200";
+      healthRiskLevel = "بالا (ریسک کبد چرب، مقاومت انسولین و فشار خون)";
+      healthRiskColor = "#f97316";
+      suggestedDietType = "weight_loss";
+      suggestedDietName = "رژیم تخصصی کاهش وزن و چربی‌سوزی";
+      recommendationTitle = "کاهش بار متابولیک و پیشگیری از کبد چرب";
+      recommendationText =
+        "شما در محدوده چاقی درجه یک قرار دارید. کاهش ۵ تا ۱۰ درصد از وزن فعلی، خطر ابتلا به دیابت نوع دو و فشار خون را به شدت کاهش می‌دهد. شروع یک رژیم علمی در این مقطع کاملاً حیاتی و اثربخش است.";
+    } else if (bmiVal >= 35 && bmiVal < 40) {
+      status = "obese_2";
+      statusText = "چاقی درجه ۲ (شدید)";
+      obesityGrade = "چاقی شدید بالینی (Class II)";
       statusColor = "#ef4444"; // قرمز
+      badgeClass = "bg-red-50 text-red-700 border-red-200";
+      healthRiskLevel = "خیلی بالا (فشار جدی بر مفاصل، ستون فقرات و عروق)";
+      healthRiskColor = "#ef4444";
+      suggestedDietType = "fasting";
+      suggestedDietName = "رژیم فست‌مد یا کتوپلاس تخصصی";
+      recommendationTitle = "کنترل فوری التهاب بدنی و شکستن استپ وزنی";
+      recommendationText =
+        "چاقی درجه ۲ فشار قابل‌توجهی به مفاصل زانو، ستون فقرات و سیستم قلبی-عروقی وارد می‌کند. پیروی از یک برنامه رژیمی هدفمند برای شکستن مقاومت به انسولین و چربی‌سوزی پایدار ضروری است.";
+    } else if (bmiVal >= 40) {
+      status = "obese_3";
+      statusText = "چاقی درجه ۳ (مفرط و پرخطر)";
+      obesityGrade = "چاقی مفرط بالینی (Class III - Morbid Obesity)";
+      statusColor = "#881337"; // زرشکی تیره
+      badgeClass = "bg-rose-100 text-rose-900 border-rose-300";
+      healthRiskLevel = "بسیار بحرانی (نیازمند مداخله جدی تغذیه‌ای)";
+      healthRiskColor = "#881337";
+      suggestedDietType = "shock";
+      suggestedDietName = "رژیم شوک یا بسته اختصاصی VIP";
+      recommendationTitle = "مداخله جامع تغذیه‌ای و پیگیری مستمر";
+      recommendationText =
+        "شاخص توده بدنی بالای ۴۰ در دسته چاقی مفرط قرار دارد. اکیداً توصیه می‌شود با یک برنامه رژیمی علمی، مرحله‌به‌مرحله و دارای پشتیبانی مستمر متخصص، مسیر درمان و کاهش وزن را آغاز کنید.";
     }
 
+    // محدوده وزن نرمال (BMI بین ۱۸.۵ تا ۲۴.۹)
     const idealWeightMin = Math.round(18.5 * heightInMeters * heightInMeters);
     const idealWeightMax = Math.round(24.9 * heightInMeters * heightInMeters);
-    const idealWeightMid = Math.round((idealWeightMin + idealWeightMax) / 2);
-    const weightDiff = weight - idealWeightMid;
+    // وزن ایده‌آل هدف (بر اساس فرمول اختصاصی استاندارد جنسیت)
+    const idealWeightTarget = Math.round(
+      (gender === "male" ? 22.2 : 21.6) * heightInMeters * heightInMeters
+    );
 
-    setBmiResult({
+    // محاسبه میزان اضافه یا کمبود وزن
+    let differenceType: BmiAnalysis["differenceType"] = "ideal";
+    let weightDifference = 0;
+    let differenceText = "در محدوده کاملاً ایده‌آل";
+
+    if (weight > idealWeightMax) {
+      differenceType = "excess";
+      weightDifference = Math.round((weight - idealWeightTarget) * 10) / 10;
+      differenceText = `حدود ${weightDifference.toLocaleString("fa-IR")} کیلوگرم اضافه وزن`;
+    } else if (weight < idealWeightMin) {
+      differenceType = "deficit";
+      weightDifference = Math.round((idealWeightTarget - weight) * 10) / 10;
+      differenceText = `حدود ${weightDifference.toLocaleString("fa-IR")} کیلوگرم کمبود وزن`;
+    } else {
+      differenceType = "ideal";
+      weightDifference = Math.round(Math.abs(weight - idealWeightTarget) * 10) / 10;
+      differenceText = `در محدوده ایده‌آل (اختلاف جزئی ${weightDifference.toLocaleString("fa-IR")} کیلوگرم تا نقطه مرکزی)`;
+    }
+
+    // متابولیسم پایه (BMR) با فرمول میفلین-سنت جور
+    const bmr = Math.round(
+      gender === "male"
+        ? 10 * weight + 6.25 * height - 5 * age + 5
+        : 10 * weight + 6.25 * height - 5 * age - 161
+    );
+
+    // کالری مصرفی روزانه برآورد شده (TDEE با ضریب فعالیت سبک)
+    const tdee = Math.round(bmr * 1.375);
+
+    // تخمین درصد چربی بدن (فرمول Deurenberg)
+    const genderFactor = gender === "male" ? 1 : 0;
+    let bodyFatVal = 1.2 * bmiVal + 0.23 * age - 10.8 * genderFactor - 5.4;
+    bodyFatVal = Math.max(5, Math.min(65, Math.round(bodyFatVal * 10) / 10));
+
+    let bodyFatCategory = "نرمال و متناسب";
+    if (gender === "male") {
+      if (bodyFatVal < 14) bodyFatCategory = "ورزشکاری و کم‌چربی";
+      else if (bodyFatVal <= 18) bodyFatCategory = "فیتنس و متناسب";
+      else if (bodyFatVal <= 24) bodyFatCategory = "متوسط و طبیعی";
+      else bodyFatCategory = "توده چربی مازاد";
+    } else {
+      if (bodyFatVal < 21) bodyFatCategory = "ورزشکاری و کم‌چربی";
+      else if (bodyFatVal <= 25) bodyFatCategory = "فیتنس و متناسب";
+      else if (bodyFatVal <= 31) bodyFatCategory = "متوسط و طبیعی";
+      else bodyFatCategory = "توده چربی مازاد";
+    }
+
+    // تخمین زمان مورد نیاز برای رسیدن به وزن هدف با شیب اصولی (هفته‌ای ۰.۷ کیلوگرم)
+    const estimatedWeeksToGoal = Math.max(
+      2,
+      Math.ceil(Math.abs(weight - idealWeightTarget) / 0.7)
+    );
+
+    const resultData: BmiAnalysis = {
       bmi: bmiVal,
       status,
       statusText,
+      obesityGrade,
       statusColor,
+      badgeClass,
       idealWeightMin,
       idealWeightMax,
-      weightDifference: weightDiff,
-    });
+      idealWeightTarget,
+      weightDifference,
+      differenceText,
+      differenceType,
+      bmr,
+      tdee,
+      bodyFatPercentage: bodyFatVal,
+      bodyFatCategory,
+      healthRiskLevel,
+      healthRiskColor,
+      estimatedWeeksToGoal,
+      recommendationTitle,
+      recommendationText,
+      suggestedDietType,
+      suggestedDietName,
+    };
+
+    setBmiResult(resultData);
+    setIsBmiModalOpen(true);
   };
 
   // اعمال کد تخفیف
@@ -742,51 +900,104 @@ export default function DietPlanPage() {
               </button>
             </div>
 
-            {/* کارت نتیجه آنالیز BMI */}
+            {/* کارت نتیجه آنالیز BMI در صفحه */}
             {bmiResult && (
-              <div className="mt-4 p-5 rounded-2xl bg-white border border-gray-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-down">
-                <div className="flex items-center gap-4">
-                  <div
-                    className="w-16 h-16 rounded-2xl flex flex-col items-center justify-center text-white font-black shadow-inner"
-                    style={{ backgroundColor: bmiResult.statusColor }}
-                  >
-                    <span className="text-xs">BMI</span>
-                    <span className="text-lg leading-tight">{bmiResult.bmi}</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400 font-bold">وضعیت بدنی شما:</span>
-                      <span
-                        className="text-sm font-black"
-                        style={{ color: bmiResult.statusColor }}
-                      >
-                        {bmiResult.statusText}
+              <div className="mt-6 p-5 md:p-6 rounded-3xl bg-gradient-to-br from-white to-gray-50/90 border border-gray-200/90 shadow-sm flex flex-col gap-5 animate-fade-down">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="w-16 h-16 md:w-18 md:h-18 rounded-2xl flex flex-col items-center justify-center text-white font-black shadow-md shrink-0"
+                      style={{ backgroundColor: bmiResult.statusColor }}
+                    >
+                      <span className="text-[10px] opacity-90">BMI</span>
+                      <span className="text-xl md:text-2xl leading-none font-mono">
+                        {bmiResult.bmi}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-600 mt-1">
-                      محدوده وزن ایده‌آل برای قد شما بین{" "}
-                      <span className="font-bold text-[#12465a]">
-                        {bmiResult.idealWeightMin} تا {bmiResult.idealWeightMax}
-                      </span>{" "}
-                      کیلوگرم است.
-                    </p>
+
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className="text-xs text-gray-400 font-bold">وضعیت بدنی شما:</span>
+                        <span
+                          className="text-base md:text-lg font-black"
+                          style={{ color: bmiResult.statusColor }}
+                        >
+                          {bmiResult.statusText}
+                        </span>
+                        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full border bg-gray-50 text-gray-600 border-gray-200">
+                          {bmiResult.obesityGrade}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600">
+                        وزن ایده‌آل برای شما:{" "}
+                        <span className="font-black text-[#12465a]">
+                          {bmiResult.idealWeightTarget.toLocaleString("fa-IR")} کیلوگرم
+                        </span>{" "}
+                        <span className="text-gray-400">
+                          (بازه سلامت: {bmiResult.idealWeightMin} تا {bmiResult.idealWeightMax} kg)
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    <div className="text-center md:text-left text-xs bg-white py-2 px-3.5 rounded-xl border border-gray-200 shadow-2xs">
+                      {bmiResult.differenceType === "excess" ? (
+                        <div className="flex items-center gap-1.5 text-amber-600 font-black">
+                          <FiTrendingUp className="size-4" />
+                          <span>{bmiResult.differenceText}</span>
+                        </div>
+                      ) : bmiResult.differenceType === "deficit" ? (
+                        <div className="flex items-center gap-1.5 text-blue-600 font-black">
+                          <FiTrendingDown className="size-4" />
+                          <span>{bmiResult.differenceText}</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 text-emerald-600 font-black">
+                          <FiCheck className="size-4" />
+                          <span>{bmiResult.differenceText}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsBmiModalOpen(true)}
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#12465a]/10 hover:bg-[#12465a] text-[#12465a] hover:text-white font-bold text-xs transition-all cursor-pointer group"
+                    >
+                      <FiMaximize2 className="size-3.5 group-hover:scale-110 transition-transform" />
+                      <span>مشاهده گزارش کامل و پیشرفته</span>
+                    </button>
                   </div>
                 </div>
 
-                <div className="text-left text-xs bg-gray-50 py-2.5 px-4 rounded-xl border border-gray-100">
-                  {bmiResult.weightDifference > 0 ? (
-                    <span className="text-amber-600 font-bold">
-                      پیشنهاد کاهش: حدود {bmiResult.weightDifference} کیلوگرم
+                {/* نوار مینیاتوری طیف BMI */}
+                <div className="w-full flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-gray-500">
+                    <span>طیف شاخص توده بدنی (BMI Spectrum)</span>
+                    <span style={{ color: bmiResult.statusColor }}>
+                      شاخص شما: {bmiResult.bmi} ({bmiResult.statusText})
                     </span>
-                  ) : bmiResult.weightDifference < 0 ? (
-                    <span className="text-blue-600 font-bold">
-                      پیشنهاد افزایش: حدود {Math.abs(bmiResult.weightDifference)} کیلوگرم
-                    </span>
-                  ) : (
-                    <span className="text-emerald-600 font-bold">
-                      تبریک! شما در وزن ایده‌آل قرار دارید
-                    </span>
-                  )}
+                  </div>
+
+                  {/* نوار رنگی */}
+                  <div className="relative w-full h-3 rounded-full overflow-hidden flex bg-gray-100 shadow-inner">
+                    <div className="bg-blue-400 h-full" style={{ width: "16%" }} title="کمبود وزن (<18.5)" />
+                    <div className="bg-emerald-500 h-full" style={{ width: "23%" }} title="نرمال (18.5-24.9)" />
+                    <div className="bg-amber-400 h-full" style={{ width: "18%" }} title="اضافه وزن (25-29.9)" />
+                    <div className="bg-orange-500 h-full" style={{ width: "16%" }} title="چاقی درجه ۱ (30-34.9)" />
+                    <div className="bg-red-500 h-full" style={{ width: "14%" }} title="چاقی درجه ۲ (35-39.9)" />
+                    <div className="bg-rose-900 h-full" style={{ width: "13%" }} title="چاقی درجه ۳ (40+)" />
+                  </div>
+
+                  <div className="flex justify-between text-[10px] text-gray-400 font-mono">
+                    <span>۱۵ (لاغری)</span>
+                    <span>۱۸.۵ (نرمال)</span>
+                    <span>۲۵ (اضافه وزن)</span>
+                    <span>۳۰ (چاقی ۱)</span>
+                    <span>۳۵ (چاقی ۲)</span>
+                    <span>۴۰+ (مفرط)</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -794,7 +1005,7 @@ export default function DietPlanPage() {
         </section>
 
         {/* --- ۴. انتخاب برنامه سلامتی (پلن‌ها از بک‌اند) --- */}
-        <section className="bg-white rounded-3xl border border-gray-100 shadow-xs p-6 md:p-10">
+        <section id="diet-plans-section" className="bg-white rounded-3xl border border-gray-100 shadow-xs p-6 md:p-10 scroll-mt-24">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-black text-[#12465a] mb-2">برنامه‌های سلامتی</h2>
             <p className="text-xs md:text-sm text-gray-500 font-medium">
@@ -1051,6 +1262,352 @@ export default function DietPlanPage() {
           </div>
         </section>
       </form>
+
+      {/* --- ۶. مودال پیشرفته و جامع آنالیز بدنی و BMI --- */}
+      {bmiResult && (
+        <Modal
+          isOpen={isBmiModalOpen}
+          onOpenChange={setIsBmiModalOpen}
+          size="3xl"
+          scrollBehavior="inside"
+          backdrop="blur"
+          classNames={{
+            backdrop: "bg-slate-900/60 backdrop-blur-sm z-[9999]",
+            wrapper: "z-[10000]",
+            base: "max-h-[90vh] rounded-3xl bg-white border border-gray-100 shadow-2xl text-right dir-rtl font-sans",
+            header: "border-b border-gray-100 py-4 px-6 md:px-8",
+            body: "p-6 md:p-8 space-y-6 overflow-y-auto",
+            footer: "border-t border-gray-100 py-4 px-6 md:px-8 flex flex-col sm:flex-row justify-between items-center gap-3 bg-gray-50/70",
+          }}
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2.5 text-[#12465a]">
+                    <div className="w-10 h-10 rounded-2xl bg-[#12465a]/10 flex items-center justify-center text-[#12465a]">
+                      <FiActivity className="size-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg md:text-xl font-black text-[#12465a]">
+                        گزارش جامع آنالیز وضعیت بدنی و BMI
+                      </h3>
+                      <p className="text-xs text-gray-500 font-medium mt-0.5">
+                        بر اساس اطلاعات ثبت‌شده: {gender === "female" ? "خانم" : "آقا"} {age} ساله با قد {height} سانتی‌متر و وزن {weight} کیلوگرم
+                      </p>
+                    </div>
+                  </div>
+                </ModalHeader>
+
+                <ModalBody className="space-y-6">
+                  {/* بنر وضعیت اصلی و گیج شاخص توده بدنی */}
+                  <div className="p-5 md:p-6 rounded-3xl bg-gradient-to-br from-gray-50 via-white to-gray-50 border border-gray-200/80 shadow-2xs flex flex-col gap-4">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div
+                          className="w-20 h-20 rounded-3xl flex flex-col items-center justify-center text-white font-black shadow-lg shrink-0"
+                          style={{ backgroundColor: bmiResult.statusColor }}
+                        >
+                          <span className="text-[11px] font-medium tracking-wide">BMI</span>
+                          <span className="text-2xl md:text-3xl leading-none font-mono">
+                            {bmiResult.bmi}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="text-xs text-gray-400 font-bold mb-1">
+                            سطح و درجه وضعیت شما:
+                          </div>
+                          <div
+                            className="text-xl md:text-2xl font-black mb-1"
+                            style={{ color: bmiResult.statusColor }}
+                          >
+                            {bmiResult.statusText}
+                          </div>
+                          <span className="inline-block text-xs font-bold px-3 py-1 rounded-full bg-white border border-gray-200 text-gray-700 shadow-2xs">
+                            {bmiResult.obesityGrade}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* نشانگر ریسک سلامت */}
+                      <div className="text-center sm:text-left p-3 rounded-2xl bg-white border border-gray-200 shadow-2xs max-w-xs">
+                        <div className="text-[11px] text-gray-400 font-bold mb-1">
+                          ارزیابی ریسک بیماری‌های متابولیک:
+                        </div>
+                        <div
+                          className="text-xs font-black"
+                          style={{ color: bmiResult.healthRiskColor }}
+                        >
+                          {bmiResult.healthRiskLevel}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* نوار بصری طیف استاندارد BMI با نشانگر متحرک کاربر */}
+                    <div className="w-full pt-4 border-t border-gray-100">
+                      <div className="relative w-full h-8 mb-1">
+                        <div
+                          className="absolute top-0 -translate-x-1/2 flex flex-col items-center transition-all duration-500 ease-out"
+                          style={{
+                            left: `${Math.min(96, Math.max(4, ((bmiResult.bmi - 14) / (44 - 14)) * 100))}%`,
+                          }}
+                        >
+                          <span
+                            className="px-2 py-0.5 rounded-md text-[10px] font-black text-white shadow-xs font-mono"
+                            style={{ backgroundColor: bmiResult.statusColor }}
+                          >
+                            {bmiResult.bmi}
+                          </span>
+                          <div
+                            className="w-0 h-0 border-x-4 border-x-transparent border-t-5"
+                            style={{ borderTopColor: bmiResult.statusColor }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-full h-3 rounded-full overflow-hidden flex bg-gray-200 shadow-inner">
+                        <div className="bg-blue-400 h-full" style={{ width: "16%" }} title="کمبود وزن (<18.5)" />
+                        <div className="bg-emerald-500 h-full" style={{ width: "23%" }} title="نرمال (18.5-24.9)" />
+                        <div className="bg-amber-400 h-full" style={{ width: "18%" }} title="اضافه وزن (25-29.9)" />
+                        <div className="bg-orange-500 h-full" style={{ width: "16%" }} title="چاقی درجه ۱ (30-34.9)" />
+                        <div className="bg-red-500 h-full" style={{ width: "14%" }} title="چاقی درجه ۲ (35-39.9)" />
+                        <div className="bg-rose-900 h-full" style={{ width: "13%" }} title="چاقی مفرط (40+)" />
+                      </div>
+
+                      <div className="flex justify-between text-[10px] text-gray-400 font-mono mt-1 px-1">
+                        <span>۱۵ (لاغری)</span>
+                        <span>۱۸.۵ (نرمال)</span>
+                        <span>۲۵ (اضافه وزن)</span>
+                        <span>۳۰ (چاقی ۱)</span>
+                        <span>۳۵ (چاقی ۲)</span>
+                        <span>۴۰+ (مفرط)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* گرید ۴ شاخص اصلی درخواستی */}
+                  <div>
+                    <h4 className="text-sm font-black text-gray-800 mb-3 flex items-center gap-2">
+                      <FiAward className="size-4 text-[#12465a]" />
+                      <span>شاخص‌های اختصاصی وزن و وضعیت بدنی:</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                      {/* ۱. شاخص توده بدنی */}
+                      <div className="p-4 rounded-2xl bg-white border border-gray-100 shadow-2xs flex flex-col justify-between">
+                        <div className="flex items-center justify-between text-gray-400 mb-2">
+                          <span className="text-xs font-bold text-gray-500">شاخص توده بدنی</span>
+                          <GiWeightScale className="size-5 text-[#12465a]" />
+                        </div>
+                        <div>
+                          <div className="text-xl font-black text-gray-800 font-mono">
+                            {bmiResult.bmi}{" "}
+                            <span className="text-xs font-normal text-gray-400">kg/m²</span>
+                          </div>
+                          <div
+                            className="text-xs font-bold mt-1"
+                            style={{ color: bmiResult.statusColor }}
+                          >
+                            {bmiResult.statusText}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* ۲. وضعیت و درجه چاقی */}
+                      <div className="p-4 rounded-2xl bg-white border border-gray-100 shadow-2xs flex flex-col justify-between">
+                        <div className="flex items-center justify-between text-gray-400 mb-2">
+                          <span className="text-xs font-bold text-gray-500">درجه و رده چاقی</span>
+                          <FiAward className="size-5 text-amber-500" />
+                        </div>
+                        <div>
+                          <div className="text-base font-black text-gray-800 line-clamp-1">
+                            {bmiResult.obesityGrade}
+                          </div>
+                          <div className="text-xs text-gray-400 font-medium mt-1">
+                            طبق رده‌بندی بالینی WHO
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* ۳. میزان اضافه یا کمبود وزن */}
+                      <div className="p-4 rounded-2xl bg-white border border-gray-100 shadow-2xs flex flex-col justify-between">
+                        <div className="flex items-center justify-between text-gray-400 mb-2">
+                          <span className="text-xs font-bold text-gray-500">میزان اختلاف وزن</span>
+                          {bmiResult.differenceType === "excess" ? (
+                            <FiTrendingUp className="size-5 text-amber-500" />
+                          ) : bmiResult.differenceType === "deficit" ? (
+                            <FiTrendingDown className="size-5 text-blue-500" />
+                          ) : (
+                            <FiCheck className="size-5 text-emerald-500" />
+                          )}
+                        </div>
+                        <div>
+                          <div
+                            className="text-xl font-black"
+                            style={{ color: bmiResult.statusColor }}
+                          >
+                            {bmiResult.differenceType === "excess"
+                              ? `+${bmiResult.weightDifference} کیلوگرم`
+                              : bmiResult.differenceType === "deficit"
+                              ? `-${bmiResult.weightDifference} کیلوگرم`
+                              : "وزن ایده‌آل"}
+                          </div>
+                          <div className="text-xs text-gray-500 font-medium mt-1">
+                            {bmiResult.differenceType === "excess"
+                              ? "اضافه وزن نسبت به وزن هدف"
+                              : bmiResult.differenceType === "deficit"
+                              ? "کمبود وزن نسبت به هدف"
+                              : "در بهترین محدوده توده بدنی"}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* ۴. وزن ایده‌آل شخص */}
+                      <div className="p-4 rounded-2xl bg-white border border-gray-100 shadow-2xs flex flex-col justify-between">
+                        <div className="flex items-center justify-between text-gray-400 mb-2">
+                          <span className="text-xs font-bold text-gray-500">وزن ایده‌آل شما</span>
+                          <FiTarget className="size-5 text-emerald-600" />
+                        </div>
+                        <div>
+                          <div className="text-xl font-black text-[#12465a]">
+                            {bmiResult.idealWeightTarget.toLocaleString("fa-IR")}{" "}
+                            <span className="text-xs font-normal text-gray-400">کیلوگرم</span>
+                          </div>
+                          <div className="text-[11px] text-gray-400 font-medium mt-1">
+                            بازه مجاز: {bmiResult.idealWeightMin} تا {bmiResult.idealWeightMax} kg
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* بخش پارامترهای فیزیولوژیک و متابولیک بدن */}
+                  <div>
+                    <h4 className="text-sm font-black text-gray-800 mb-3 flex items-center gap-2">
+                      <FiZap className="size-4 text-amber-500" />
+                      <span>پارامترهای تکمیلی متابولیسم و ترکیب بدن:</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                      {/* متابولیسم پایه BMR */}
+                      <div className="p-4 rounded-2xl bg-gray-50/70 border border-gray-200/70 flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                          <FaFire className="size-5" />
+                        </div>
+                        <div>
+                          <div className="text-xs text-gray-500 font-bold">متابولیسم پایه (BMR)</div>
+                          <div className="text-base font-black text-gray-800 mt-0.5 font-mono">
+                            {bmiResult.bmr.toLocaleString("fa-IR")}{" "}
+                            <span className="text-xs font-normal text-gray-500">کالری/روز</span>
+                          </div>
+                          <div className="text-[11px] text-gray-400 mt-0.5">
+                            حداقل انرژی مصرفی بدن در استراحت
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* تخمین درصد چربی */}
+                      <div className="p-4 rounded-2xl bg-gray-50/70 border border-gray-200/70 flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+                          <FaHeartbeat className="size-5" />
+                        </div>
+                        <div>
+                          <div className="text-xs text-gray-500 font-bold">تخمین چربی بدن</div>
+                          <div className="text-base font-black text-gray-800 mt-0.5 font-mono">
+                            {bmiResult.bodyFatPercentage}٪
+                          </div>
+                          <div className="text-[11px] text-gray-400 mt-0.5">
+                            وضعیت: {bmiResult.bodyFatCategory}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* زمان تقریبی تا وزن هدف */}
+                      <div className="p-4 rounded-2xl bg-gray-50/70 border border-gray-200/70 flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0">
+                          <FiClock className="size-5" />
+                        </div>
+                        <div>
+                          <div className="text-xs text-gray-500 font-bold">مدت زمان تخمینی</div>
+                          <div className="text-base font-black text-gray-800 mt-0.5">
+                            حدود {bmiResult.estimatedWeeksToGoal} هفته
+                          </div>
+                          <div className="text-[11px] text-gray-400 mt-0.5">
+                            با کاهش اصولی هفتگی (بدون افت متابولیسم)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* تحلیل و توصیه تخصصی کارشناس */}
+                  <div className="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 text-emerald-950 flex flex-col gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center">
+                        <FaUserMd className="size-4" />
+                      </div>
+                      <h5 className="text-sm font-black text-emerald-900">
+                        توصیه تخصصی کارشناس تغذیه: {bmiResult.recommendationTitle}
+                      </h5>
+                    </div>
+                    <p className="text-xs text-emerald-800 leading-relaxed font-medium">
+                      {bmiResult.recommendationText}
+                    </p>
+
+                    <div className="pt-3 border-t border-emerald-200/60 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                      <div className="text-xs font-bold text-emerald-900">
+                        رژیم غذایی پیشنهادی برای وضعیت شما:{" "}
+                        <span className="text-[#12465a] underline decoration-emerald-500 underline-offset-4">
+                          {bmiResult.suggestedDietName}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDietType(bmiResult.suggestedDietType);
+                          addToast({
+                            title: "نوع رژیم تنظیم شد",
+                            description: `نوع رژیم روی «${bmiResult.suggestedDietName}» تنظیم گردید.`,
+                            color: "success",
+                          });
+                        }}
+                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors shrink-0 cursor-pointer"
+                      >
+                        انتخاب این نوع رژیم در فرم
+                      </button>
+                    </div>
+                  </div>
+                </ModalBody>
+
+                <ModalFooter>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100 text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    بستن پنجره
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      const el = document.getElementById("diet-plans-section");
+                      if (el) {
+                        el.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }
+                    }}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#12465a] hover:bg-[#0bb2c9] text-white text-xs font-black shadow-md transition-all active:scale-95 cursor-pointer"
+                  >
+                    <span>مشاهده پلن‌ها و ادامه ثبت رژیم</span>
+                    <FiChevronLeft className="size-4" />
+                  </button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
 }
