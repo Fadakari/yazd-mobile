@@ -34,8 +34,8 @@ async function getShippingServices() {
         'accept': 'application/json',
         'X-CSRFTOKEN': 'VzLJ2enpPgMw9rXJprJVvBuRlr7bX7tnjvl0RzYMhH02siiI7uLD9wYBPYouYqcS'
       },
-      // کش کردن پاسخ برای 5 دقیقه جهت افزایش پرفورمنس
-      next: { revalidate: 300 }
+      // کش کردن پاسخ برای 30 ثانیه جهت افزایش پرفورمنس
+      next: { revalidate: 30 }
     });
 
     if (!res.ok) {

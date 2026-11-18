@@ -476,7 +476,7 @@ export async function GetShippingServices() {
   try {
     const res = await fetch(`${API_URL}/shop/shipping-services/`, {
         ...getFetchOptions(),
-      next: { revalidate: 86400 } // آپدیت هر 24 ساعت
+      next: { revalidate: 30 } // آپدیت هر 30 ثانیه
     });
     if (!res.ok) return [];
     return await res.json();
@@ -495,7 +495,7 @@ export async function GetComments(product_id: number) {
             {
                 ...getFetchOptions(),
                 next: {
-                    revalidate: 300,
+                    revalidate: 30,
                     tags: [`comments-${product_id}`],
                 },
             }

@@ -35,7 +35,7 @@ const getSliderSections = cache(async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/sliders-index/`, {
       ...defaultFetchOptions,
-        next: { revalidate: 120 } // <--- این خط حتماً باید اضافه بشه (کش ۲ دقیقه‌ای)
+        next: { revalidate: 30 } // <--- کش ۳۰ ثانیه‌ای هماهنگ
     });
     if (!res.ok) return [];
     return res.json();

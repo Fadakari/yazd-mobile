@@ -45,7 +45,7 @@ export async function homeGalleryList() {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/gallery/`, {
             ...defaultFetchOptions,
-            next: { revalidate: 3600 }
+            next: { revalidate: 30 }
         });
         if (!res.ok) return null;
         return await res.json();
@@ -58,7 +58,7 @@ export async function homeSliderList() {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/sliders/`, {
             ...defaultFetchOptions,
-            next: { revalidate: 600 } // آپدیت هر 10 دقیقه
+            next: { revalidate: 30 } // آپدیت هر 30 ثانیه
         });
         if (!res.ok) return null;
         return await res.json();
@@ -72,7 +72,7 @@ export async function getTerms() {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/terms/`, {
             ...defaultFetchOptions,
-            next: { revalidate: 3600 }
+            next: { revalidate: 30 }
         });
         if (!res.ok) return null;
         return await res.json();

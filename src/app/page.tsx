@@ -10,7 +10,7 @@ import NewProductsSlider, { NewProductItem } from "@/components/NewProductsSlide
 import TrustBadgesBar from "@/components/TrustBadgesBar";
 import { GetShopCategoriesTreeList } from "@/services/shopActions"; // <--- ایمپورت جدید
 
-export const revalidate = 300;
+export const revalidate = 30;
 
 // --- اینترفیس‌های API ---
 interface ApiProduct {
@@ -51,7 +51,7 @@ async function getHomeData(): Promise<ApiSection[]> {
       `${process.env.NEXT_PUBLIC_API_URL}/home/sliders-index/`,
       {
         next: {
-          revalidate: 300,
+          revalidate: 30,
         },
       }
     );
@@ -71,7 +71,7 @@ async function getLatestArticles(): Promise<BlogPostItem[]> {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts/`, { 
         
         next: {
-          revalidate: 300
+          revalidate: 30
         }
     });
     
@@ -125,7 +125,7 @@ async function getActiveLogo(): Promise<string> {
   try {
     // آدرس API را مطابق ناوبار تنظیم کردم
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/active-logo/`, { 
-      next: { revalidate: 3600 } // کش برای ۱ ساعت
+      next: { revalidate: 30 } // کش برای ۳۰ ثانیه
     });
     
     if (!res.ok) return "/logo.png"; // عکس پیش‌فرض در صورت خطا
