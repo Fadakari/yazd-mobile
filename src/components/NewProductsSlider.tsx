@@ -17,20 +17,20 @@ export interface NewProductItem {
 
 export const SLIDER_THEMES = [
   {
-    // ۱. آبی رویال یاقوتی (Deep Royal Sapphire)
-    bg: "bg-gradient-to-l from-[#001438] via-[#002b80] to-[#001438]",
-    glow1: "bg-blue-500/25",
-    glow2: "bg-sky-400/20",
-    shadow: "shadow-[0_18px_50px_rgba(0,31,92,0.25)]",
-    cardHoverBorder: "hover:border-blue-400",
-    priceText: "text-blue-700 group-hover:text-blue-800",
-    buttonBg: "bg-blue-600 hover:bg-blue-700 text-white",
-    badgeBg: "bg-white/10 border-white/20 text-white",
-    highlightColor: "text-blue-300",
+    // ۱. فیروزه‌ای اصیل (Persian Turquoise)
+    bg: "bg-gradient-to-l from-[#0e7490] via-[#0891b2] to-[#06b6d4]",
+    glow1: "bg-cyan-400/30",
+    glow2: "bg-sky-300/25",
+    shadow: "shadow-[0_18px_50px_rgba(8,145,178,0.25)]",
+    cardHoverBorder: "hover:border-cyan-400",
+    priceText: "text-cyan-700 group-hover:text-cyan-800",
+    buttonBg: "bg-cyan-600 hover:bg-cyan-700 text-white",
+    badgeBg: "bg-white/20 border-white/30 text-white",
+    highlightColor: "text-cyan-100 font-black",
   },
   {
     // ۲. آبی روشن آسمانی و لاجوردی شفاف (Bright Sky Blue & Azure)
-    bg: "bg-gradient-to-l from-[#0369a1] via-[#0284c7] to-[#0ea5e9]",
+    bg: "bg-gradient-to-l from-[#0369a1] via-[#0284c7] to-[#38bdf8]",
     glow1: "bg-sky-300/35",
     glow2: "bg-cyan-300/25",
     shadow: "shadow-[0_18px_50px_rgba(2,132,199,0.3)]",
@@ -41,28 +41,28 @@ export const SLIDER_THEMES = [
     highlightColor: "text-sky-100 font-black",
   },
   {
-    // ۳. آبی نفتی و اقیانوسی عمیق (Oceanic Petrol Blue)
-    bg: "bg-gradient-to-l from-[#02182b] via-[#043353] to-[#02182b]",
-    glow1: "bg-cyan-500/25",
-    glow2: "bg-teal-400/20",
-    shadow: "shadow-[0_18px_50px_rgba(4,51,83,0.25)]",
-    cardHoverBorder: "hover:border-cyan-400",
-    priceText: "text-cyan-800 group-hover:text-cyan-900",
-    buttonBg: "bg-cyan-700 hover:bg-cyan-800 text-white",
-    badgeBg: "bg-white/10 border-white/20 text-cyan-100",
-    highlightColor: "text-cyan-300",
+    // ۳. سبزآبی فیروزه‌ای و تیفانی (Tiffany & Teal Turquoise)
+    bg: "bg-gradient-to-l from-[#0f766e] via-[#0d9488] to-[#14b8a6]",
+    glow1: "bg-teal-300/30",
+    glow2: "bg-cyan-300/25",
+    shadow: "shadow-[0_18px_50px_rgba(13,148,136,0.25)]",
+    cardHoverBorder: "hover:border-teal-400",
+    priceText: "text-teal-700 group-hover:text-teal-800",
+    buttonBg: "bg-teal-600 hover:bg-teal-700 text-white",
+    badgeBg: "bg-white/20 border-white/30 text-teal-100",
+    highlightColor: "text-teal-100 font-black",
   },
   {
-    // ۴. آبی کبالت درخشان و زنده (Electric Cobalt Horizon)
-    bg: "bg-gradient-to-l from-[#08183a] via-[#103478] to-[#08183a]",
-    glow1: "bg-sky-400/30",
-    glow2: "bg-blue-600/25",
-    shadow: "shadow-[0_18px_50px_rgba(16,52,120,0.25)]",
-    cardHoverBorder: "hover:border-sky-400",
-    priceText: "text-[#0052cc] group-hover:text-blue-800",
-    buttonBg: "bg-[#0052cc] hover:bg-blue-700 text-white",
-    badgeBg: "bg-white/10 border-white/20 text-sky-100",
-    highlightColor: "text-sky-300",
+    // ۴. آبی فیروزه‌ای براق و درخشان (Luminous Cyan Horizon)
+    bg: "bg-gradient-to-l from-[#0284c7] via-[#0891b2] to-[#06b6d4]",
+    glow1: "bg-sky-300/30",
+    glow2: "bg-cyan-400/25",
+    shadow: "shadow-[0_18px_50px_rgba(8,145,178,0.25)]",
+    cardHoverBorder: "hover:border-cyan-400",
+    priceText: "text-cyan-700 group-hover:text-cyan-800",
+    buttonBg: "bg-cyan-600 hover:bg-cyan-700 text-white",
+    badgeBg: "bg-white/20 border-white/30 text-white",
+    highlightColor: "text-cyan-100 font-black",
   },
 ];
 
@@ -136,10 +136,10 @@ export default function NewProductsSlider({
                 <span>مشاهده همه</span>
                 <span className="transition-transform duration-300 group-hover/all:-translate-x-1">←</span>
               </Link>
-              <button onClick={() => scroll("right")} aria-label="محصولات بعدی" className="w-10 h-10 rounded-xl bg-white/95 hover:bg-white text-slate-800 hover:text-blue-600 transition-all shadow-md active:scale-95 flex items-center justify-center cursor-pointer border border-white">
+              <button onClick={() => scroll("right")} aria-label="محصولات بعدی" className="w-10 h-10 rounded-xl bg-white/95 hover:bg-white text-slate-800 hover:text-cyan-600 transition-all shadow-md active:scale-95 flex items-center justify-center cursor-pointer border border-white">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" /></svg>
               </button>
-              <button onClick={() => scroll("left")} aria-label="محصولات قبلی" className="w-10 h-10 rounded-xl bg-white/95 hover:bg-white text-slate-800 hover:text-blue-600 transition-all shadow-md active:scale-95 flex items-center justify-center cursor-pointer border border-white">
+              <button onClick={() => scroll("left")} aria-label="محصولات قبلی" className="w-10 h-10 rounded-xl bg-white/95 hover:bg-white text-slate-800 hover:text-cyan-600 transition-all shadow-md active:scale-95 flex items-center justify-center cursor-pointer border border-white">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m15 18-6-6 6-6" /></svg>
               </button>
             </div>
@@ -187,7 +187,7 @@ export default function NewProductsSlider({
 
                 {/* پنل مشخصات و قیمت با کنتراست فوق‌العاده بالا و خوانایی کامل */}
                 <div className="flex flex-col flex-1 justify-between min-w-0 z-10 pt-2 border-t border-slate-100">
-                  <h3 className="text-slate-950 font-black text-xs sm:text-[13px] leading-snug line-clamp-2 mb-2 text-right group-hover:text-blue-700 transition-colors min-h-[36px] sm:min-h-[40px]">
+                  <h3 className="text-slate-950 font-black text-xs sm:text-[13px] leading-snug line-clamp-2 mb-2 text-right group-hover:text-cyan-700 transition-colors min-h-[36px] sm:min-h-[40px]">
                     <Link href={`/product/${product.slug}`}>{product.title}</Link>
                   </h3>
 

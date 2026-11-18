@@ -33,7 +33,7 @@ export default function LatestBlogSection({ posts }: { posts: BlogPostItem[] }) 
         {/* --- هدر بخش مقالات --- */}
         <div className="flex items-center justify-between mb-5 sm:mb-7 gap-3">
           <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-700 via-blue-600 to-cyan-500 text-white shadow-[0_8px_22px_rgba(29,78,216,0.35)]">
+            <span className="flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 via-sky-500 to-teal-400 text-white shadow-[0_8px_22px_rgba(8,145,178,0.35)]">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 sm:w-6 sm:h-6"><path d="M11.25 4.533A9.707 9.707 0 0 0 6 3a9.735 9.735 0 0 0-3.25.555.75.75 0 0 0-.5.707v14.25a.75.75 0 0 0 1 .707A8.237 8.237 0 0 1 6 18.75c1.995 0 3.823.707 5.25 1.886V4.533ZM12.75 20.636A8.214 8.214 0 0 1 18 18.75c1.026 0 1.995.187 2.875.526a.75.75 0 0 0 .875-.707V4.319a.75.75 0 0 0-.5-.707A9.735 9.735 0 0 0 18 3a9.707 9.707 0 0 0-5.25 1.533v16.103Z" /></svg>
             </span>
             <div>
@@ -49,7 +49,7 @@ export default function LatestBlogSection({ posts }: { posts: BlogPostItem[] }) 
           <div className="flex items-center gap-2 flex-shrink-0">
             <Link 
               href="/articles" 
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white text-xs sm:text-sm font-black transition-all shadow-xs group/link"
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-50 text-cyan-700 hover:bg-cyan-600 hover:text-white text-xs sm:text-sm font-black transition-all shadow-xs group/link"
             >
               <span>مشاهده همه مقالات</span>
               <span className="transition-transform duration-300 group-hover/link:-translate-x-1">←</span>
@@ -58,14 +58,14 @@ export default function LatestBlogSection({ posts }: { posts: BlogPostItem[] }) 
             <button 
               ref={(node) => setNextEl(node)} 
               aria-label="مقاله بعدی" 
-              className="w-10 h-10 rounded-xl border border-slate-300 bg-white text-slate-800 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm active:scale-95 flex items-center justify-center cursor-pointer"
+              className="w-10 h-10 rounded-xl border border-slate-300 bg-white text-slate-800 hover:bg-cyan-600 hover:text-white hover:border-cyan-600 transition-all shadow-sm active:scale-95 flex items-center justify-center cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m15 18-6-6 6-6" /></svg>
             </button>
             <button 
               ref={(node) => setPrevEl(node)} 
               aria-label="مقاله قبلی" 
-              className="w-10 h-10 rounded-xl border border-slate-300 bg-white text-slate-800 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm active:scale-95 flex items-center justify-center cursor-pointer"
+              className="w-10 h-10 rounded-xl border border-slate-300 bg-white text-slate-800 hover:bg-cyan-600 hover:text-white hover:border-cyan-600 transition-all shadow-sm active:scale-95 flex items-center justify-center cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" /></svg>
             </button>
@@ -89,12 +89,12 @@ export default function LatestBlogSection({ posts }: { posts: BlogPostItem[] }) 
         >
           {posts.map((post) => (
             <SwiperSlide key={post.id} className="h-auto">
-              <article className="group h-full bg-white rounded-3xl border-2 border-slate-200/90 hover:border-blue-600 overflow-hidden shadow-[0_6px_22px_rgba(15,23,42,0.06)] hover:shadow-[0_20px_45px_rgba(37,99,235,0.18)] transition-all duration-300 flex flex-col relative isolate hover:-translate-y-1 active:scale-[0.98]">
+              <article className="group h-full bg-white rounded-3xl border-2 border-slate-200/90 hover:border-cyan-600 overflow-hidden shadow-[0_6px_22px_rgba(15,23,42,0.06)] hover:shadow-[0_20px_45px_rgba(8,145,178,0.18)] transition-all duration-300 flex flex-col relative isolate hover:-translate-y-1 active:scale-[0.98]">
                 
                 {/* کاور تصویر ژورنالی */}
                 <div className="relative w-full h-52 sm:h-56 overflow-hidden bg-slate-100">
                   {/* بج دسته‌بندی شناور */}
-                  <div className="absolute top-3 right-3 z-20 bg-blue-600/95 backdrop-blur-md text-white font-black text-[11px] px-3 py-1 rounded-xl shadow-md">
+                  <div className="absolute top-3 right-3 z-20 bg-cyan-600/95 backdrop-blur-md text-white font-black text-[11px] px-3 py-1 rounded-xl shadow-md">
                     {post.category || "مقالات"}
                   </div>
 
@@ -128,7 +128,7 @@ export default function LatestBlogSection({ posts }: { posts: BlogPostItem[] }) 
                 <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between">
                   <div>
                     <Link href={`/article/${post.slug}`}>
-                      <h3 className="text-sm sm:text-base font-black text-slate-950 mb-2 leading-snug line-clamp-2 transition-colors group-hover:text-blue-600 min-h-[44px]">
+                      <h3 className="text-sm sm:text-base font-black text-slate-950 mb-2 leading-snug line-clamp-2 transition-colors group-hover:text-cyan-600 min-h-[44px]">
                         {post.title}
                       </h3>
                     </Link>
@@ -141,7 +141,7 @@ export default function LatestBlogSection({ posts }: { posts: BlogPostItem[] }) 
                   {/* پاورقی کارت با دکمه جذاب اقدام */}
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                     <div className="flex items-center gap-2 text-slate-600 text-xs font-bold">
-                      <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-black">
+                      <span className="w-6 h-6 rounded-full bg-cyan-100 text-cyan-700 flex items-center justify-center text-[10px] font-black">
                         {post.author ? post.author[0] : "✎"}
                       </span>
                       <span>{post.author || "تحریریه"}</span>
@@ -149,7 +149,7 @@ export default function LatestBlogSection({ posts }: { posts: BlogPostItem[] }) 
 
                     <Link 
                       href={`/article/${post.slug}`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 text-xs font-black group-hover:bg-blue-600 group-hover:text-white transition-all shadow-xs"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-50 text-cyan-700 text-xs font-black group-hover:bg-cyan-600 group-hover:text-white transition-all shadow-xs"
                     >
                       <span>خواندن مقاله</span>
                       <span className="transition-transform duration-300 group-hover:-translate-x-0.5">←</span>
@@ -163,7 +163,7 @@ export default function LatestBlogSection({ posts }: { posts: BlogPostItem[] }) 
 
         <Link 
           href="/articles" 
-          className="sm:hidden flex items-center justify-center gap-1.5 w-full mt-2 py-3 rounded-2xl bg-blue-50 border border-blue-200 text-xs font-black text-blue-700 active:bg-blue-600 active:text-white transition-all"
+          className="sm:hidden flex items-center justify-center gap-1.5 w-full mt-2 py-3 rounded-2xl bg-cyan-50 border border-cyan-200 text-xs font-black text-cyan-700 active:bg-cyan-600 active:text-white transition-all"
         >
           مشاهده همه مقالات <span>←</span>
         </Link>

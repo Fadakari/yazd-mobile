@@ -7,9 +7,9 @@ export default function TrustBadgesBar() {
       id: 1,
       title: "ارسال سریع و مطمئن",
       desc: "تحویل در سریع‌ترین زمان ممکن",
-      icon: <FaShippingFast className="w-6 h-6 text-blue-600" />,
-      bg: "bg-blue-50 border-blue-100",
-      iconBg: "bg-blue-100/80 text-blue-600",
+      icon: <FaShippingFast className="w-6 h-6 text-cyan-600" />,
+      bg: "bg-cyan-50 border-cyan-100",
+      iconBg: "bg-cyan-100/80 text-cyan-600",
     },
     {
       id: 2,
@@ -31,9 +31,9 @@ export default function TrustBadgesBar() {
       id: 4,
       title: "تضمین بهترین قیمت",
       desc: "خرید با مناسب‌ترین قیمت بازار",
-      icon: <FaRegCheckCircle className="w-6 h-6 text-indigo-600" />,
-      bg: "bg-indigo-50 border-indigo-100",
-      iconBg: "bg-indigo-100/80 text-indigo-600",
+      icon: <FaRegCheckCircle className="w-6 h-6 text-sky-600" />,
+      bg: "bg-sky-50 border-sky-100",
+      iconBg: "bg-sky-100/80 text-sky-600",
     },
   ];
 
@@ -43,13 +43,13 @@ export default function TrustBadgesBar() {
         {features.map((item) => (
           <div
             key={item.id}
-            className={`flex items-center gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl bg-white border-2 border-slate-200/90 shadow-[0_4px_16px_rgba(15,23,42,0.05)] hover:border-blue-500 hover:shadow-[0_8px_24px_rgba(37,99,235,0.12)] transition-all duration-300 group`}
+            className={`flex items-center gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl bg-white border-2 border-slate-200/90 shadow-[0_4px_16px_rgba(15,23,42,0.05)] hover:border-cyan-500 hover:shadow-[0_8px_24px_rgba(8,145,178,0.12)] transition-all duration-300 group`}
           >
             <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center shrink-0 ${item.iconBg} group-hover:scale-110 transition-transform duration-300`}>
               {item.icon}
             </div>
             <div className="min-w-0">
-              <h4 className="text-xs sm:text-sm font-black text-slate-900 truncate group-hover:text-blue-600 transition-colors">
+              <h4 className="text-xs sm:text-sm font-black text-slate-900 truncate group-hover:text-cyan-600 transition-colors">
                 {item.title}
               </h4>
               <p className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate mt-0.5">

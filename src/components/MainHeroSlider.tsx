@@ -111,7 +111,7 @@ export default function MainHeroSlider({ slides }: Props) {
       <button
         ref={(node) => setNextEl(node)}
         aria-label="اسلاید بعدی"
-        className="hidden sm:flex absolute top-1/2 left-4 z-20 w-10 h-10 md:w-11 md:h-11 bg-white/85 hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-600 text-slate-800 hover:text-white rounded-2xl items-center justify-center cursor-pointer transition-all duration-300 -translate-y-1/2 opacity-0 group-hover/hero:opacity-100 shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:scale-105 active:scale-95 border border-white/90"
+        className="hidden sm:flex absolute top-1/2 left-4 z-20 w-10 h-10 md:w-11 md:h-11 bg-white/85 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-sky-500 text-slate-800 hover:text-white rounded-2xl items-center justify-center cursor-pointer transition-all duration-300 -translate-y-1/2 opacity-0 group-hover/hero:opacity-100 shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:scale-105 active:scale-95 border border-white/90"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="m15 18-6-6 6-6" /></svg>
       </button>
@@ -119,7 +119,7 @@ export default function MainHeroSlider({ slides }: Props) {
       <button
         ref={(node) => setPrevEl(node)}
         aria-label="اسلاید قبلی"
-        className="hidden sm:flex absolute top-1/2 right-4 z-20 w-10 h-10 md:w-11 md:h-11 bg-white/85 hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-600 text-slate-800 hover:text-white rounded-2xl items-center justify-center cursor-pointer transition-all duration-300 -translate-y-1/2 opacity-0 group-hover/hero:opacity-100 shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:scale-105 active:scale-95 border border-white/90"
+        className="hidden sm:flex absolute top-1/2 right-4 z-20 w-10 h-10 md:w-11 md:h-11 bg-white/85 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-sky-500 text-slate-800 hover:text-white rounded-2xl items-center justify-center cursor-pointer transition-all duration-300 -translate-y-1/2 opacity-0 group-hover/hero:opacity-100 shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:scale-105 active:scale-95 border border-white/90"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" /></svg>
       </button>

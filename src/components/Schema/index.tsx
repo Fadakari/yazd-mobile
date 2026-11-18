@@ -11,7 +11,7 @@ export type BreadcrumbItem = { name: string; url?: string };
  * JSON-LD برای یک مقاله
  */
 
-export const articleSchema = (article: Article, siteTitle: string) => {
+export const articleSchema = (article: Article, siteTitle: string = "گروه تولیدی آخوندی") => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mpttools.co";
 
   const toISO = (dateStr?: string | null) => {
@@ -44,7 +44,7 @@ export const articleSchema = (article: Article, siteTitle: string) => {
 /**
  * JSON-LD برای یک محصول تکی
  */
-export const productSchema = (product: ProductType, siteTitle: string) => {
+export const productSchema = (product: ProductType, siteTitle: string = "گروه تولیدی آخوندی") => {
   return {
     "@context": "https://schema.org/",
     "@type": "Product",
@@ -54,7 +54,7 @@ export const productSchema = (product: ProductType, siteTitle: string) => {
       product.description_1 || product.description_2 || product.name
     ),
     sku: product.slug,
-    brand: `${siteTitle || "سایت ما"}`,
+    brand: `${siteTitle || "گروه تولیدی آخوندی"}`,
     offers: {
       "@type": "Offer",
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${product.slug}`,
@@ -70,13 +70,13 @@ export const productSchema = (product: ProductType, siteTitle: string) => {
 /**
  * JSON-LD برای لیست محصولات
  */
-export const productsSchema = (products: ProductType[], siteTitle: string) => {
+export const productsSchema = (products: ProductType[], siteTitle: string = "گروه تولیدی آخوندی") => {
   return products.map(p => productSchema(p, siteTitle));
 };
 /**
  * JSON-LD برای لیست مقالات
  */
-export const articlesSchema = (articles: Article[], siteTitle: string) => {
+export const articlesSchema = (articles: Article[], siteTitle: string = "گروه تولیدی آخوندی") => {
   return articles.map(p => articleSchema(p, siteTitle));
 };
 

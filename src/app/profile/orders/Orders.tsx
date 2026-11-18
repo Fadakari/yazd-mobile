@@ -209,7 +209,7 @@ export default function NiceOrdersTable({ items }: { items?: OrderItem[] }) {
                       <button
                         type="button"
                         onClick={() => goToGateways(item.order_id)}
-                        className="px-3 py-1 bg-blue-600 text-white rounded-full text-xs hover:bg-blue-700"
+                        className="px-3 py-1 bg-cyan-600 text-white rounded-full text-xs hover:bg-cyan-700"
                       >
                         پرداخت
                       </button>

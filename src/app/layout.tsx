@@ -99,7 +99,7 @@ export default async function RootLayout({
         className={`${iranyekan.variable} ${pelak.variable} ${noora.variable} ${dana.variable} ${iranyekan.className} w-full min-h-screen relative antialiased text-[#212529] flex flex-col overflow-x-hidden`}
       >
         <NextTopLoader
-          color="#0053c0"
+          color="#0891b2"
           initialPosition={0.08}
           crawlSpeed={200}
           height={3}
@@ -107,7 +107,7 @@ export default async function RootLayout({
           showSpinner={false}
           easing="ease"
           speed={200}
-          shadow="0 0 10px #0053c0,0 0 5px #0053c0"
+          shadow="0 0 10px #06b6d4,0 0 5px #0891b2"
           zIndex={1600}
         />
         <ConsoleLog />
@@ -115,7 +115,7 @@ export default async function RootLayout({
         <UserProvider initialUser={user}>
           <AuthModalProvider>
             <CartProvider>
-              <SiteProvider logo={logo} siteTitle={settings?.site_title}>
+              <SiteProvider logo={logo} settings={settings}>
                 {!user && <AuthModal />}
                 <CategoriesProvider categories={safeCategories}>
                   <LayoutWrapper

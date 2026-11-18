@@ -23,7 +23,7 @@ export default function BackToTopButton({ mode = "inline" }: { mode?: "inline" |
     return (
       <button
         onClick={scrollToTop}
-        className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-700 to-cyan-500 text-white shadow-[0_8px_25px_rgba(2,132,199,0.35)] hover:shadow-[0_12px_30px_rgba(2,132,199,0.5)] flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer border border-white/30"
+        className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 to-sky-400 text-white shadow-[0_8px_25px_rgba(8,145,178,0.35)] hover:shadow-[0_12px_30px_rgba(8,145,178,0.5)] flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer border border-white/30"
         aria-label="بازگشت به بالای صفحه"
         title="بازگشت به بالا"
       >
@@ -37,7 +37,7 @@ export default function BackToTopButton({ mode = "inline" }: { mode?: "inline" |
   return (
     <button
       onClick={scrollToTop}
-      className="inline-flex items-center gap-2.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-slate-50 hover:bg-blue-600 text-slate-800 hover:text-white text-xs sm:text-sm font-black transition-all duration-300 shadow-2xs hover:shadow-md cursor-pointer border border-slate-200/90 hover:border-blue-600 active:scale-95 group"
+      className="inline-flex items-center gap-2.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-slate-50 hover:bg-cyan-600 text-slate-800 hover:text-white text-xs sm:text-sm font-black transition-all duration-300 shadow-2xs hover:shadow-md cursor-pointer border border-slate-200/90 hover:border-cyan-600 active:scale-95 group"
       aria-label="بازگشت به بالای صفحه"
     >
       <span>بازگشت به بالا</span>

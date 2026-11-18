@@ -13,29 +13,31 @@ const defaultFetchOptions = {
 
 export async function homeAboutUsList() {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/about-us/`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.akhoondigroup.ir";
+        const res = await fetch(`${apiUrl}/home/about-us/`, {
             ...defaultFetchOptions,
-            next: { revalidate: 3600 }
+            next: { revalidate: 30, tags: ["about-us"] }
         });
         if (!res.ok) return [];
         const data = await res.json();
-        return data.results || [];
+        return Array.isArray(data) ? data : (data?.results || (data ? [data] : []));
     } catch (error) {
-        console.error(error);
+        console.error("homeAboutUsList error:", error);
         return [];
     }
 }
 export async function homeContactInfoList() {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home/contact-info/`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.akhoondigroup.ir";
+        const res = await fetch(`${apiUrl}/home/contact-info/`, {
             ...defaultFetchOptions,
-            next: { revalidate: 3600 }
+            next: { revalidate: 30, tags: ["contact-info"] }
         });
         if (!res.ok) return [];
         const data = await res.json();
-        return data.results || [];
+        return Array.isArray(data) ? data : (data?.results || (data ? [data] : []));
     } catch (error) {
-        console.error(error);
+        console.error("homeContactInfoList error:", error);
         return [];
     }
 }

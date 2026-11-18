@@ -98,7 +98,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
 
     const safeCategories = Array.isArray(categories) 
       ? categories 
-      : (categories?.data || categories?.results || []);
+      : ((categories as any)?.data || (categories as any)?.results || []);
 
     const safeLatestPosts = Array.isArray(latestPosts) 
       ? latestPosts 

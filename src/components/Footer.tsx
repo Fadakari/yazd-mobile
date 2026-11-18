@@ -3,6 +3,7 @@ import React from "react";
 import {
   FaPhoneAlt,
   FaWhatsapp,
+  FaTelegramPlane,
   FaInstagram,
   FaMapMarkerAlt,
   FaLink,
@@ -32,7 +33,151 @@ interface FooterSectionData {
   is_active: boolean;
 }
 
-// تابع دریافت دیتا از سرور
+// ۴ ستون پیش‌فرض و کامل برای فروشگاه گروه تولیدی آخوندی
+const DEFAULT_SECTIONS: FooterSectionData[] = [
+  {
+    id: 1,
+    title: "اطلاعات تماس کارخانه",
+    is_active: true,
+    items: [
+      {
+        id: 101,
+        label: "شماره مستقیم تماس و مشاوره",
+        value: "09123669839",
+        item_type: "phone",
+        is_active: true,
+      },
+      {
+        id: 102,
+        label: "تلفن کارخانه و دفتر",
+        value: "035-35254545",
+        item_type: "phone",
+        is_active: true,
+      },
+      {
+        id: 103,
+        label: "نشانی کارخانه و شو‌روم",
+        value: "میدان کشاورز، بلوار صابریزدی غربی، کوچه ۲۷، گروه تولیدی آخوندی",
+        item_type: "address",
+        is_active: true,
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "پیام‌رسان‌ها و ارتباط آنلاین",
+    is_active: true,
+    items: [
+      {
+        id: 201,
+        label: "پیام‌رسان ایتا",
+        value: "۰۹۱۳۸۵۹۱۸۳۸",
+        item_type: "url",
+        is_active: true,
+      },
+      {
+        id: 202,
+        label: "پشتیبانی در تلگرام",
+        value: "۰۹۱۳۸۵۹۱۸۳۸",
+        item_type: "url",
+        is_active: true,
+      },
+      {
+        id: 203,
+        label: "ارتباط در واتساپ",
+        value: "۰۹۱۳۸۵۹۱۸۳۸",
+        item_type: "url",
+        is_active: true,
+      },
+      {
+        id: 204,
+        label: "اینستاگرام رسمی",
+        value: "tolidiakhoondi@",
+        item_type: "url",
+        is_active: true,
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "دسترسی سریع",
+    is_active: true,
+    items: [
+      {
+        id: 301,
+        label: "صفحه اصلی فروشگاه",
+        value: "/",
+        item_type: "url",
+        is_active: true,
+      },
+      {
+        id: 302,
+        label: "کاتالوگ و لیست محصولات",
+        value: "/product",
+        item_type: "url",
+        is_active: true,
+      },
+      {
+        id: 303,
+        label: "درباره گروه تولیدی آخوندی",
+        value: "/about-us",
+        item_type: "url",
+        is_active: true,
+      },
+      {
+        id: 304,
+        label: "تماس و ارتباط با ما",
+        value: "/contact-info",
+        item_type: "url",
+        is_active: true,
+      },
+      {
+        id: 305,
+        label: "مقالات و وبلاگ آموزشی",
+        value: "/blog",
+        item_type: "url",
+        is_active: true,
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "خدمات و پشتیبانی",
+    is_active: true,
+    items: [
+      {
+        id: 401,
+        label: "مشاوره تخصصی خرید مبلمان اداری",
+        value: "09123669839",
+        item_type: "phone",
+        is_active: true,
+      },
+      {
+        id: 402,
+        label: "پیگیری وضعیت سفارش‌ها",
+        value: "/profile/orders",
+        item_type: "url",
+        is_active: true,
+      },
+      {
+        id: 403,
+        label: "ساعات کاری کارخانه",
+        value: "شنبه تا چهارشنبه ۸ الی ۱۸ | پنجشنبه ۸ الی ۱۴",
+        item_type: "text",
+        is_active: true,
+      },
+      {
+        id: 404,
+        label: "ضمانت کیفیت و خدمات پس از فروش",
+        value: "ضمانت ۱۰۰٪ اصالت و کیفیت",
+        item_type: "text",
+        is_active: true,
+      },
+    ],
+  },
+];
+
+// تابع دریافت دیتا از سرور با کش کوتاه ۳۰ ثانیه‌ای
 async function getFooterData(): Promise<FooterSectionData[]> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL}`;
 
@@ -42,7 +187,7 @@ async function getFooterData(): Promise<FooterSectionData[]> {
         "Content-Type": "application/json",
         "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY || "",
       },
-      next: { revalidate: 3600 },
+      next: { revalidate: 30, tags: ["footer"] },
     });
 
     if (!res.ok) {
@@ -57,67 +202,109 @@ async function getFooterData(): Promise<FooterSectionData[]> {
   }
 }
 
-const getItemStyle = (type: string, value: string) => {
-  if (type === "phone") {
+const getItemStyle = (type: string, value: string, label: string = "") => {
+  const val = (value || "").toLowerCase();
+  const lbl = (label || "").toLowerCase();
+
+  // پیام‌رسان ایتا (استفاده از آیکون برداری رسمی ایتا)
+  if (val.includes("eitaa") || lbl.includes("ایتا")) {
+    return {
+      icon: (
+        <img
+          src="/eitaa.svg"
+          alt="ایتا"
+          className="w-5 h-5 object-contain"
+        />
+      ),
+      badgeClass:
+        "bg-orange-50 border border-orange-200 text-orange-600 group-hover/item:bg-orange-500 group-hover/item:text-white",
+    };
+  }
+
+  // اینستاگرام
+  if (val.includes("instagram") || lbl.includes("اینستاگرام")) {
+    return {
+      icon: <FaInstagram className="text-base sm:text-lg" />,
+      badgeClass:
+        "bg-pink-50 text-pink-600 group-hover/item:bg-gradient-to-tr group-hover/item:from-amber-500 group-hover/item:via-rose-500 group-hover/item:to-purple-600 group-hover/item:text-white",
+    };
+  }
+
+  // واتساپ
+  if (val.includes("whatsapp") || lbl.includes("واتساپ")) {
+    return {
+      icon: <FaWhatsapp className="text-base sm:text-lg" />,
+      badgeClass:
+        "bg-emerald-50 text-emerald-600 group-hover/item:bg-emerald-600 group-hover/item:text-white",
+    };
+  }
+
+  // تلگرام
+  if (val.includes("telegram") || val.includes("تلگرام") || val.includes("t.me")) {
+    return {
+      icon: <FaTelegramPlane className="text-base sm:text-lg" />,
+      badgeClass:
+        "bg-sky-50 text-sky-600 group-hover/item:bg-sky-600 group-hover/item:text-white",
+    };
+  }
+
+  // تلفن و تماس
+  if (type === "phone" || lbl.includes("تماس") || lbl.includes("تلفن") || lbl.includes("موبایل")) {
     return {
       icon: <FaPhoneAlt className="text-sm sm:text-base" />,
       badgeClass:
-        "bg-blue-50 text-blue-600 group-hover/item:bg-blue-600 group-hover/item:text-white",
+        "bg-cyan-50 text-cyan-600 group-hover/item:bg-cyan-600 group-hover/item:text-white",
     };
   }
-  if (type === "address") {
+
+  // آدرس و موقعیت مکانی
+  if (type === "address" || lbl.includes("آدرس") || lbl.includes("نشانی")) {
     return {
       icon: <FaMapMarkerAlt className="text-base sm:text-lg" />,
       badgeClass:
         "bg-rose-50 text-rose-600 group-hover/item:bg-rose-600 group-hover/item:text-white",
     };
   }
-  if (type === "email") {
+
+  // ایمیل
+  if (type === "email" || lbl.includes("ایمیل")) {
     return {
       icon: <FaEnvelope className="text-sm sm:text-base" />,
       badgeClass:
         "bg-amber-50 text-amber-600 group-hover/item:bg-amber-600 group-hover/item:text-white",
     };
   }
-  if (type === "url") {
-    const val = (value || "").toLowerCase();
-    if (val.includes("instagram")) {
-      return {
-        icon: <FaInstagram className="text-base sm:text-lg" />,
-        badgeClass:
-          "bg-pink-50 text-pink-600 group-hover/item:bg-gradient-to-tr group-hover/item:from-amber-500 group-hover/item:via-rose-500 group-hover/item:to-purple-600 group-hover/item:text-white",
-      };
-    }
-    if (val.includes("whatsapp")) {
-      return {
-        icon: <FaWhatsapp className="text-base sm:text-lg" />,
-        badgeClass:
-          "bg-emerald-50 text-emerald-600 group-hover/item:bg-emerald-600 group-hover/item:text-white",
-      };
-    }
+
+  // لینک‌های داخلی و خارجی
+  if (val.startsWith("/") || val.startsWith("http")) {
     return {
       icon: <FaLink className="text-sm sm:text-base" />,
       badgeClass:
-        "bg-indigo-50 text-indigo-600 group-hover/item:bg-indigo-600 group-hover/item:text-white",
+        "bg-cyan-50 text-cyan-600 group-hover/item:bg-cyan-600 group-hover/item:text-white",
     };
   }
+
   return {
-    icon: <span className="w-2.5 h-2.5 rounded-full bg-current" />,
+    icon: <span className="w-2.5 h-2.5 rounded-full bg-cyan-500" />,
     badgeClass:
-      "bg-slate-100 text-slate-600 group-hover/item:bg-blue-600 group-hover/item:text-white",
+      "bg-slate-100 text-slate-600 group-hover/item:bg-cyan-600 group-hover/item:text-white",
   };
 };
 
 const getHref = (item: FooterItem) => {
   if (item.item_type === "phone") return `tel:${item.value}`;
   if (item.item_type === "email") return `mailto:${item.value}`;
-  if (item.item_type === "url") {
-    const isWhatsapp =
-      item.value?.toLowerCase().includes("whatsapp") ||
-      item.label?.toLowerCase().includes("whatsapp") ||
-      item.label?.includes("واتساپ");
-    if (isWhatsapp) return "https://wa.me/valiasrstore";
-    return item.value || "#";
+
+  const val = (item.value || "").toLowerCase();
+  const lbl = (item.label || "").toLowerCase();
+
+  if (val.includes("whatsapp") || lbl.includes("واتساپ")) return "https://wa.me/989138591838";
+  if (val.includes("telegram") || val.includes("t.me") || lbl.includes("تلگرام")) return "https://t.me/+989138591838";
+  if (val.includes("eitaa") || lbl.includes("ایتا")) return "https://eitaa.com/tolidiakhoondi";
+  if (val.includes("instagram") || lbl.includes("اینستاگرام")) return "https://www.instagram.com/tolidiakhoondi";
+
+  if (item.value && (item.value.startsWith("/") || item.value.startsWith("http"))) {
+    return item.value;
   }
   return "#";
 };
@@ -134,23 +321,27 @@ const FooterSection = ({
   return (
     <div className="flex flex-col">
       <h4 className="text-base sm:text-lg font-black text-slate-900 text-right flex items-center gap-2.5 mb-4 pb-2.5 border-b-2 border-slate-100">
-        <span className="w-1.5 h-4.5 rounded-full bg-gradient-to-b from-blue-600 to-indigo-600" />
+        <span className="w-1.5 h-4.5 rounded-full bg-gradient-to-b from-cyan-500 to-sky-600" />
         <span>{title}</span>
       </h4>
 
       <ul className="flex flex-col gap-2.5">
         {items.map((item) => {
           const href = getHref(item);
-          const isClickable = item.item_type !== "address";
-          const { icon, badgeClass } = getItemStyle(item.item_type, item.value);
+          const isClickable = item.item_type !== "address" && href !== "#";
+          const { icon, badgeClass } = getItemStyle(
+            item.item_type,
+            item.value,
+            item.label
+          );
 
           return (
             <li key={item.id} className="transition-all">
               {isClickable ? (
                 <Link
                   href={href}
-                  target={item.item_type === "url" ? "_blank" : undefined}
-                  rel={item.item_type === "url" ? "noopener noreferrer" : undefined}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                   className="flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100/90 transition-all group/item text-right"
                 >
                   <span
@@ -159,14 +350,16 @@ const FooterSection = ({
                     {icon}
                   </span>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-sm sm:text-[15px] font-bold text-slate-800 group-hover/item:text-blue-600 transition-colors truncate">
+                    <span className="text-sm sm:text-[15px] font-bold text-slate-800 group-hover/item:text-cyan-600 transition-colors truncate">
                       {item.label}
                     </span>
-                    {item.value && item.label !== item.value && (
-                      <span className="text-xs sm:text-sm font-semibold text-slate-500 dir-ltr text-right truncate mt-0.5">
-                        {item.value}
-                      </span>
-                    )}
+                    {item.value &&
+                      item.label !== item.value &&
+                      !item.value.startsWith("/") && (
+                        <span className="text-xs sm:text-sm font-semibold text-slate-500 dir-ltr text-right truncate mt-0.5">
+                          {item.value}
+                        </span>
+                      )}
                   </div>
                 </Link>
               ) : (
@@ -205,17 +398,42 @@ const getFullImageUrl = (path: string | null | undefined) => {
 
 // این کامپوننت به صورت Server Component اجرا می‌شود
 async function Footer() {
-  const footerSections = await getFooterData();
-  const settings = await GetSiteSettings();
-  const logo = await GetActiveLogo();
-  const siteTitle = settings?.site_title || "فروشگاه آنلاین";
+  const [backendSections, settings, logo] = await Promise.all([
+    getFooterData(),
+    GetSiteSettings(),
+    GetActiveLogo(),
+  ]);
+
+  // ترکیب هوشمند بخش‌های سرور با بخش‌های پیش‌فرض تا هر ۴ ستون همیشه پر، دقیق و متوازن باشند
+  let footerSections: FooterSectionData[] = [...DEFAULT_SECTIONS];
+  if (Array.isArray(backendSections) && backendSections.length > 0) {
+    const contactBackend = backendSections.find(
+      (s) => s.title.includes("تماس") || s.id === 1
+    );
+    if (contactBackend && contactBackend.items?.length > 0) {
+      footerSections[0] = {
+        ...footerSections[0],
+        title: contactBackend.title || footerSections[0].title,
+        items: contactBackend.items,
+      };
+    }
+    // اضافه کردن هرگونه ستون سفارشی دیگر از بک‌اند در صورت وجود
+    const extraSections = backendSections.filter(
+      (s) => !s.title.includes("تماس") && s.id !== 1
+    );
+    if (extraSections.length > 0) {
+      footerSections = [...footerSections, ...extraSections];
+    }
+  }
+
+  const siteTitle = settings?.site_title || "گروه تولیدی آخوندی";
   const mapUrl = settings?.map_url;
   const enamadLink = settings?.enamad_link;
   const enamadImage = settings?.enamad_image;
   const gatewayImage = settings?.payment_gateway_image;
   const siteDescription =
     settings?.site_description ||
-    "مرجع تخصصی خرید آنلاین، ضمانت کیفیت کالا، بهترین قیمت و ارسال مطمئن به سراسر کشور";
+    "گروه تولیدی آخوندی، تولیدکننده برتر مبلمان اداری، میز و صندلی‌های ارگونومیک با بالاترین استاندارد کیفی و ارسال سراسری به سراسر کشور";
 
   return (
     <footer
@@ -225,12 +443,12 @@ async function Footer() {
       <div className="container mx-auto px-4 sm:px-6">
         {/* ۱. نوار مزایا و ارزش‌های فروشگاه (اعتماد و تجربه خرید) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pb-8 sm:pb-10 border-b border-slate-100 mb-8 sm:mb-10">
-          <div className="flex items-center gap-3.5 p-3.5 sm:p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-blue-200/70 hover:bg-white transition-all group/feat shadow-2xs hover:shadow-xs">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white group-hover/feat:bg-blue-600 text-blue-600 group-hover/feat:text-white flex items-center justify-center text-lg sm:text-xl shadow-xs transition-all shrink-0">
+          <div className="flex items-center gap-3.5 p-3.5 sm:p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-cyan-200/70 hover:bg-white transition-all group/feat shadow-2xs hover:shadow-xs">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white group-hover/feat:bg-cyan-600 text-cyan-600 group-hover/feat:text-white flex items-center justify-center text-lg sm:text-xl shadow-xs transition-all shrink-0">
               <FaTruck />
             </div>
             <div className="min-w-0">
-              <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-blue-900 transition-colors">
+              <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-cyan-900 transition-colors">
                 ارسال سریع و مطمئن
               </h5>
               <p className="text-[11px] sm:text-xs text-slate-500 font-semibold mt-0.5 truncate">
@@ -253,12 +471,12 @@ async function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 sm:p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-indigo-200/70 hover:bg-white transition-all group/feat shadow-2xs hover:shadow-xs">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white group-hover/feat:bg-indigo-600 text-indigo-600 group-hover/feat:text-white flex items-center justify-center text-lg sm:text-xl shadow-xs transition-all shrink-0">
+          <div className="flex items-center gap-3.5 p-3.5 sm:p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-sky-200/70 hover:bg-white transition-all group/feat shadow-2xs hover:shadow-xs">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white group-hover/feat:bg-sky-600 text-sky-600 group-hover/feat:text-white flex items-center justify-center text-lg sm:text-xl shadow-xs transition-all shrink-0">
               <FaHeadset />
             </div>
             <div className="min-w-0">
-              <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-indigo-900 transition-colors">
+              <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-sky-900 transition-colors">
                 پشتیبانی و مشاوره
               </h5>
               <p className="text-[11px] sm:text-xs text-slate-500 font-semibold mt-0.5 truncate">
@@ -307,31 +525,25 @@ async function Footer() {
           </div>
         </div>
 
-        {/* ۳. ستون‌های محتوایی و لینک‌های فوتر */}
+        {/* ۳. ستون‌های محتوایی و لینک‌های فوتر (۴ ستون کامل و متوازن) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 xl:gap-10 mb-10">
-          {footerSections.length > 0 ? (
-            footerSections.map((section) => (
-              <FooterSection
-                key={section.id}
-                title={section.title}
-                items={section.items}
-              />
-            ))
-          ) : (
-            <div className="col-span-full text-center text-slate-400 py-6 font-semibold">
-              در حال بارگذاری اطلاعات ارتباطی...
-            </div>
-          )}
+          {footerSections.map((section) => (
+            <FooterSection
+              key={section.id}
+              title={section.title}
+              items={section.items}
+            />
+          ))}
         </div>
 
-        {/* ۴. بخش نمادهای اعتماد و مجوزهای رسمی (بزرگ، منظم و چشم‌گیر) */}
+        {/* ۴. بخش نمادهای اعتماد و مجوزهای رسمی */}
         {(enamadImage || gatewayImage || mapUrl) && (
           <div className="my-10 p-6 sm:p-8 rounded-3xl bg-slate-50/90 border border-slate-200/90 shadow-2xs">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8">
               {/* متن توضیحی و تضمین امنیت */}
               <div className="text-center lg:text-right max-w-xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/70 text-blue-800 text-xs font-black mb-2.5">
-                  <FaShieldAlt className="text-blue-600 text-sm" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-100/70 text-cyan-800 text-xs font-black mb-2.5">
+                  <FaShieldAlt className="text-cyan-600 text-sm" />
                   <span>تضمین امنیت و اصالت خرید</span>
                 </div>
                 <h4 className="text-lg sm:text-xl font-black text-slate-900">
@@ -350,7 +562,7 @@ async function Footer() {
                     target="_blank"
                     href={enamadLink}
                     title="مشاهده نماد اعتماد الکترونیکی"
-                    className="group/enamad p-4 bg-white rounded-2xl border-2 border-slate-200/90 hover:border-blue-500 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2.5 text-center hover:-translate-y-1 min-w-[125px] sm:min-w-[135px]"
+                    className="group/enamad p-4 bg-white rounded-2xl border-2 border-slate-200/90 hover:border-cyan-500 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center gap-2.5 text-center hover:-translate-y-1 min-w-[125px] sm:min-w-[135px]"
                   >
                     <img
                       referrerPolicy="origin"
@@ -358,7 +570,7 @@ async function Footer() {
                       alt="نماد اعتماد الکترونیکی"
                       className="h-20 sm:h-24 w-auto object-contain transition-transform group-hover/enamad:scale-105"
                     />
-                    <span className="text-xs font-black text-slate-800 group-hover/enamad:text-blue-600 transition-colors">
+                    <span className="text-xs font-black text-slate-800 group-hover/enamad:text-cyan-600 transition-colors">
                       اینماد الکترونیکی
                     </span>
                   </a>
@@ -409,7 +621,7 @@ async function Footer() {
           </p>
           <p className="text-xs text-slate-400 font-medium">
             طراحی و توسعه توسط گروه{" "}
-            <span className="font-bold text-blue-600">Pattern</span>
+            <span className="font-bold text-cyan-600">Pattern</span>
           </p>
         </div>
       </div>

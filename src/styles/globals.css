@@ -9,16 +9,17 @@
 @custom-variant dark (&:is(.dark *));
 @config "../../tailwind.config.js";
 @theme {
-  --color-primary: #001f5c;
-  --color-primary-100: #e6e9f2;
-  --color-primary-200: #b3bcd9;
-  --color-primary-300: #8090bf;
-  --color-primary-400: #4d63a6;
-  --color-primary-500: #1a378c;
-  --color-primary-600: #001f5c;
-  --color-primary-700: #001642;
-  --color-primary-800: #000c29;
-  --color-primary-900: #00040f;
+  --color-primary: #0891b2;
+  --color-primary-50: #ecfeff;
+  --color-primary-100: #cffafe;
+  --color-primary-200: #a5f3fc;
+  --color-primary-300: #67e8f9;
+  --color-primary-400: #22d3ee;
+  --color-primary-500: #06b6d4;
+  --color-primary-600: #0891b2;
+  --color-primary-700: #0e7490;
+  --color-primary-800: #155e75;
+  --color-primary-900: #164e63;
   --color-danger: #ef4056;
   --font-iranyekan: "iranyekan", sans-serif;
   --font-pelak: "pelak", sans-serif;
@@ -182,7 +183,7 @@ li::marker {
   }
 }
 .btn-primary {
-  @apply p-3 bg-blue-800  text-white   transition-colors ease-in-out;
+  @apply p-3 bg-primary text-white hover:bg-cyan-600 transition-colors ease-in-out;
 }
 html {
   font-size: 13px;
@@ -398,7 +399,7 @@ html {
   @apply border-l-4 border-slate-300 dark:border-slate-600 pl-4 italic my-4;
 }
 .article-content a {
-  @apply text-blue-600 dark:text-blue-400 underline;
+  @apply text-cyan-600 dark:text-cyan-400 underline;
 }
 .article-content pre {
   @apply bg-slate-100 dark:bg-slate-800 p-4 rounded-lg overflow-x-auto my-4;
