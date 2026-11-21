@@ -22,11 +22,8 @@ interface Props {
 export default function CategorySection({ categories }: Props) {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => setIsMounted(true), []);
-
-  if (!categories?.length || !isMounted) return null;
+  if (!categories?.length) return null;
 
   return (
     <section className="w-full py-6 sm:py-8" dir="rtl">
@@ -41,7 +38,7 @@ export default function CategorySection({ categories }: Props) {
             </span>
             <div>
               <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">دسته‌بندی‌های برگزیده</h2>
-              <p className="text-xs font-semibold text-slate-500 mt-0.5">انتخاب سریع از میان گروه‌های کالایی</p>
+              <p className="text-xs font-semibold text-slate-600 mt-0.5">انتخاب سریع از میان گروه‌های کالایی</p>
             </div>
           </div>
 
@@ -62,7 +59,7 @@ export default function CategorySection({ categories }: Props) {
               <Link key={cat.id} href={cat.link} className="group w-[88px] sm:w-[100px] flex-shrink-0 text-center">
                 <div className="relative w-[76px] h-[76px] sm:w-[88px] sm:h-[88px] mx-auto mb-2 rounded-2xl bg-white border-2 border-slate-200 shadow-sm group-active:scale-95 group-hover:border-cyan-600 transition-all duration-200 flex items-center justify-center overflow-hidden">
                   <div className="relative z-10 w-12 h-12 sm:w-14 sm:h-14">
-                    <Image src={cat.icon} alt={cat.name} fill className="object-contain p-1 transition-transform duration-300 group-hover:scale-110" sizes="64px" />
+                    <Image src={cat.icon} alt="" aria-hidden="true" fill className="object-contain p-1 transition-transform duration-300 group-hover:scale-110" sizes="64px" />
                   </div>
                 </div>
                 <span className="block text-xs font-black text-slate-800 group-hover:text-cyan-600 leading-snug line-clamp-2 transition-colors">{cat.name}</span>
@@ -94,7 +91,7 @@ export default function CategorySection({ categories }: Props) {
                 <Link href={cat.link} className="group flex flex-col items-center gap-2.5 w-28 text-center p-1">
                   <div className="relative w-24 h-24 rounded-3xl bg-white border-2 border-slate-200 shadow-[0_4px_12px_rgba(15,23,42,0.06)] group-hover:border-cyan-600 group-hover:shadow-[0_8px_24px_rgba(37,99,235,0.2)] flex items-center justify-center transition-all duration-300">
                     <div className="relative z-10 w-14 h-14 transition-transform duration-300 group-hover:scale-115">
-                      <Image src={cat.icon} alt={cat.name} fill className="object-contain p-1" sizes="64px" />
+                      <Image src={cat.icon} alt="" aria-hidden="true" fill className="object-contain p-1" sizes="64px" />
                     </div>
                   </div>
                   <span className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-cyan-600 transition-colors leading-tight line-clamp-2">{cat.name}</span>

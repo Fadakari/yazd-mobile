@@ -1,5 +1,6 @@
 export const revalidate = 30;
 
+import { permanentRedirect } from "next/navigation";
 import LayoutShell from "@/components/Products/LayoutShell";
 import { GetProducts, GetShopCategoriesTreeList, GetBrands } from "@/services/shopActions";
 import { breadcrumbSchema, productsSchema } from "@/components/Schema";
@@ -47,6 +48,12 @@ const getSliderSections = cache(async () => {
 
 export default async function ProductsPage({ searchParams }: any) {
   const search = await searchParams;
+  if (search?.category_id) {
+    const { category_id, ...rest } = search;
+    const remainingParams = new URLSearchParams(rest as any).toString();
+    const destination = `/category/${category_id}/${remainingParams ? `?${remainingParams}` : ""}`;
+    permanentRedirect(destination);
+  }
   const sectionId = search?.section_id ? parseInt(search.section_id) : null;
 
   let data: any;
@@ -149,6 +156,9 @@ export async function generateMetadata({
     const title = `${categoryTitle} | خرید انواع ${categoryTitle} با بهترین قیمت | ${siteTitle}`;
     const description = `خرید اینترنتی ${categoryTitle} از فروشگاه ${siteTitle} با بهترین قیمت و ارسال سریع. بررسی و فیلتر محصولات ${categoryTitle}.`;
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://akhoondigroup.ir";
+    const canonicalUrl = `${siteUrl}/category/${categoryId}`;
+
     return {
       title,
       description,
@@ -158,10 +168,13 @@ export async function generateMetadata({
         "خرید آنلاین",
         "قیمت مناسب",
       ],
+      alternates: {
+        canonical: canonicalUrl,
+      },
       openGraph: {
         title,
         description,
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/products?category_id=${categoryId}`,
+        url: canonicalUrl,
         siteName: `${siteTitle}`,
         locale: "fa_IR",
         type: "website",

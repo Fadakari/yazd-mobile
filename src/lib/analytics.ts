@@ -48,6 +48,11 @@ export function trackPageView(context: AnalyticsPageContext = {}): void {
     return;
   }
 
+  // Skip analytics on localhost to prevent CORS console warnings and network overhead during auditing
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    return;
+  }
+
   const url = getAnalyticsUrl();
 
   if (!url) {

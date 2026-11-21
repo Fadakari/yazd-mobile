@@ -132,7 +132,11 @@ export default function NewProductsSlider({
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <Link href={buildViewAllLink()} className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/15 hover:bg-white text-white hover:text-slate-900 border border-white/25 text-xs sm:text-sm font-black transition-all duration-300 group/all shadow-xs">
+              <Link 
+                href={buildViewAllLink()} 
+                aria-label={`مشاهده همه محصولات ${title}`}
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/15 hover:bg-white text-white hover:text-slate-900 border border-white/25 text-xs sm:text-sm font-black transition-all duration-300 group/all shadow-xs"
+              >
                 <span>مشاهده همه</span>
                 <span className="transition-transform duration-300 group-hover/all:-translate-x-1">←</span>
               </Link>
@@ -213,7 +217,7 @@ export default function NewProductsSlider({
                       <Link 
                         href={`/product/${product.slug}`} 
                         className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${currentTheme.buttonBg} flex items-center justify-center transition-all shadow-md active:scale-90`}
-                        aria-label="مشاهده"
+                        aria-label={`مشاهده محصول ${product.title || ""}`}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                       </Link>
@@ -224,7 +228,13 @@ export default function NewProductsSlider({
             ))}
           </div>
 
-          <Link href={buildViewAllLink()} className="sm:hidden flex items-center justify-center gap-1.5 w-full mt-2 py-3 rounded-2xl bg-white/15 border border-white/25 text-xs font-black text-white active:bg-white active:text-slate-900 transition-all">مشاهده همه محصولات <span>←</span></Link>
+          <Link 
+            href={buildViewAllLink()} 
+            aria-label={`مشاهده همه محصولات ${title}`}
+            className="sm:hidden flex items-center justify-center gap-1.5 w-full mt-2 py-3 rounded-2xl bg-white/15 border border-white/25 text-xs font-black text-white active:bg-white active:text-slate-900 transition-all"
+          >
+            مشاهده همه محصولات {title} <span>←</span>
+          </Link>
         </div>
       </div>
     </section>

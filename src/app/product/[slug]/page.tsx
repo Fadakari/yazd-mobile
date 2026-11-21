@@ -97,7 +97,7 @@ export async function generateMetadata({
       title,
       description,
       type: "website",
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${slug}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://akhoondigroup.ir"}/product/${slug}`,
       images: product.cover_image
         ? [
             {
@@ -116,7 +116,7 @@ export async function generateMetadata({
       images: product.cover_image ? [product.cover_image] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${slug}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://akhoondigroup.ir"}/product/${slug}`,
     },
     other: {
       "product_id": product.id.toString(),
@@ -148,7 +148,7 @@ export default async function Page({
 
   const categoryFind = findCategory(categories, data.category);
   const comments = await GetComments(data.id);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mpttools.co";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://akhoondigroup.ir";
 
   const breadcrumbs = [
     { name: "خانه", url: `${siteUrl}/` },
@@ -156,7 +156,7 @@ export default async function Page({
     categoryFind
       ? {
           name: categoryFind.name,
-          url: `${siteUrl}/products?category_id=${categoryFind.id}`,
+          url: `${siteUrl}/category/${categoryFind.id}`,
         }
       : { name: data.category },
     { name: data.name },
@@ -173,7 +173,7 @@ export default async function Page({
     const cleanPath = path.trim();
     if (!cleanPath) return "";
     if (cleanPath.startsWith("http")) return cleanPath;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.valiasrstore.com";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.akhoondigroup.ir";
     return `${baseUrl}${cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`}`;
   };
 
@@ -216,7 +216,7 @@ export default async function Page({
           { label: "محصولات", href: "/products" },
           {
             label: data.category,
-            href: `/products/?category_id=${categoryFind?.id}`,
+            href: `/category/${categoryFind?.id}`,
           },
           { label: data.name },
         ]}
@@ -236,7 +236,7 @@ export default async function Page({
                   <div>
                     <span>دسته :‌</span>{" "}
                     <Link
-                      href={`/products/?category_id=${categoryFind?.id}`}
+                      href={`/category/${categoryFind?.id}`}
                       className="text-cyan-400 spoiler-link relative"
                     >
                       {data.category}
@@ -256,7 +256,7 @@ export default async function Page({
                   <div>
                     <span>مشاهده انواع </span>{" "}
                     <Link
-                      href={`/products/?category_id=${categoryFind?.id}`}
+                      href={`/category/${categoryFind?.id}`}
                       className="text-cyan-400 spoiler-link relative"
                     >
                       {data.category}

@@ -1,11 +1,14 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import MainHeroSlider, { SliderItem } from "@/components/MainHeroSlider";
-import AmazingOfferSlider, { OfferProduct } from "@/components/AmazingOfferSlider";
+const AmazingOfferSlider = dynamic(() => import("@/components/AmazingOfferSlider"));
+import type { OfferProduct } from "@/components/AmazingOfferSlider";
 import CategorySection, { CategoryItem } from "@/components/CategorySection";
 import ShegeftAngizSlider, { ProductCardType } from "@/components/ShegeftAngizSlider";
-import LatestBlogSection, { BlogPostItem } from "@/components/LatestBlogSection";
+const LatestBlogSection = dynamic(() => import("@/components/LatestBlogSection"));
+import type { BlogPostItem } from "@/components/LatestBlogSection";
 import NewProductsSlider, { NewProductItem } from "@/components/NewProductsSlider";
 import TrustBadgesBar from "@/components/TrustBadgesBar";
 import { GetShopCategoriesTreeList } from "@/services/shopActions"; // <--- ایمپورت جدید
@@ -116,7 +119,7 @@ function flattenCategories(categories: any[], defaultIcon: string): CategoryItem
     name: cat.name,
     // اگر عکس نداشت، از defaultIcon (همان لوگوی سایت) استفاده کن
     icon: cat.image || cat.icon || defaultIcon, 
-    link: `/products?category_id=${cat.id}`,
+    link: `/category/${cat.id}`,
   }));
 }
 
@@ -243,6 +246,8 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
 
   return (
     <main className="w-full bg-[#f1f5f9] min-h-screen pb-14">
+      {/* سئو و ساختار تیترهای استاندارد دسترسی‌پذیری */}
+      <h1 className="sr-only">فروشگاه آنلاین گروه تولیدی آخوندی - خرید انواع مبلمان و صندلی اداری</h1>
 
       {/* 1. بنر هیرو و پیشنهادات کناری (با تطبیق خودکار ستون‌ها در صورت خالی بودن پیشنهادات) */}
       <section className="container mx-auto px-3 sm:px-4 pt-3 sm:pt-6 pb-2">
@@ -277,21 +282,15 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
       </section>
 
       {/* نوار مزایای فروشگاه */}
-      <div className="scroll-reveal">
-        <TrustBadgesBar />
-      </div>
+      <TrustBadgesBar />
 
       {/* ۲. پیشنهاد شگفت‌انگیز روز (در صورت موجود بودن) */}
       {shegeftAngizData.length > 0 && (
-        <div className="scroll-reveal">
-          <ShegeftAngizSlider products={shegeftAngizData} />
-        </div>
+        <ShegeftAngizSlider products={shegeftAngizData} />
       )}
 
       {/* ۳. دسته‌بندی‌های ثابت سایت */}
-      <div className="scroll-reveal">
-        <CategorySection categories={allCategories} />
-      </div>
+      <CategorySection categories={allCategories} />
 
       {/* ۴. اسلایدرها و بنرهای ایستا (یکی در میان با چیدمان گرید متقارن) */}
       <section className="container mx-auto px-3 sm:px-4 py-3 sm:py-5 space-y-6 sm:space-y-8">
@@ -397,7 +396,7 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
               }
 
               return (
-                <div key={`banner-group-${index}`} className={`grid ${gridColsClass} gap-3 sm:gap-4 md:gap-5 my-3 sm:my-5 scroll-reveal`}>
+                <div key={`banner-group-${index}`} className={`grid ${gridColsClass} gap-3 sm:gap-4 md:gap-5 my-3 sm:my-5`}>
                   {group.map((banner) => (
                     <Link 
                       key={`banner-${banner.id}`}
@@ -423,9 +422,7 @@ const [apiData, fetchedBlogPosts, categoriesTree, siteLogo] = await Promise.all(
       </section>
 
       {/* ۵. آخرین مقالات بلاگ */}
-      <div className="scroll-reveal">
-        <LatestBlogSection posts={blogPosts} />
-      </div>
+      <LatestBlogSection posts={blogPosts} />
     </main>
   );
 }

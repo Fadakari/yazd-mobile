@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 import {
   FaPhoneAlt,
@@ -213,6 +214,10 @@ const getItemStyle = (type: string, value: string, label: string = "") => {
         <img
           src="/eitaa.svg"
           alt="ایتا"
+          width={20}
+          height={20}
+          loading="lazy"
+          decoding="async"
           className="w-5 h-5 object-contain"
         />
       ),
@@ -320,10 +325,10 @@ const FooterSection = ({
 
   return (
     <div className="flex flex-col">
-      <h4 className="text-base sm:text-lg font-black text-slate-900 text-right flex items-center gap-2.5 mb-4 pb-2.5 border-b-2 border-slate-100">
+      <h3 className="text-base sm:text-lg font-black text-slate-900 text-right flex items-center gap-2.5 mb-4 pb-2.5 border-b-2 border-slate-100">
         <span className="w-1.5 h-4.5 rounded-full bg-gradient-to-b from-cyan-500 to-sky-600" />
         <span>{title}</span>
-      </h4>
+      </h3>
 
       <ul className="flex flex-col gap-2.5">
         {items.map((item) => {
@@ -448,9 +453,9 @@ async function Footer() {
               <FaTruck />
             </div>
             <div className="min-w-0">
-              <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-cyan-900 transition-colors">
+              <span className="block text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-cyan-900 transition-colors">
                 ارسال سریع و مطمئن
-              </h5>
+              </span>
               <p className="text-[11px] sm:text-xs text-slate-500 font-semibold mt-0.5 truncate">
                 تحویل اکسپرس به سراسر کشور
               </p>
@@ -462,9 +467,9 @@ async function Footer() {
               <FaAward />
             </div>
             <div className="min-w-0">
-              <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-emerald-900 transition-colors">
+              <span className="block text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-emerald-900 transition-colors">
                 ضمانت اصالت کالا
-              </h5>
+              </span>
               <p className="text-[11px] sm:text-xs text-slate-500 font-semibold mt-0.5 truncate">
                 تضمین کیفیت ۱۰۰٪ محصولات
               </p>
@@ -476,9 +481,9 @@ async function Footer() {
               <FaHeadset />
             </div>
             <div className="min-w-0">
-              <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-sky-900 transition-colors">
+              <span className="block text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-sky-900 transition-colors">
                 پشتیبانی و مشاوره
-              </h5>
+              </span>
               <p className="text-[11px] sm:text-xs text-slate-500 font-semibold mt-0.5 truncate">
                 پاسخگویی سریع و حرفه‌ای
               </p>
@@ -490,9 +495,9 @@ async function Footer() {
               <FaCreditCard />
             </div>
             <div className="min-w-0">
-              <h5 className="text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-amber-900 transition-colors">
+              <span className="block text-xs sm:text-sm font-black text-slate-800 group-hover/feat:text-amber-900 transition-colors">
                 پرداخت امن بانکی
-              </h5>
+              </span>
               <p className="text-[11px] sm:text-xs text-slate-500 font-semibold mt-0.5 truncate">
                 با درگاه‌های معتبر شاپرک
               </p>
@@ -504,16 +509,20 @@ async function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between pb-8 border-b border-slate-100 gap-6 mb-8 sm:mb-10">
           <div className="flex items-center gap-4 text-center md:text-right flex-wrap">
             <div className="relative w-25 h-18 sm:w-16 m-auto sm:h-16 rounded-2xl bg-slate-50 border border-slate-200/80 p-1 pt-2 flex items-center justify-center shadow-xs shrink-0">
-              <img
+              <Image
                 src={getFullImageUrl(logo)}
                 alt={siteTitle}
+                width={64}
+                height={64}
+                sizes="64px"
                 className="max-h-full max-w-full object-contain"
+                loading="lazy"
               />
             </div>
             <div className="m-auto">
-              <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                 {siteTitle}
-              </h3>
+              </h2>
               <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1 max-w-xl leading-relaxed">
                 {siteDescription}
               </p>
@@ -568,7 +577,10 @@ async function Footer() {
                       referrerPolicy="origin"
                       src={enamadImage}
                       alt="نماد اعتماد الکترونیکی"
+                      width={96}
+                      height={96}
                       className="h-20 sm:h-24 w-auto object-contain transition-transform group-hover/enamad:scale-105"
+                      loading="lazy"
                     />
                     <span className="text-xs font-black text-slate-800 group-hover/enamad:text-cyan-600 transition-colors">
                       اینماد الکترونیکی
@@ -581,7 +593,10 @@ async function Footer() {
                     <img
                       src={gatewayImage}
                       alt="درگاه پرداخت امن شاپرک"
+                      width={96}
+                      height={96}
                       className="h-20 sm:h-24 w-auto object-contain"
+                      loading="lazy"
                     />
                     <span className="text-xs font-black text-slate-800">
                       پرداخت امن بانکی
@@ -619,9 +634,9 @@ async function Footer() {
             تمامی حقوق این وب‌سایت متعلق به{" "}
             <span className="text-slate-900 font-black">{siteTitle}</span> است.
           </p>
-          <p className="text-xs text-slate-400 font-medium">
+          <p className="text-xs text-slate-600 font-medium">
             طراحی و توسعه توسط گروه{" "}
-            <span className="font-bold text-cyan-600">Pattern</span>
+            <span className="font-black text-cyan-800">Pattern</span>
           </p>
         </div>
       </div>

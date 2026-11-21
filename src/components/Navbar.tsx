@@ -61,7 +61,7 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
               categories.map((cat) => (
                 <li key={cat.id} className="group/item relative">
                   <Link
-                    href={`/products/?category_id=${cat.id}`}
+                    href={`/category/${cat.id}`}
                     className="flex items-center justify-between px-4 py-3 text-gray-700 text-sm font-medium hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-3">
@@ -79,7 +79,7 @@ const CategoriesButton = ({ categories }: { categories: CategoryNode[] }) => {
                         {cat.children.map((child) => (
                           <li key={child.id}>
                             <Link
-                              href={`/products/?category_id=${child.id}`}
+                              href={`/category/${child.id}`}
                               className="block px-3 py-2.5 text-sm text-gray-700 hover:text-cyan-600 hover:bg-white hover:border-l-2 hover:border-l-cyan-400 rounded-md transition-colors"
                             >
                               {child.name}
@@ -128,7 +128,7 @@ const SearchForm = () => {
                 ${isFocused ? "bg-white shadow-[0_4px_20px_rgba(255,87,34,0.15)] border border-[#0891b2]/30" : "bg-gray-100 border border-transparent hover:bg-gray-50"}
             `}
     >
-      <button type="submit" className="pl-3 pr-4 text-gray-400 hover:text-[#0891b2] transition-colors">
+      <button type="submit" aria-label="جستجو" className="pl-3 pr-4 text-gray-400 hover:text-[#0891b2] transition-colors">
         <FiSearch className="size-5" />
       </button>
       <input
@@ -142,7 +142,7 @@ const SearchForm = () => {
       />
       {/* دکمه سرچ مخفی در موبایل برای ظاهر بهتر */}
       <div className="hidden md:block pl-1.5">
-        <button type="submit" className="bg-[#0891b2] text-white rounded-full w-8 h-8 flex items-center justify-center hover:scale-105 transition-transform">
+        <button type="submit" aria-label="تایید جستجو" className="bg-[#0891b2] text-white rounded-full w-8 h-8 flex items-center justify-center hover:scale-105 transition-transform">
           <GoChevronLeft />
         </button>
       </div>
@@ -165,7 +165,7 @@ const MobileSearchModal = () => {
 
   return (
     <>
-      <button onClick={onOpen} className="p-2 text-gray-700 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
+      <button onClick={onOpen} aria-label="باز کردن جستجو" className="p-2 text-gray-700 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
         <FiSearch className="size-6" />
       </button>
       <Modal
@@ -189,7 +189,7 @@ const MobileSearchModal = () => {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
-                <button type="submit" className="absolute right-3 text-[#0891b2] p-2 bg-cyan-50 rounded-lg">
+                <button type="submit" aria-label="ارسال جستجو" className="absolute right-3 text-[#0891b2] p-2 bg-cyan-50 rounded-lg">
                   <FiSearch className="size-5" />
                 </button>
               </form>
@@ -234,7 +234,7 @@ export default function Navbar({
   if (path.startsWith("http")) return path;
 
   // ۳. ترکیب ایمن با دامین اصلی
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.valiasrstore.com";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.akhoondigroup.ir";
   
   // مطمئن شو که اگر در مسیر / وجود نداشت، اضافه شود تا URL نشکند
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
@@ -290,20 +290,27 @@ export default function Navbar({
               {/* Mobile: Hamburger & Logo Pill */}
               <div className={`${mobileBubbleClass} gap-1 rounded-2xl px-2 py-1.5`}>
                 <MobileDrawer onAuthOpen={onAuthOpen} user={user} links={topLinks} categories={categories} />
-                <Link href="/" className="relative w-24 h-9 flex items-center justify-center ml-1 active:scale-95 transition-transform duration-300">
-                  <Image src={finalLogoUrl} alt="Logo" fill className="object-contain" priority />
+                <Link href="/" aria-label="صفحه اصلی" className="relative flex items-center justify-center ml-1 active:scale-95 transition-transform duration-300">
+                  <Image 
+                    src={finalLogoUrl} 
+                    alt="لوگوی گروه تولیدی آخوندی" 
+                    width={110} 
+                    height={38} 
+                    className="h-8 w-auto object-contain" 
+                    priority 
+                  />
                 </Link>
               </div>
 
               {/* Desktop: Logo */}
-              <Link href="/" className="hidden lg:flex shrink-0 items-center min-w-[120px] h-[56px]">
+              <Link href="/" aria-label="صفحه اصلی" className="hidden lg:flex shrink-0 items-center min-w-[120px] h-[56px]">
                 <Image
                   src={finalLogoUrl}
-                  alt="Logo"
-                  width={200}
-                  height={80}
-                  className="h-auto w-auto max-h-14"
-                  priority
+                  alt="لوگوی گروه تولیدی آخوندی"
+                  width={150}
+                  height={52}
+                  className="h-auto w-auto max-h-12"
+                  loading="eager"
                 />
               </Link>
 
@@ -317,13 +324,13 @@ export default function Navbar({
                 {/* Cart & Login Bubble */}
                 <div className={`${mobileBubbleClass} gap-1 rounded-full px-1.5 py-1.5`}>
                   {!user?.identity && (
-                    <button onClick={onAuthOpen} className="p-1.5 text-gray-700 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
+                    <button onClick={onAuthOpen} aria-label="ورود به حساب کاربری" className="p-1.5 text-gray-700 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
                       <CiLogin className="size-6" />
                     </button>
                   )}
                   <div className="relative">
                     {/* نسخه ساده‌تر سبد خرید برای موبایل */}
-                    <Link href="/profile/cart" className="flex items-center justify-center w-9 h-9 rounded-full bg-white/60 text-gray-700 relative hover:bg-white/80 active:scale-90 active:bg-white/40 transition-all duration-300">
+                    <Link href="/profile/cart" aria-label="سبد خرید" className="flex items-center justify-center w-9 h-9 rounded-full bg-white/60 text-gray-700 relative hover:bg-white/80 active:scale-90 active:bg-white/40 transition-all duration-300">
                       <FiShoppingCart className="size-5" />
                       {cart && cart.total_items > 0 && (
                         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm border-2 border-white">
@@ -353,7 +360,7 @@ export default function Navbar({
                     {cart && cart.items && cart.items.length > 0 ? (
                       <CartDrawer cart={cart} />
                     ) : (
-                      <Link href="/profile/cart" className="w-11 h-11 flex items-center justify-center rounded-xl bg-cyan-50 text-[#0891b2] border border-cyan-100 hover:shadow-lg hover:shadow-cyan-100 hover:-translate-y-0.5 transition-all duration-300 relative">
+                      <Link href="/profile/cart" aria-label="سبد خرید" className="w-11 h-11 flex items-center justify-center rounded-xl bg-cyan-50 text-[#0891b2] border border-cyan-100 hover:shadow-lg hover:shadow-cyan-100 hover:-translate-y-0.5 transition-all duration-300 relative">
                         <FiShoppingCart className="size-5" />
                         {cart && cart.total_items > 0 && (
                           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-lg">
@@ -431,7 +438,7 @@ export default function Navbar({
               {/* اگر اسکرول شده باشد، لوگوی کوچک و سبد خرید نمایش داده شود */}
               <div className={`flex items-center gap-4 transition-all duration-300 ${isSticky ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-5 pointer-events-none"}`}>
                 <div className="h-6 w-[1px] bg-gray-300"></div>
-                <Link href="/profile/cart" className="flex items-center gap-2 text-gray-700 hover:text-[#0891b2] transition-colors relative">
+                <Link href="/profile/cart" aria-label="سبد خرید" className="flex items-center gap-2 text-gray-700 hover:text-[#0891b2] transition-colors relative">
                   <span className="text-sm font-bold">سبد خرید</span>
                   <div className="relative">
                     <FiShoppingCart className="size-5" />
@@ -512,7 +519,7 @@ function MobileCategoryList({
               </button>
             ) : (
               <Link
-                href={`/products/?category_id=${cat.id}`}
+                href={`/category/${cat.id}`}
                 onClick={onClose}
                 className="flex items-center justify-between w-full px-4 py-3 text-gray-600 hover:text-[#0891b2] hover:bg-cyan-50 rounded-xl text-sm transition-all"
               >
@@ -553,7 +560,7 @@ export function MobileDrawer({ categories, links, user, onAuthOpen }: { categori
 
   return (
     <>
-      <button onClick={onOpen} className="lg:hidden p-2 -mr-2 text-gray-800 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
+      <button onClick={onOpen} aria-label="منوی دسترسی" className="lg:hidden p-2 -mr-2 text-gray-800 hover:bg-white/40 active:scale-90 active:bg-white/30 rounded-full transition-all duration-300">
         <HiOutlineMenuAlt3 className="size-7" />
       </button>
 
@@ -572,7 +579,7 @@ export function MobileDrawer({ categories, links, user, onAuthOpen }: { categori
             <>
               <DrawerHeader className="border-b border-gray-100 bg-white py-5 px-5 flex items-center justify-between sticky top-0 z-10">
                 <span className="text-lg font-black text-gray-800 tracking-tight">{title}</span>
-                <button onClick={onClose} className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors">
+                <button onClick={onClose} aria-label="بستن منو" className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors">
                   <HiXMark className="size-5" />
                 </button>
               </DrawerHeader>

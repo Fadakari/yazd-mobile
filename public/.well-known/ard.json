@@ -1,0 +1,55 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ards-project/ard-spec/main/spec/schemas/ard-entry.schema.json",
+  "name": "گروه تولیدی آخوندی",
+  "description": "فروشگاه و تولیدی تخصصی مبلمان اداری و صندلی در ایران",
+  "url": "https://akhoondigroup.ir",
+  "version": "1.0.0",
+  "entries": [
+    {
+      "identifier": "urn:air:akhoondigroup.ir:products",
+      "displayName": "محصولات و مبلمان اداری آخوندی",
+      "type": "text/html",
+      "url": "https://akhoondigroup.ir/products/",
+      "representativeQueries": [
+        "خرید صندلی اداری",
+        "مبلمان اداری",
+        "صندلی مدیریت",
+        "صندلی کارمندی",
+        "میز اداری"
+      ]
+    },
+    {
+      "identifier": "urn:air:akhoondigroup.ir:about",
+      "displayName": "درباره گروه تولیدی آخوندی",
+      "type": "text/html",
+      "url": "https://akhoondigroup.ir/about-us/",
+      "representativeQueries": [
+        "درباره گروه آخوندی",
+        "کارخانه تولید مبلمان اداری",
+        "تاریخچه تولیدی آخوندی"
+      ]
+    },
+    {
+      "identifier": "urn:air:akhoondigroup.ir:contact",
+      "displayName": "اطلاعات تماس و آدرس آخوندی",
+      "type": "text/html",
+      "url": "https://akhoondigroup.ir/contact-info/",
+      "representativeQueries": [
+        "تماس با تولیدی آخوندی",
+        "آدرس کارخانه آخوندی",
+        "شماره تلفن فروش صندلی اداری"
+      ]
+    },
+    {
+      "identifier": "urn:air:akhoondigroup.ir:articles",
+      "displayName": "مقالات و راهنمای خرید",
+      "type": "text/html",
+      "url": "https://akhoondigroup.ir/articles/",
+      "representativeQueries": [
+        "راهنمای خرید صندلی اداری",
+        "ارگونومی صندلی",
+        "وبلاگ مبلمان اداری"
+      ]
+    }
+  ]
+}

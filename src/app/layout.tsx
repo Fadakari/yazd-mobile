@@ -5,14 +5,15 @@ import Providers from "./providers";
 import { UserProvider } from "@/context/UserContext";
 import { GetUserDashboard } from "@/services/authActions";
 import { AuthModalProvider } from "@/context/AuthModalProvider";
-import AuthModal from "@/components/AuthModal";
+import dynamic from "next/dynamic";
+const AuthModal = dynamic(() => import("@/components/AuthModal"));
 import { CategoriesProvider } from "@/context/CategoriesContext";
 import { CartProvider } from "@/context/CartContextProvider";
 import { dana, iranyekan, noora, pelak } from "@/utils/fonts";
 import LayoutWrapper from "./LayoutWrapper";
 import ConsoleLog from "@/components/ConsoleLog";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+const Footer = dynamic(() => import("@/components/Footer"));
 import NextTopLoader from "nextjs-toploader";
 import { GetActiveLogo, GetSiteSettings } from "@/services/siteActions";
 import { SiteProvider } from "@/context/SiteContext";
@@ -32,22 +33,27 @@ export async function generateMetadata(): Promise<Metadata> {
   ];
   const faviconUrl = settings?.favicon;
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://akhoondigroup.ir";
+
   return {
-    metadataBase: new URL("https://valiasrstore.com"),
+    metadataBase: new URL(siteUrl),
     title: {
       default: `${siteTitle} | فروشگاه آنلاین با تضمین کیفیت`,
       template: `%s | ${siteTitle}`,
     },
     description: siteDescription,
     keywords: siteKeywords,
+    alternates: {
+      canonical: siteUrl,
+    },
     openGraph: {
       title: siteTitle,
       description: `خرید آنلاین با تضمین کیفیت و ارسال سریع از ${siteTitle}`,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
+      url: siteUrl,
       siteName: siteTitle,
       images: [
         {
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`,
+          url: `${siteUrl}/opengraph-image.jpg`,
           width: 1200,
           height: 630,
           alt: siteTitle,
@@ -60,14 +66,19 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title: siteTitle,
       description: `خرید آنلاین با تضمین کیفیت و ارسال سریع از ${siteTitle}`,
-      images: [`${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`],
+      images: [`${siteUrl}/opengraph-image.jpg`],
     },
-    icons: faviconUrl
-      ? {
-          icon: [{ url: faviconUrl }],
-          apple: [{ url: faviconUrl }],
-        }
-      : {},
+    icons: {
+      icon: faviconUrl
+        ? [{ url: faviconUrl }, { url: "/favicon.ico" }]
+        : [{ url: "/favicon.ico" }],
+      apple: faviconUrl
+        ? [{ url: faviconUrl }, { url: "/favicon.ico" }]
+        : [{ url: "/favicon.ico" }],
+    },
+    other: {
+      ard: "/.well-known/ard.json",
+    },
   };
 }
 
@@ -94,6 +105,10 @@ export default async function RootLayout({
 
   return (
     <html lang="fa-IR" dir="rtl" className="scroll-smooth bg-[#f9f9f9]">
+      <head>
+        <link rel="preconnect" href="https://api.akhoondigroup.ir" />
+        <link rel="dns-prefetch" href="https://api.akhoondigroup.ir" />
+      </head>
       <body
         suppressHydrationWarning={true}
         className={`${iranyekan.variable} ${pelak.variable} ${noora.variable} ${dana.variable} ${iranyekan.className} w-full min-h-screen relative antialiased text-[#212529] flex flex-col overflow-x-hidden`}
@@ -110,7 +125,6 @@ export default async function RootLayout({
           shadow="0 0 10px #06b6d4,0 0 5px #0891b2"
           zIndex={1600}
         />
-        <ConsoleLog />
         <AnalyticsTracker />
         <UserProvider initialUser={user}>
           <AuthModalProvider>

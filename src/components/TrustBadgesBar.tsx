@@ -49,9 +49,9 @@ export default function TrustBadgesBar() {
               {item.icon}
             </div>
             <div className="min-w-0">
-              <h4 className="text-xs sm:text-sm font-black text-slate-900 truncate group-hover:text-cyan-600 transition-colors">
+              <span className="block text-xs sm:text-sm font-black text-slate-900 truncate group-hover:text-cyan-600 transition-colors">
                 {item.title}
-              </h4>
+              </span>
               <p className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate mt-0.5">
                 {item.desc}
               </p>

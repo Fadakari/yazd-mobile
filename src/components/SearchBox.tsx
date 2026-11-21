@@ -216,7 +216,7 @@ function SearchResults({
                   >
                     <Link
                       onClick={handleResultClick}
-                      href={`/products?category_id=${cat.id}`}
+                      href={`/category/${cat.id}`}
                       className="size-full flex items-center justify-between hover:bg-zinc-100 p-3"
                     >
                       <p className="flex items-center gap-1">

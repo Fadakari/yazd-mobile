@@ -59,7 +59,7 @@ export async function generateMetadata({
         modifiedTime: data.updated_at,
         images: [
           {
-            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://valiasrstore.com'}/logo.png`,
+            url: data.thumbnail || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://akhoondigroup.ir'}/logo.png`,
             alt: data.title || "مقاله",
             width: 1200,
             height: 630,
@@ -108,7 +108,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
       (post: Article) => post.slug !== data.slug
     );
 
-    const siteUrl = process.env.NEXT_PUBLIC_BACK_END || "https://valiasrstore.com";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://akhoondigroup.ir";
 
     const breadcrumbs = [
       { name: "خانه", url: `${siteUrl}/` },
@@ -116,7 +116,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
       data.category
         ? {
             name: data.category.title,
-            url: `${siteUrl}/products?category_id=${data.category.id}`,
+            url: `${siteUrl}/category/${data.category.id}`,
           }
         : { name: "مقالات" },
       { name: data.title, url: `${siteUrl}/article/${data.slug}` },

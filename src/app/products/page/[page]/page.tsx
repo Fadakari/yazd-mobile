@@ -1,5 +1,6 @@
 export const revalidate = 30;
 
+import { permanentRedirect } from "next/navigation";
 import LayoutShell from "@/components/Products/LayoutShell";
 import { breadcrumbSchema, productsSchema } from "@/components/Schema";
 import { GetProducts, GetShopCategoriesTreeList } from "@/services/shopActions";
@@ -28,6 +29,13 @@ export default async function ProductsPage(props: {
 
   const { page } = params;
   const search = searchParams;
+  
+  if (search?.category_id) {
+    const { category_id, ...rest } = search as any;
+    const remainingParams = new URLSearchParams(rest).toString();
+    const destination = `/category/${category_id}/page/${page}/${remainingParams ? `?${remainingParams}` : ""}`;
+    permanentRedirect(destination);
+  }
   
   // اینجا قبلاً از params.page استفاده شده بود که ارور می‌داد. الان از page استفاده می‌کنیم
   const currentPage = Number(page) || 1; 
@@ -79,7 +87,7 @@ export async function generateMetadata(props: {
 
   if (categoryId) {
     const categoryRes = await GetShopCategoriesTreeList();
-    const categories = categoryRes?.data || [];
+    const categories: CategoryNode[] = Array.isArray(categoryRes) ? categoryRes : (categoryRes?.data || []);
     // تبدیل categoryId به عدد با + چون از URL به صورت string می‌آید
     const category = categories.find(
       (cat: CategoryNode) => cat.id === Number(categoryId)

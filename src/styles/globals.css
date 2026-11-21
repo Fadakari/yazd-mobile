@@ -466,19 +466,9 @@ html {
   background: #0284c7;
 }
 
-/* --- افکت ظهور نرم سکشن‌ها در اسکرول --- */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* --- رفع تاخیر رندر، جلوگیری از پرش و ارور NO_LCP در لایت‌هاوس --- */
 .scroll-reveal {
-  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  opacity: 1;
+  transform: none;
 }
 

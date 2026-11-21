@@ -31,6 +31,8 @@ const FixedSocialLinks = () => {
         <img
           src="/eitaa.svg"
           alt="ایتا"
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-contain"
         />
         <span className="absolute left-15 md:left-17 whitespace-nowrap bg-orange-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl opacity-0 pointer-events-none md:group-hover:opacity-100 md:group-hover:pointer-events-auto md:group-hover:translate-x-1 transition-all duration-300 shadow-xl">

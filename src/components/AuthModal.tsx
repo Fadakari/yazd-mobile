@@ -31,6 +31,12 @@ import { useAuthModal } from "@/context/AuthModalProvider";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function AuthModal() {
+  const { isOpen } = useAuthModal();
+  if (!isOpen) return null;
+  return <AuthModalInner />;
+}
+
+function AuthModalInner() {
   const { isOpen, onOpenChange, onClose } = useAuthModal();
   const [step, setStep] = useState<"PHONE" | "OTP" | "PASSWORD">("PHONE");
   const [phoneNumber, setPhoneNumber] = useState("");

@@ -112,6 +112,7 @@ export default function ShegeftAngizSlider({ products, heroImageSrc = "/assets/s
             {/* لینک مشاهده همه محصولات شگفت‌انگیز */}
             <Link 
               href="/products/offers" 
+              aria-label="مشاهده همه محصولات پیشنهاد شگفت‌انگیز"
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white text-[#0083b7] hover:bg-slate-100 text-xs sm:text-sm font-black transition-all duration-300 shadow-md active:scale-95 group/link mt-1"
             >
               <span>مشاهده همه</span>

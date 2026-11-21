@@ -1,15 +1,16 @@
 import type { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://akhoondigroup.ir';
     return {
         rules: [
             {
                 userAgent: '*',
                 allow: '/',
-                disallow: ['/profile', '/payment', '/marketer'],
+                disallow: ['/profile', '/payment', '/marketer', '/api'],
             },
         ],
-        sitemap: `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`,
-        host: process.env.NEXT_PUBLIC_SITE_URL,
+        sitemap: `${siteUrl}/sitemap.xml`,
+        host: siteUrl,
     }
 }

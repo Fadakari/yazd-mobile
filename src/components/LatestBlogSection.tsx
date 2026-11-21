@@ -40,7 +40,7 @@ export default function LatestBlogSection({ posts }: { posts: BlogPostItem[] }) 
               <h2 className="text-base sm:text-xl md:text-2xl font-black text-slate-900 tracking-tight">
                 مجله تخصصی و مقالات روز
               </h2>
-              <p className="text-xs font-semibold text-slate-500 mt-0.5">
+              <p className="text-xs font-semibold text-slate-600 mt-0.5">
                 راهنمای خرید هوشمند، بررسی‌های کاربردی و دانستنی‌ها
               </p>
             </div>

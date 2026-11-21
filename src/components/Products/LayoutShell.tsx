@@ -64,7 +64,7 @@ export default function LayoutShell({
           href:
             index === categoryPath.length - 1
               ? undefined
-              : `/products?category_id=${cat.id}`,
+              : `/category/${cat.id}`,
         }))
       : []),
   ];
