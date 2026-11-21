@@ -10,7 +10,9 @@ export type CartFormat = {
   total_price: number;
   total_delivery: number;
   final_price: number;
-  items: any[];
+  original_total_price?: number;
+  total_discount?: number;
+  items: CartItem[];
 };
 
 type CartContextType = {

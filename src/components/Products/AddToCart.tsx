@@ -92,10 +92,16 @@ function AddToCart({
     }
 
     try {
+      const isDiscounted = Boolean(
+        product.isDiscounted ||
+        (typeof product.discount_price === "number" && product.discount_price > 0 && product.discount_price < product.price) ||
+        (typeof product.final_price === "number" && product.final_price > 0 && product.final_price < product.price)
+      );
+
       const payload: any = {
         product_id: product.id,
         quantity: quantity,
-        isDiscounted: product.isDiscounted,
+        isDiscounted: isDiscounted,
         color: selectedColor
           ? { id: selectedColor.id, name: selectedColor.color_name }
           : null,

@@ -124,8 +124,8 @@ const CreateOrder = () => {
 
     setIsSubmitting(true);
 
-    const discountedItems = cart.items.filter((item) => item.final_price);
-    const normalItems = cart.items.filter((item) => !item.final_price);
+    const discountedItems = cart.items.filter((item) => item.is_discounted || (item.final_price && item.final_price < item.unit_price));
+    const normalItems = cart.items.filter((item) => !item.is_discounted && (!item.final_price || item.final_price >= item.unit_price));
 
     const basePayload = {
       discount_code: formData.discount_code || "",
@@ -147,9 +147,16 @@ const CreateOrder = () => {
         createNormalOrder({ ...basePayload, cart_items: normalItems })
       );
 
-    const responses = await Promise.all(requests);
+    let responses = await Promise.all(requests);
 
-    const allSuccessful = responses.every((res) => res && res.success);
+    let allSuccessful = responses.length > 0 && responses.every((res) => res && res.success);
+    if (!allSuccessful && requests.length > 0) {
+      const fallbackNormal = await createNormalOrder({ ...basePayload, cart_items: cart.items });
+      if (fallbackNormal && fallbackNormal.success) {
+        responses = [fallbackNormal];
+        allSuccessful = true;
+      }
+    }
     if (allSuccessful) {
       const orderId = responses[0]?.data?.id;
       setRedirectingToGateway(true);
@@ -302,12 +309,20 @@ const CreateOrder = () => {
                 قیمت کالاها ({cart.total_items.toLocaleString("fa-IR")} کالا)
               </p>
               <p className="font-semibold">
-                {cart.total_price.toLocaleString("fa-IR")} تومان
+                {(cart.original_total_price || cart.total_price).toLocaleString("fa-IR")} تومان
               </p>
             </div>
+            {cart.total_discount && cart.total_discount > 0 ? (
+              <div className="flex justify-between text-green-700">
+                <p>تخفیف کالاها</p>
+                <p className="font-semibold">
+                  -{cart.total_discount.toLocaleString("fa-IR")} تومان
+                </p>
+              </div>
+            ) : null}
             {discountAmount > 0 && (
               <div className="flex justify-between text-green-700">
-                <p>تخفیف</p>
+                <p>کد تخفیف</p>
                 <p className="font-semibold">
                   -{discountAmount.toLocaleString("fa-IR")} تومان
                 </p>
@@ -326,7 +341,13 @@ const CreateOrder = () => {
             <hr className="my-3" />
             <div className="flex justify-between text-lg font-semibold">
               <p>مبلغ قابل پرداخت</p>
-              <p>{cart.final_price.toLocaleString("fa-IR")} تومان</p>
+              <p>
+                {Math.max(
+                  0,
+                  (cart.final_price || cart.total_price) - discountAmount
+                ).toLocaleString("fa-IR")}{" "}
+                تومان
+              </p>
             </div>
           </div>
 

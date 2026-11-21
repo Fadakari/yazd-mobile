@@ -211,67 +211,153 @@ export async function GetShopCartList(): Promise<{
     total_items: number;
     total_quantity: number;
     total_price: number;
+    total_delivery: number;
+    final_price: number;
+    original_total_price?: number;
+    total_discount?: number;
     items: any[];
 } | null> {
     try {
-        const res = await fetch(`/internal-api/shop/cart`, {
-            method: "GET",
-            
-        });
+        const [normalRes, discountedRes] = await Promise.allSettled([
+            fetch(`/internal-api/shop/cart`, { method: "GET" }),
+            fetch(`/internal-api/shop/discounted-cart`, { method: "GET" }),
+        ]);
 
-        if (!res.ok) {
-            throw new Error("خطا در دریافت سبد خرید");
+        let normalData: any = null;
+        let discountedData: any = null;
+
+        if (normalRes.status === "fulfilled" && normalRes.value.ok) {
+            normalData = await normalRes.value.json().catch(() => null);
+        }
+        if (discountedRes.status === "fulfilled" && discountedRes.value.ok) {
+            discountedData = await discountedRes.value.json().catch(() => null);
         }
 
-        const data = await res.json();
+        if (!normalData && !discountedData) {
+            return null;
+        }
 
-        return data;
+        const normalItems: any[] = Array.isArray(normalData?.items)
+            ? normalData.items.map((i: any) => ({ ...i, is_discounted: false }))
+            : [];
+        const discountedItems: any[] = Array.isArray(discountedData?.items)
+            ? discountedData.items.map((i: any) => ({ ...i, is_discounted: true }))
+            : [];
+
+        // ادغام اقلام سبد خرید
+        const rawItems = [...normalItems, ...discountedItems];
+
+        // محاسبه دقیق قیمت تخفیف خورده و قیمت اصلی برای هر کالا
+        const normalizedItems = rawItems.map((item) => {
+            const rawProduct = item.product || {};
+            const originalUnitPrice = Number(rawProduct.price ?? item.unit_price ?? 0);
+
+            // بررسی وجود قیمت تخفیفی
+            let effectiveDiscountPrice: number | null = null;
+            if (typeof item.final_price === "number" && item.final_price > 0 && item.final_price < originalUnitPrice) {
+                effectiveDiscountPrice = item.final_price;
+            } else if (typeof rawProduct.discount_price === "number" && rawProduct.discount_price > 0 && rawProduct.discount_price < originalUnitPrice) {
+                effectiveDiscountPrice = rawProduct.discount_price;
+            } else if (typeof rawProduct.final_price === "number" && rawProduct.final_price > 0 && rawProduct.final_price < originalUnitPrice) {
+                effectiveDiscountPrice = rawProduct.final_price;
+            } else if (item.is_discounted && typeof item.unit_price === "number" && item.unit_price > 0 && item.unit_price < originalUnitPrice) {
+                effectiveDiscountPrice = item.unit_price;
+            }
+
+            const isDiscounted = Boolean(item.is_discounted || effectiveDiscountPrice !== null);
+            const finalUnitPrice = effectiveDiscountPrice !== null ? effectiveDiscountPrice : (Number(item.unit_price) || originalUnitPrice);
+            const quantity = Number(item.quantity || 1);
+            const itemTotalPrice = finalUnitPrice * quantity;
+            const originalTotalPrice = (originalUnitPrice > 0 ? originalUnitPrice : finalUnitPrice) * quantity;
+
+            return {
+                ...item,
+                is_discounted: isDiscounted,
+                original_unit_price: originalUnitPrice > 0 ? originalUnitPrice : finalUnitPrice,
+                original_total_price: originalTotalPrice,
+                final_price: finalUnitPrice,
+                unit_price: finalUnitPrice,
+                effective_unit_price: finalUnitPrice,
+                effective_total_price: itemTotalPrice,
+                total_price: itemTotalPrice,
+            };
+        });
+
+        const totalQuantity = normalizedItems.reduce((acc, it) => acc + (Number(it.quantity) || 1), 0);
+        const totalItemsCount = normalizedItems.length;
+        const totalOriginalPrice = normalizedItems.reduce((acc, it) => acc + (it.original_total_price || it.total_price), 0);
+        const totalEffectivePrice = normalizedItems.reduce((acc, it) => acc + it.total_price, 0);
+        const totalDelivery = (Number(normalData?.total_delivery) || 0) + (Number(discountedData?.total_delivery) || 0);
+
+        return {
+            total_items: totalItemsCount,
+            total_quantity: totalQuantity,
+            original_total_price: totalOriginalPrice,
+            total_price: totalEffectivePrice,
+            total_discount: Math.max(0, totalOriginalPrice - totalEffectivePrice),
+            total_delivery: totalDelivery,
+            final_price: totalEffectivePrice + totalDelivery,
+            items: normalizedItems,
+        };
     } catch (error) {
         console.log("GetShopCartList error:", error);
         return null;
     }
-
 }
-
-
 
 export async function PostShopCart(item: {
     product_id: number;
     quantity: number;
     is_discounted?: boolean;
     store_name_english?: string;
-    color_id?: null | number
-    material_id?: null | number
+    color_id?: null | number;
+    material_id?: null | number;
 }) {
-    const url = "/internal-api/shop/cart/";
+    const primaryUrl = item.is_discounted
+        ? "/internal-api/shop/discounted-cart/"
+        : "/internal-api/shop/cart/";
+    const fallbackUrl = item.is_discounted
+        ? "/internal-api/shop/cart/"
+        : "/internal-api/shop/discounted-cart/";
 
     try {
-        const res = await fetch(url, {
+        let res = await fetch(primaryUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(item),
-
         });
 
-        const data = await res.json();
-        if (!res.ok) return { error: data.error || "خطا در افزودن به سبد خرید" };
+        let data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            // تلاش فال‌بک در صورت بروز خطا در مسیر اول
+            const fallbackRes = await fetch(fallbackUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(item),
+            });
+            const fallbackData = await fallbackRes.json().catch(() => ({}));
+            if (fallbackRes.ok) return fallbackData;
+
+            return { error: data.error || fallbackData.error || "خطا در افزودن به سبد خرید" };
+        }
 
         return data;
     } catch (error: any) {
-        console.log(error)
+        console.log(error);
         return { error: error.message || "خطا در ارتباط با سرور" };
     }
 }
 
-
-export async function PatchShopCart(id: number, data: { quantity: number, is_discounted?: boolean },
-) {
-    const url = data?.is_discounted
+export async function PatchShopCart(id: number, data: { quantity: number; is_discounted?: boolean }) {
+    const primaryUrl = data?.is_discounted
         ? "/internal-api/shop/discounted-cart/"
         : "/internal-api/shop/cart/";
+    const fallbackUrl = data?.is_discounted
+        ? "/internal-api/shop/cart/"
+        : "/internal-api/shop/discounted-cart/";
 
     try {
-        const res = await fetch(url, {
+        let res = await fetch(primaryUrl, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -282,8 +368,20 @@ export async function PatchShopCart(id: number, data: { quantity: number, is_dis
             }),
         });
 
-        const result = await res.json();
+        let result = await res.json().catch(() => ({}));
         if (!res.ok) {
+            const fallbackRes = await fetch(fallbackUrl, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id,
+                    ...data,
+                }),
+            });
+            if (fallbackRes.ok) return await fallbackRes.json();
+
             if (res.status === 400 || res.status === 409) {
                 return { error: result?.error || "خطا در بروزرسانی کالا" };
             }
@@ -296,16 +394,21 @@ export async function PatchShopCart(id: number, data: { quantity: number, is_dis
     }
 }
 
-
-
 export async function DeleteShopCart(id: string, is_discounted?: boolean) {
-    const url = is_discounted ? "/internal-api/shop/discounted-cart" : "/internal-api/shop/cart";
+    const primaryUrl = is_discounted ? "/internal-api/shop/discounted-cart" : "/internal-api/shop/cart";
+    const fallbackUrl = is_discounted ? "/internal-api/shop/cart" : "/internal-api/shop/discounted-cart";
     try {
-        const res = await fetch(`${url}?id=${encodeURIComponent(id)}`, {
+        let res = await fetch(`${primaryUrl}?id=${encodeURIComponent(id)}`, {
             method: "DELETE",
         });
 
-        if (!res.ok) throw new Error(`Failed to delete item, status: ${res.status}`);
+        if (!res.ok) {
+            const fallbackRes = await fetch(`${fallbackUrl}?id=${encodeURIComponent(id)}`, {
+                method: "DELETE",
+            });
+            if (fallbackRes.ok) return await fallbackRes.json();
+            throw new Error(`Failed to delete item, status: ${res.status}`);
+        }
 
         return await res.json();
     } catch (error) {
@@ -315,15 +418,14 @@ export async function DeleteShopCart(id: string, is_discounted?: boolean) {
 }
 export async function ClearShopCart() {
     try {
-        const res = await fetch(`/internal-api/shop/cart/clear`, {
-            method: "DELETE",
-        });
+        await Promise.allSettled([
+            fetch(`/internal-api/shop/cart/clear`, { method: "DELETE" }),
+            fetch(`/internal-api/shop/discounted-cart/clear`, { method: "DELETE" }),
+        ]);
 
-        if (!res.ok) throw new Error("Failed to delete item");
-
-        return await res.json();
+        return { success: true };
     } catch (error) {
-        console.log("DeleteShopCart error:", error);
+        console.log("ClearShopCart error:", error);
         return null;
     }
 }

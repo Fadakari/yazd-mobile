@@ -9,6 +9,7 @@ export type CartItem = {
         category: string;
         is_available: boolean;
         discount_price: number | null;
+        final_price?: number | null;
     };
     color_variant: {
         id: number;
@@ -33,4 +34,10 @@ export type CartItem = {
     total_price: number;
     total_delivery: number;
     full_total: number;
+    final_price?: number;
+    is_discounted?: boolean;
+    original_unit_price?: number;
+    original_total_price?: number;
+    effective_unit_price?: number;
+    effective_total_price?: number;
 };

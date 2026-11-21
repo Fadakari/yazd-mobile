@@ -43,40 +43,53 @@ function Page() {
       )}
 
       {cart.total_items > 0 && (
-        <div className="col-span-3 md:col-span-2 shadow rounded-lg h-auto p-5 space-y-2 border border-zinc-300 sticky top-5">
+        <div className="col-span-3 md:col-span-2 shadow rounded-lg h-auto p-5 space-y-3 border border-zinc-300 sticky top-5 bg-white">
           <div className="flex items-center justify-between ">
             <p>
-              قیمت کالاها ({cart.items.length.toLocaleString("fa-IR")} کالا)
+              قیمت کالاها ({cart.total_items.toLocaleString("fa-IR")} کالا)
             </p>
-            <p className="font-semibold text-xl">
-              {cart.total_price.toLocaleString("fa-IR")}
+            <p className="font-semibold text-lg">
+              {(cart.original_total_price || cart.total_price).toLocaleString("fa-IR")}
               <span className="pr-1 text-sm">تومان</span>
             </p>
           </div>
+
+          {cart.total_discount && cart.total_discount > 0 ? (
+            <div className="flex items-center justify-between text-green-700">
+              <p>تخفیف کالاها</p>
+              <p className="font-semibold text-lg">
+                -{cart.total_discount.toLocaleString("fa-IR")}
+                <span className="pr-1 text-sm">تومان</span>
+              </p>
+            </div>
+          ) : null}
 
           <div className="flex items-center justify-between">
             <p>هزینه ارسال</p>
-            <p className="font-semibold text-xl">
-              {cart.total_delivery.toLocaleString("fa-IR")}
-              <span className="pr-1 text-sm">تومان</span>
+            <p className="font-semibold text-lg">
+              {cart.total_delivery === 0 ? (
+                <span className="text-red-500">رایگان</span>
+              ) : (
+                `${cart.total_delivery.toLocaleString("fa-IR")} تومان`
+              )}
             </p>
           </div>
 
-          <div className="flex items-center justify-between border-t border-zinc-200 pt-2 mt-2">
-            <p>جمع نهایی</p>
-            <p className="font-semibold text-xl">
+          <div className="flex items-center justify-between border-t border-zinc-200 pt-3 mt-2">
+            <p className="font-bold text-lg">جمع نهایی</p>
+            <p className="font-bold text-xl text-zinc-900">
               {cart.final_price.toLocaleString("fa-IR")}
-              <span className="pr-1 text-sm">تومان</span>
+              <span className="pr-1 text-sm font-normal">تومان</span>
             </p>
           </div>
 
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-2 w-full pt-2">
             <Link
               href="/profile/checkout"
-              className="btn btn-primary w-full relative font-semibold text-center"
+              className="btn btn-primary w-full relative font-semibold text-center py-3"
             >
               ادامه ثبت سفارش{" "}
-              <IoCartOutline className="size-8 absolute right-5 top-2.5" />
+              <IoCartOutline className="size-7 absolute right-5 top-2.5" />
             </Link>
           </div>
         </div>
@@ -132,6 +145,12 @@ function CartLi({ item }: { item: CartItem }) {
       document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropDownOpen]);
+
+  const unitPrice = Number(item.unit_price ?? item.final_price ?? 0);
+  const originalPrice = Number(item.original_unit_price ?? item.product?.price ?? unitPrice);
+  const hasDiscount = (originalPrice > unitPrice && unitPrice > 0) || Boolean(item.is_discounted && originalPrice > unitPrice);
+  const discountPercent = hasDiscount ? Math.round(((originalPrice - unitPrice) / originalPrice) * 100) : 0;
+  const totalPrice = Number(item.total_price ?? (unitPrice * item.quantity));
 
   return (
     <>
@@ -205,7 +224,7 @@ function CartLi({ item }: { item: CartItem }) {
         <div className="flex justify-between w-[80%] items-start pr-2">
           <div className="flex flex-col justify-between h-full px-2">
             <p className="font-semibold text-lg">{item.product.name}</p>
-            <div className="flex gap-2 items-center py-2">
+            <div className="flex gap-2 items-center py-2 flex-wrap">
               {item.color_variant && (
                 <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 border border-zinc-200 shadow-2xs cursor-default">
                   <div
@@ -230,20 +249,34 @@ function CartLi({ item }: { item: CartItem }) {
               )}
             </div>
             <div>
+              {hasDiscount && (
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm line-through text-zinc-400">
+                    {originalPrice.toLocaleString("fa-IR")} تومان
+                  </span>
+                  <span className="bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full font-bold">
+                    {discountPercent.toLocaleString("fa-IR")}٪ تخفیف
+                  </span>
+                </div>
+              )}
               <p>
                 <span className="text-zinc-600">قیمت واحد:</span>{" "}
-                {item.unit_price.toLocaleString("fa-IR")} تومان
+                <span className={hasDiscount ? "font-bold text-red-600" : ""}>
+                  {unitPrice.toLocaleString("fa-IR")} تومان
+                </span>
               </p>
               <p>
                 <span className="text-zinc-600">قیمت کل:</span>{" "}
-                {item.total_price.toLocaleString("fa-IR")} تومان
+                <span className="font-bold">
+                  {totalPrice.toLocaleString("fa-IR")} تومان
+                </span>
               </p>
             </div>
           </div>
 
           <button
             onClick={() => removeFromCart(item.id)}
-            className="bg-zinc-200 text-zinc-500 p-2 rounded"
+            className="bg-zinc-200 text-zinc-500 p-2 rounded hover:bg-red-50 hover:text-red-600 transition"
           >
             <FaRegTrashAlt className="size-5" />
           </button>

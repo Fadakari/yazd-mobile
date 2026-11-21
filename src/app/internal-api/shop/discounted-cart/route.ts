@@ -25,8 +25,14 @@ export async function POST(req: NextRequest) {
         if (!token) return new Response("Unauthorized", { status: 401 });
 
         const body = await req.json();
+        const payload: any = {
+            product_id: body.product_id,
+            quantity: body.quantity,
+        };
+        if (body.color_id !== undefined && body.color_id !== null) payload.color_id = body.color_id;
+        if (body.material_id !== undefined && body.material_id !== null) payload.material_id = body.material_id;
 
-        const res = await api.post(`/home/discounted-cart/add/`, body, {
+        const res = await api.post(`/home/discounted-cart/add/`, payload, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -56,11 +62,11 @@ export async function PATCH(req: NextRequest) {
         if (!token) return new Response("Unauthorized", { status: 401 });
 
         const body = await req.json();
-        const { id, ...rest } = body;
+        const { id, quantity } = body;
 
         if (!id) return new Response("Missing item ID", { status: 400 });
 
-        const res = await api.patch(`/home/discounted-cart/update/${id}/`, rest, {
+        const res = await api.patch(`/home/discounted-cart/update/${id}/`, { quantity }, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
