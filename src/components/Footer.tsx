@@ -34,150 +34,6 @@ interface FooterSectionData {
   is_active: boolean;
 }
 
-// ۴ ستون پیش‌فرض و کامل برای فروشگاه گروه تولیدی آخوندی
-const DEFAULT_SECTIONS: FooterSectionData[] = [
-  {
-    id: 1,
-    title: "اطلاعات تماس کارخانه",
-    is_active: true,
-    items: [
-      {
-        id: 101,
-        label: "شماره مستقیم تماس و مشاوره",
-        value: "09123669839",
-        item_type: "phone",
-        is_active: true,
-      },
-      {
-        id: 102,
-        label: "تلفن کارخانه و دفتر",
-        value: "035-35254545",
-        item_type: "phone",
-        is_active: true,
-      },
-      {
-        id: 103,
-        label: "نشانی کارخانه و شو‌روم",
-        value: "میدان کشاورز، بلوار صابریزدی غربی، کوچه ۲۷، گروه تولیدی آخوندی",
-        item_type: "address",
-        is_active: true,
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "پیام‌رسان‌ها و ارتباط آنلاین",
-    is_active: true,
-    items: [
-      {
-        id: 201,
-        label: "پیام‌رسان ایتا",
-        value: "۰۹۱۳۸۵۹۱۸۳۸",
-        item_type: "url",
-        is_active: true,
-      },
-      {
-        id: 202,
-        label: "پشتیبانی در تلگرام",
-        value: "۰۹۱۳۸۵۹۱۸۳۸",
-        item_type: "url",
-        is_active: true,
-      },
-      {
-        id: 203,
-        label: "ارتباط در واتساپ",
-        value: "۰۹۱۳۸۵۹۱۸۳۸",
-        item_type: "url",
-        is_active: true,
-      },
-      {
-        id: 204,
-        label: "اینستاگرام رسمی",
-        value: "tolidiakhoondi@",
-        item_type: "url",
-        is_active: true,
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "دسترسی سریع",
-    is_active: true,
-    items: [
-      {
-        id: 301,
-        label: "صفحه اصلی فروشگاه",
-        value: "/",
-        item_type: "url",
-        is_active: true,
-      },
-      {
-        id: 302,
-        label: "کاتالوگ و لیست محصولات",
-        value: "/product",
-        item_type: "url",
-        is_active: true,
-      },
-      {
-        id: 303,
-        label: "درباره گروه تولیدی آخوندی",
-        value: "/about-us",
-        item_type: "url",
-        is_active: true,
-      },
-      {
-        id: 304,
-        label: "تماس و ارتباط با ما",
-        value: "/contact-info",
-        item_type: "url",
-        is_active: true,
-      },
-      {
-        id: 305,
-        label: "مقالات و وبلاگ آموزشی",
-        value: "/blog",
-        item_type: "url",
-        is_active: true,
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: "خدمات و پشتیبانی",
-    is_active: true,
-    items: [
-      {
-        id: 401,
-        label: "مشاوره تخصصی خرید مبلمان اداری",
-        value: "09123669839",
-        item_type: "phone",
-        is_active: true,
-      },
-      {
-        id: 402,
-        label: "پیگیری وضعیت سفارش‌ها",
-        value: "/profile/orders",
-        item_type: "url",
-        is_active: true,
-      },
-      {
-        id: 403,
-        label: "ساعات کاری کارخانه",
-        value: "شنبه تا چهارشنبه ۸ الی ۱۸ | پنجشنبه ۸ الی ۱۴",
-        item_type: "text",
-        is_active: true,
-      },
-      {
-        id: 404,
-        label: "ضمانت کیفیت و خدمات پس از فروش",
-        value: "ضمانت ۱۰۰٪ اصالت و کیفیت",
-        item_type: "text",
-        is_active: true,
-      },
-    ],
-  },
-];
-
 // تابع دریافت دیتا از سرور با کش کوتاه ۳۰ ثانیه‌ای
 async function getFooterData(): Promise<FooterSectionData[]> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL}`;
@@ -321,7 +177,8 @@ const FooterSection = ({
   title: string;
   items: FooterItem[];
 }) => {
-  if (!items || items.length === 0) return null;
+  const activeItems = (items || []).filter((item) => item.is_active !== false);
+  if (activeItems.length === 0) return null;
 
   return (
     <div className="flex flex-col">
@@ -331,7 +188,7 @@ const FooterSection = ({
       </h3>
 
       <ul className="flex flex-col gap-2.5">
-        {items.map((item) => {
+        {activeItems.map((item) => {
           const href = getHref(item);
           const isClickable = item.item_type !== "address" && href !== "#";
           const { icon, badgeClass } = getItemStyle(
@@ -409,27 +266,10 @@ async function Footer() {
     GetActiveLogo(),
   ]);
 
-  // ترکیب هوشمند بخش‌های سرور با بخش‌های پیش‌فرض تا هر ۴ ستون همیشه پر، دقیق و متوازن باشند
-  let footerSections: FooterSectionData[] = [...DEFAULT_SECTIONS];
-  if (Array.isArray(backendSections) && backendSections.length > 0) {
-    const contactBackend = backendSections.find(
-      (s) => s.title.includes("تماس") || s.id === 1
-    );
-    if (contactBackend && contactBackend.items?.length > 0) {
-      footerSections[0] = {
-        ...footerSections[0],
-        title: contactBackend.title || footerSections[0].title,
-        items: contactBackend.items,
-      };
-    }
-    // اضافه کردن هرگونه ستون سفارشی دیگر از بک‌اند در صورت وجود
-    const extraSections = backendSections.filter(
-      (s) => !s.title.includes("تماس") && s.id !== 1
-    );
-    if (extraSections.length > 0) {
-      footerSections = [...footerSections, ...extraSections];
-    }
-  }
+  // استفاده مستقیم و ۱۰۰٪ داینامیک از بخش‌ها و اطلاعات فعال دریافتی از سرور (بک‌اند جنگو)
+  const footerSections: FooterSectionData[] = Array.isArray(backendSections)
+    ? backendSections.filter((section) => section.is_active !== false)
+    : [];
 
   const siteTitle = settings?.site_title || "گروه تولیدی آخوندی";
   const mapUrl = settings?.map_url;
@@ -534,16 +374,18 @@ async function Footer() {
           </div>
         </div>
 
-        {/* ۳. ستون‌های محتوایی و لینک‌های فوتر (۴ ستون کامل و متوازن) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 xl:gap-10 mb-10">
-          {footerSections.map((section) => (
-            <FooterSection
-              key={section.id}
-              title={section.title}
-              items={section.items}
-            />
-          ))}
-        </div>
+        {/* ۳. ستون‌های محتوایی و لینک‌های فوتر داینامیک */}
+        {footerSections.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 xl:gap-10 mb-10">
+            {footerSections.map((section) => (
+              <FooterSection
+                key={section.id}
+                title={section.title}
+                items={section.items}
+              />
+            ))}
+          </div>
+        )}
 
         {/* ۴. بخش نمادهای اعتماد و مجوزهای رسمی */}
         {(enamadImage || gatewayImage || mapUrl) && (
