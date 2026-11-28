@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
         const payload: any = {
             product_id: body.product_id,
             quantity: body.quantity,
+            is_discounted: body.is_discounted ?? false,
             color_id: body.color_id ?? null,
             material_id: body.material_id ?? null,
         };

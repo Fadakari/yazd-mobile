@@ -238,10 +238,10 @@ export async function GetShopCartList(): Promise<{
         }
 
         const normalItems: any[] = Array.isArray(normalData?.items)
-            ? normalData.items.map((i: any) => ({ ...i, is_discounted: false }))
+            ? normalData.items.map((i: any) => ({ ...i, cart_source: "normal", is_discounted: false }))
             : [];
         const discountedItems: any[] = Array.isArray(discountedData?.items)
-            ? discountedData.items.map((i: any) => ({ ...i, is_discounted: true }))
+            ? discountedData.items.map((i: any) => ({ ...i, cart_source: "discounted", is_discounted: true }))
             : [];
 
         // ادغام اقلام سبد خرید
@@ -313,44 +313,21 @@ export async function PostShopCart(item: {
     color_id?: null | number;
     material_id?: null | number;
 }) {
-    const primaryUrl = item.is_discounted
-        ? "/internal-api/shop/discounted-cart/"
-        : "/internal-api/shop/cart/";
-    const fallbackUrl = item.is_discounted
-        ? "/internal-api/shop/cart/"
-        : "/internal-api/shop/discounted-cart/";
+    const url = "/internal-api/shop/cart/";
 
     try {
-        let res = await fetch(primaryUrl, {
+        const res = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(item),
         });
 
-        let data = await res.json().catch(() => ({}));
+        const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-            // تلاش فال‌بک در صورت بروز خطا در مسیر اول (به جز خطای احراز هویت)
-            if (res.status !== 401) {
-                const fallbackRes = await fetch(fallbackUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(item),
-                });
-                const fallbackData = await fallbackRes.json().catch(() => ({}));
-                if (fallbackRes.ok) return fallbackData;
-                if (fallbackRes.status === 401) {
-                    return { error: "لطفاً ابتدا وارد حساب کاربری خود شوید." };
-                }
-                return {
-                    error:
-                        data.error ||
-                        data.detail ||
-                        fallbackData.error ||
-                        fallbackData.detail ||
-                        "خطا در افزودن به سبد خرید",
-                };
+            if (res.status === 401) {
+                return { error: "لطفاً ابتدا وارد حساب کاربری خود شوید." };
             }
-            return { error: "لطفاً ابتدا وارد حساب کاربری خود شوید." };
+            return { error: data.error || data.detail || "خطا در افزودن به سبد خرید" };
         }
 
         return data;

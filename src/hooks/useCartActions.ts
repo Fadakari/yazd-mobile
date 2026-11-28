@@ -95,7 +95,7 @@ export const useCartActions = (setCart: any, setLoading: any, cart: any) => {
 
         setLoading(true);
         try {
-            await DeleteShopCart(String(item.id), Boolean(item?.is_discounted));
+            await DeleteShopCart(String(item.id), item?.cart_source === "discounted");
             await fetchCart();
         } catch (err) {
             console.error("خطا در حذف آیتم:", err);
@@ -115,7 +115,7 @@ export const useCartActions = (setCart: any, setLoading: any, cart: any) => {
         try {
             const res = await PatchShopCart(item.id, {
                 quantity,
-                is_discounted: Boolean(item?.is_discounted),
+                is_discounted: item?.cart_source === "discounted",
             });
 
             if (res?.error) {

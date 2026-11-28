@@ -124,8 +124,8 @@ const CreateOrder = () => {
 
     setIsSubmitting(true);
 
-    const discountedItems = cart.items.filter((item) => item.is_discounted || (item.final_price && item.final_price < item.unit_price));
-    const normalItems = cart.items.filter((item) => !item.is_discounted && (!item.final_price || item.final_price >= item.unit_price));
+    const discountedItems = cart.items.filter((item) => item.cart_source === "discounted");
+    const normalItems = cart.items.filter((item) => item.cart_source !== "discounted");
 
     const basePayload = {
       discount_code: formData.discount_code || "",
