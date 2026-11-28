@@ -36,15 +36,39 @@ export const useCartActions = (setCart: any, setLoading: any, cart: any) => {
             });
 
             if (res?.error) {
-                let errorMessage = "خطای نامشخص";
+                let errorMessage = "خطا در افزودن به سبد خرید";
 
-                try {
-                    const errorObj = JSON.parse(res.error.replace(/'/g, '"'));
-                    if (errorObj.quantity) {
-                        errorMessage = errorObj.quantity[0];
+                if (typeof res.error === "string") {
+                    try {
+                        const errorObj = JSON.parse(res.error.replace(/'/g, '"'));
+                        if (errorObj.quantity) {
+                            errorMessage = Array.isArray(errorObj.quantity) ? errorObj.quantity[0] : errorObj.quantity;
+                        } else if (errorObj.detail) {
+                            errorMessage = errorObj.detail;
+                        } else if (errorObj.error) {
+                            errorMessage = errorObj.error;
+                        } else if (errorObj.message) {
+                            errorMessage = errorObj.message;
+                        } else if (errorObj.non_field_errors) {
+                            errorMessage = Array.isArray(errorObj.non_field_errors)
+                                ? errorObj.non_field_errors[0]
+                                : errorObj.non_field_errors;
+                        } else {
+                            const firstVal = Object.values(errorObj)[0];
+                            if (Array.isArray(firstVal) && firstVal.length > 0) {
+                                errorMessage = String(firstVal[0]);
+                            } else if (typeof firstVal === "string" && firstVal.trim()) {
+                                errorMessage = firstVal;
+                            }
+                        }
+                    } catch {
+                        errorMessage = res.error;
                     }
-                } catch {
-                    errorMessage = res.error;
+                } else if (typeof res.error === "object" && res.error !== null) {
+                    const firstVal = Object.values(res.error)[0];
+                    errorMessage = Array.isArray(firstVal)
+                        ? String(firstVal[0])
+                        : String(firstVal || "خطا در افزودن به سبد خرید");
                 }
 
                 addToast({ title: errorMessage, color: "danger" });

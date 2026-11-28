@@ -38,18 +38,18 @@ export async function generateMetadata({
     const data = await GetBlogBySlug(decodedSlug);
     if (!data) {
       return {
-        title: "مقاله یافت نشد | آموزش فخر",
+        title: "مقاله یافت نشد | مجتمع رژیم فخر",
       };
     }
     return {
-      title: `${data.title} | آموزش فخر`,
+      title: `${data.title} | مجتمع رژیم فخر`,
       description: data.introduction,
-      keywords: [data.title, "مقاله آموزش فخر", `مقاله ${data.title}`],
+      keywords: [data.title, "مقاله مجتمع رژیم فخر", `مقاله ${data.title}`],
       openGraph: {
         title: data.title,
         description: data.introduction,
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/article/${data.slug}`,
-        siteName: "آموزش فخر",
+        siteName: "مجتمع رژیم فخر",
         locale: "fa_IR",
         type: "article",
         publishedTime: data.published_at || data.created_at,
@@ -78,7 +78,7 @@ export async function generateMetadata({
   } catch (error: any) {
     console.error("Metadata Error:", error?.message);
     // اگر اینجا ارور بده، این تایتل رو نشون میده و سرور رو منفجر نمیکنه
-    return { title: "خطای سرور (سئو) | آموزش فخر" };
+    return { title: "خطای سرور (سئو) | مجتمع رژیم فخر" };
   }
 }
 

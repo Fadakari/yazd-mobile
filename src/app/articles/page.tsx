@@ -1,4 +1,4 @@
-import BlogCard from "@/components/BlogCard";
+﻿import BlogCard from "@/components/BlogCard";
 import ErrorMessage from "@/components/ErrorMessage";
 import PaginationBox from "@/components/Products/PaginationBox";
 import { articlesSchema, breadcrumbSchema } from "@/components/Schema";
@@ -22,11 +22,11 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const category = (await searchParams).category;
 
-  let title = "مقالات آموزش فخر";
-  let description = "آخرین مقالات و اخبار مرتبط با آموزش فخر را اینجا بخوانید.";
+  let title = "مقالات مجتمع رژیم فخر";
+  let description = "آخرین مقالات و اخبار مرتبط با مجتمع رژیم فخر را اینجا بخوانید.";
   if (category) {
-    title = `مقالات دسته‌بندی ${category} | آموزش فخر`;
-    description = `مقالات مرتبط با دسته‌بندی شماره ${category} در فروشگاه آموزش فخر.`;
+    title = `مقالات دسته‌بندی ${category} | مجتمع رژیم فخر`;
+    description = `مقالات مرتبط با دسته‌بندی شماره ${category} در فروشگاه مجتمع رژیم فخر.`;
   }
 
   return {
@@ -34,15 +34,15 @@ export async function generateMetadata({
     description,
     keywords: [
       "مقالات",
-      "آموزش فخر",
-      "اخبار آموزش فخر",
+      "مجتمع رژیم فخر",
+      "اخبار مجتمع رژیم فخر",
       ...(category ? [`دسته‌بندی ${category}`] : []),
     ],
     openGraph: {
       title,
       description,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/articles${category ? `?category=${category}` : ""}`,
-      siteName: "آموزش فخر",
+      siteName: "مجتمع رژیم فخر",
       locale: "fa_IR",
       type: "website",
     },

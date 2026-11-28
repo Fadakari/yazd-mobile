@@ -15,7 +15,7 @@ import { GetActiveLogo } from "@/services/siteActions";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
-  title: "آموزش فخر | صفحه اصلی",
+  title: "مجتمع رژیم فخر",
 };
 
 // --- اینترفیس‌های API ---

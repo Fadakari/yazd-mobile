@@ -18,28 +18,28 @@ import { GetActiveLogo } from "@/services/siteActions";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://rejimfakhr.com"),
-  title: "آموزش فخر | فروشگاه آنلاین با تضمین کیفیت",
+  title: "مجتمع رژیم فخر",
   description:
-    "آموزش فخر، فروشگاه تخصصی با بهترین قیمت و تضمین کیفیت. ارسال سریع، تخفیف‌های ویژه، و مقالات آموزشی تخصصی.",
+    "مجتمع رژیم فخر، فروشگاه تخصصی و دریافت رژیم غذایی آنلاین با بهترین قیمت و تضمین کیفیت.",
   keywords: [
-    "آموزش فخر",
+    "مجتمع رژیم فخر",
+    "رژیم فخر",
     "فروشگاه آنلاین",
     "خرید آنلاین",
-    "قیمت مناسب",
+    "رژیم غذایی",
     "تضمین کیفیت",
-    "تخفیف ویژه",
   ],
   openGraph: {
-    title: "آموزش فخر",
-    description: "خرید آنلاین با تضمین کیفیت و ارسال سریع از آموزش فخر",
+    title: "مجتمع رژیم فخر",
+    description: "مجتمع رژیم فخر، فروشگاه تخصصی و دریافت رژیم غذایی آنلاین با تضمین کیفیت",
     url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
-    siteName: "آموزش فخر",
+    siteName: "مجتمع رژیم فخر",
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`,
         width: 1200,
         height: 630,
-        alt: "آموزش فخر",
+        alt: "مجتمع رژیم فخر",
       },
     ],
     locale: "fa_IR",
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "آموزش فخر",
-    description: "خرید آنلاین با تضمین کیفیت و ارسال سریع از آموزش فخر",
+    title: "مجتمع رژیم فخر",
+    description: "مجتمع رژیم فخر، فروشگاه تخصصی و دریافت رژیم غذایی آنلاین با تضمین کیفیت",
     images: [`${process.env.NEXT_PUBLIC_SITE_URL}/opengraph-image.jpg`],
   },
   icons: {

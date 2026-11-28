@@ -1,4 +1,4 @@
-export const revalidate = 30;
+﻿export const revalidate = 30;
 
 import LayoutShell from "@/components/Products/LayoutShell";
 import { GetProducts, GetShopCategoriesTreeList } from "@/services/shopActions";
@@ -33,16 +33,16 @@ export default async function ProductsPage({ searchParams }: any) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "تخفیف‌های شگفت‌انگیز | فروشگاه آموزش فخر";
+  const title = "تخفیف‌های شگفت‌انگیز | فروشگاه مجتمع رژیم فخر";
   const description =
-    "جدیدترین پیشنهادهای ویژه و تخفیف‌های شگفت‌انگیز فروشگاه آموزش فخر! خرید محصولات منتخب با قیمت باورنکردنی و ارسال سریع.";
+    "جدیدترین پیشنهادهای ویژه و تخفیف‌های شگفت‌انگیز فروشگاه مجتمع رژیم فخر! خرید محصولات منتخب با قیمت باورنکردنی و ارسال سریع.";
   const keywords = [
     "تخفیف ویژه",
     "پیشنهاد شگفت‌انگیز",
     "حراج",
     "فروش ویژه",
     "قیمت باورنکردنی",
-    "فروشگاه آموزش فخر",
+    "فروشگاه مجتمع رژیم فخر",
     "خرید آنلاین ارزان",
   ];
 
@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/amazing-offers`,
-      siteName: "آموزش فخر",
+      siteName: "مجتمع رژیم فخر",
       locale: "fa_IR",
       type: "website",
     },

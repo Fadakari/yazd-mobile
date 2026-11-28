@@ -85,15 +85,15 @@ export async function generateMetadata(props: {
 
     const categoryTitle = category?.name || "دسته‌بندی انتخاب‌شده";
 
-    const title = `${categoryTitle} | خرید انواع ${categoryTitle} با بهترین قیمت | آموزش فخر`;
-    const description = `خرید اینترنتی ${categoryTitle} از فروشگاه آموزش فخر با بهترین قیمت و ارسال سریع. بررسی و فیلتر محصولات ${categoryTitle}.`;
+    const title = `${categoryTitle} | خرید انواع ${categoryTitle} با بهترین قیمت | مجتمع رژیم فخر`;
+    const description = `خرید اینترنتی ${categoryTitle} از فروشگاه مجتمع رژیم فخر با بهترین قیمت و ارسال سریع. بررسی و فیلتر محصولات ${categoryTitle}.`;
 
     return {
       title,
       description,
       keywords: [
         categoryTitle,
-        "فروشگاه آموزش فخر",
+        "فروشگاه مجتمع رژیم فخر",
         "خرید آنلاین",
         "قیمت مناسب",
       ],
@@ -101,7 +101,7 @@ export async function generateMetadata(props: {
         title,
         description,
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/products?category_id=${categoryId}`,
-        siteName: "آموزش فخر",
+        siteName: "مجتمع رژیم فخر",
         locale: "fa_IR",
         type: "website",
       },
@@ -118,24 +118,24 @@ export async function generateMetadata(props: {
   }
 
   return {
-    title: "خرید محصولات | فروشگاه آموزش فخر",
+    title: "خرید محصولات | فروشگاه مجتمع رژیم فخر",
     description:
-      "مشاهده و خرید جدیدترین محصولات با بهترین قیمت از فروشگاه آموزش فخر. فیلتر بر اساس قیمت، موجودی، ویژگی و ...",
-    keywords: ["فروشگاه آموزش فخر", "خرید آنلاین", "محصولات", "قیمت مناسب"],
+      "مشاهده و خرید جدیدترین محصولات با بهترین قیمت از فروشگاه مجتمع رژیم فخر. فیلتر بر اساس قیمت، موجودی، ویژگی و ...",
+    keywords: ["فروشگاه مجتمع رژیم فخر", "خرید آنلاین", "محصولات", "قیمت مناسب"],
     openGraph: {
-      title: "خرید محصولات | فروشگاه آموزش فخر",
+      title: "خرید محصولات | فروشگاه مجتمع رژیم فخر",
       description:
-        "فروشگاه آموزش فخر ارائه‌دهنده انواع محصولات با بهترین قیمت و تضمین کیفیت. خرید آنلاین آسان و سریع.",
+        "فروشگاه مجتمع رژیم فخر ارائه‌دهنده انواع محصولات با بهترین قیمت و تضمین کیفیت. خرید آنلاین آسان و سریع.",
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/products`,
-      siteName: "آموزش فخر",
+      siteName: "مجتمع رژیم فخر",
       locale: "fa_IR",
       type: "website",
     },
     twitter: {
       card: "summary",
-      title: "خرید محصولات | آموزش فخر",
+      title: "خرید محصولات | مجتمع رژیم فخر",
       description:
-        "محصولات متنوع با قیمت مناسب از فروشگاه اینترنتی آموزش فخر. خرید سریع، امن و مطمئن.",
+        "محصولات متنوع با قیمت مناسب از فروشگاه اینترنتی مجتمع رژیم فخر. خرید سریع، امن و مطمئن.",
     },
     robots: {
       index: true,

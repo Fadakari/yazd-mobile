@@ -1,4 +1,4 @@
-import BreadcrumbsBox from "@/components/Products/BreadcrumbsBox";
+﻿import BreadcrumbsBox from "@/components/Products/BreadcrumbsBox";
 import { homeAboutUsList } from "@/services/homeActions";
 import parse, { DOMNode, Element } from "html-react-parser";
 import { Metadata } from "next";
@@ -16,30 +16,30 @@ interface aboutT {
 }
 
 export const metadata: Metadata = {
-  title: "درباره ما | آموزش فخر",
+  title: "درباره ما | مجتمع رژیم فخر",
   description:
-    "با آموزش فخر آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.",
+    "با مجتمع رژیم فخر آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.",
   keywords: [
     "درباره ما",
-    "آموزش فخر",
-    "فروشگاه آموزش فخر",
-    "داستان آموزش فخر",
-    "خدمات آموزش فخر",
+    "مجتمع رژیم فخر",
+    "فروشگاه مجتمع رژیم فخر",
+    "داستان مجتمع رژیم فخر",
+    "خدمات مجتمع رژیم فخر",
   ],
   openGraph: {
-    title: "درباره ما | آموزش فخر",
+    title: "درباره ما | مجتمع رژیم فخر",
     description:
-      "با آموزش فخر آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.",
+      "با مجتمع رژیم فخر آشنا شوید؛ داستان ما، اهداف، و خدماتی که به شما ارائه می‌دهیم. فروشگاهی مطمئن با محصولات باکیفیت و پشتیبانی حرفه‌ای.",
     url: `${process.env.NEXT_PUBLIC_SITE_URL}/about-us`,
-    siteName: "آموزش فخر",
+    siteName: "مجتمع رژیم فخر",
     locale: "fa_IR",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "درباره ما | آموزش فخر",
+    title: "درباره ما | مجتمع رژیم فخر",
     description:
-      "با آموزش فخر آشنا شوید؛ داستان ما، اهداف و خدمات فروشگاه آموزش فخر.",
+      "با مجتمع رژیم فخر آشنا شوید؛ داستان ما، اهداف و خدمات فروشگاه مجتمع رژیم فخر.",
   },
   robots: {
     index: true,

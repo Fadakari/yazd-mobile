@@ -1,4 +1,4 @@
-import BreadcrumbsBox from "@/components/Products/BreadcrumbsBox";
+﻿import BreadcrumbsBox from "@/components/Products/BreadcrumbsBox";
 import { homeContactInfoList } from "@/services/homeActions";
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -10,30 +10,30 @@ interface Contact {
   address: string | null;
 }
 export const metadata: Metadata = {
-  title: "ارتباط با ما | آموزش فخر",
+  title: "ارتباط با ما | مجتمع رژیم فخر",
   description:
-    "راه‌های تماس با فروشگاه آموزش فخر؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.",
+    "راه‌های تماس با فروشگاه مجتمع رژیم فخر؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.",
   keywords: [
     "ارتباط با ما",
-    "تماس با آموزش فخر",
-    "فروشگاه آموزش فخر",
-    "آدرس آموزش فخر",
-    "شماره تلفن آموزش فخر",
+    "تماس با مجتمع رژیم فخر",
+    "فروشگاه مجتمع رژیم فخر",
+    "آدرس مجتمع رژیم فخر",
+    "شماره تلفن مجتمع رژیم فخر",
   ],
   openGraph: {
-    title: "ارتباط با ما | آموزش فخر",
+    title: "ارتباط با ما | مجتمع رژیم فخر",
     description:
-      "راه‌های تماس با فروشگاه آموزش فخر؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.",
+      "راه‌های تماس با فروشگاه مجتمع رژیم فخر؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.",
     url: `${process.env.NEXT_PUBLIC_SITE_URL}/contact-info`,
-    siteName: "آموزش فخر",
+    siteName: "مجتمع رژیم فخر",
     locale: "fa_IR",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "ارتباط با ما | آموزش فخر",
+    title: "ارتباط با ما | مجتمع رژیم فخر",
     description:
-      "راه‌های تماس با فروشگاه آموزش فخر؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.",
+      "راه‌های تماس با فروشگاه مجتمع رژیم فخر؛ آدرس، شماره تلفن و اطلاعات پشتیبانی جهت ارتباط سریع و آسان با ما.",
   },
   robots: {
     index: true,

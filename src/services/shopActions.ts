@@ -329,16 +329,28 @@ export async function PostShopCart(item: {
 
         let data = await res.json().catch(() => ({}));
         if (!res.ok) {
-            // تلاش فال‌بک در صورت بروز خطا در مسیر اول
-            const fallbackRes = await fetch(fallbackUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(item),
-            });
-            const fallbackData = await fallbackRes.json().catch(() => ({}));
-            if (fallbackRes.ok) return fallbackData;
-
-            return { error: data.error || fallbackData.error || "خطا در افزودن به سبد خرید" };
+            // تلاش فال‌بک در صورت بروز خطا در مسیر اول (به جز خطای احراز هویت)
+            if (res.status !== 401) {
+                const fallbackRes = await fetch(fallbackUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(item),
+                });
+                const fallbackData = await fallbackRes.json().catch(() => ({}));
+                if (fallbackRes.ok) return fallbackData;
+                if (fallbackRes.status === 401) {
+                    return { error: "لطفاً ابتدا وارد حساب کاربری خود شوید." };
+                }
+                return {
+                    error:
+                        data.error ||
+                        data.detail ||
+                        fallbackData.error ||
+                        fallbackData.detail ||
+                        "خطا در افزودن به سبد خرید",
+                };
+            }
+            return { error: "لطفاً ابتدا وارد حساب کاربری خود شوید." };
         }
 
         return data;
