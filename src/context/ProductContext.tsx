@@ -20,15 +20,9 @@ interface ProviderProps {
 }
 
 export const ProductProvider = ({ children, product }: ProviderProps) => {
-  const colors = product.color ?? [];
-  const materials = product.material ?? [];
-
-  const [selectedColor, setSelectedColor] = useState<ProductColor | null>(
-    colors.length ? colors[0] : null
-  );
-
+  const [selectedColor, setSelectedColor] = useState<ProductColor | null>(null);
   const [selectedMaterial, setSelectedMaterial] =
-    useState<ProductMaterial | null>(materials.length ? materials[0] : null);
+    useState<ProductMaterial | null>(null);
 
   return (
     <ProductContext.Provider

@@ -15,7 +15,6 @@ import { IoIosNotifications } from "react-icons/io";
 import { useCart } from "@/context/CartContextProvider";
 import ProductType from "@/types/product";
 import ProductButton from "../ProtectButton";
-import { useProductOptions } from "@/context/ProductContext";
 
 function AddToCart({
   product,
@@ -30,9 +29,8 @@ function AddToCart({
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [customQuantities, setCustomQuantities] = useState<number[]>([]);
-  const { loading, addToCart, cart } = useCart();
+  const { loading, addToCart } = useCart();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { selectedColor, selectedMaterial } = useProductOptions();
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -52,45 +50,6 @@ function AddToCart({
     };
   }, [dropDownOpen]);
   const handleAddToCart = async () => {
-    const existingItem = cart?.items?.find((item) => {
-      const sameProduct = item.product.id === product.id;
-      const sameColor =
-        (!selectedColor && !item.color_variant) ||
-        (selectedColor && item.color_variant?.id === selectedColor.id);
-
-      const sameMaterial =
-        (!selectedMaterial && !item.material_variant) ||
-        (selectedMaterial && item.material_variant?.id === selectedMaterial.id);
-
-      return sameProduct && sameColor && sameMaterial;
-    });
-
-    const stock =
-      selectedColor?.stock ||
-      selectedMaterial?.stock ||
-      product.stock ||
-      product.quantity ||
-      0;
-
-    const currentInCart = existingItem ? existingItem.quantity : 0;
-
-    const totalAfterAdd = currentInCart + quantity;
-
-    if (totalAfterAdd > stock) {
-      const allowed = stock - currentInCart;
-
-      addToast({
-        title: "موجودی کافی نیست",
-        description:
-          allowed > 0
-            ? `شما اکنون ${currentInCart} عدد از این محصول در سبد دارید. حداکثر ${allowed} عدد دیگر قابل افزودن است.`
-            : `شما قبلاً حداکثر مقدار قابل مجاز را در سبد دارید. حداکثر تعداد (${product.stock})`,
-        color: "danger",
-      });
-
-      return;
-    }
-
     try {
       const isDiscounted = Boolean(
         product.isDiscounted ||
@@ -102,12 +61,8 @@ function AddToCart({
         product_id: product.id,
         quantity: quantity,
         isDiscounted: isDiscounted,
-        color: selectedColor
-          ? { id: selectedColor.id, name: selectedColor.color_name }
-          : null,
-        material: selectedMaterial
-          ? { id: selectedMaterial.id, name: selectedMaterial.material_name }
-          : null,
+        color: null,
+        material: null,
       };
 
       addToCart(payload);
@@ -116,20 +71,8 @@ function AddToCart({
     }
   };
 
-  const maxStock = product.stock;
   const handleQuantityChange = (value: number) => {
     if (isNaN(value) || value <= 0) return;
-
-    if (value > maxStock) {
-      addToast({
-        title: "موجودی کافی نیست",
-        description: `حداکثر تعداد قابل انتخاب ${maxStock} عدد است.`,
-        color: "danger",
-      });
-
-      setQuantity(maxStock);
-      return;
-    }
 
     setQuantity(value);
 
